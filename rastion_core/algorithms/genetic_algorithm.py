@@ -1,7 +1,9 @@
 import random
 from copy import deepcopy
+from rastion_core.base_optimizer import BaseOptimizer
 
-class GeneticAlgorithm:
+
+class GeneticAlgorithm(BaseOptimizer):
     """
     A simple Genetic Algorithm solver for discrete/combinatorial problems.
     Expects the problem to implement random_solution() and evaluate_solution().
@@ -59,7 +61,7 @@ class GeneticAlgorithm:
             i, j = random.sample(range(len(solution)), 2)
             solution[i], solution[j] = solution[j], solution[i]
 
-    def optimize(self, problem):
+    def optimize(self, problem, **kwargs):
         """
         Main GA loop.
         Returns (best_solution, best_cost).

@@ -1,6 +1,7 @@
 import numpy as np
+from rastion_core.base_optimizer import BaseOptimizer
 
-class GradientDescent:
+class GradientDescent(BaseOptimizer):
     """
     A basic gradient descent solver for continuous optimization.
     Expects:
@@ -22,7 +23,7 @@ class GradientDescent:
         self.grad_func = grad_func
         self.verbose = verbose
 
-    def optimize(self, problem, initial_solution=None):
+    def optimize(self, problem, initial_solution=None, **kwargs):
         """
         If 'initial_solution' is not provided, we try problem.random_solution().
         Returns (best_solution, best_cost).
