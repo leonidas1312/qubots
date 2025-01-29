@@ -9,6 +9,9 @@ from rastion_cli.cli import app
 import requests
 from subprocess import run
 
+from rastion_hub.auto_optimizer import AutoOptimizer
+from rastion_hub.auto_problem import AutoProblem
+
 # Load environment variables
 from dotenv import load_dotenv
 load_dotenv()
@@ -56,6 +59,18 @@ def test_full_combined_repo_flow(github_token_check):
             "--github-token", token
         ])
         assert create_result.exit_code == 0, f"create_repo failed: {create_result.stdout}"
+
+        # Step 1.1) Create an empty commit to initialize the 'main' branch
+        # Here we create an empty README file and push it to the remote repo
+        # This will initialize the main branch
+        with tempfile.TemporaryDirectory() as temp_repo_dir:
+            run(["git", "init"], cwd=temp_repo_dir, check=True)
+            run(["git", "remote", "add", "origin", f"https://github.com/{org}/{repo_name}.git"], cwd=temp_repo_dir, check=True)
+            with open(Path(temp_repo_dir) / "README.md", "w") as readme:
+                readme.write("# Initialized repository\n")
+            run(["git", "add", "."], cwd=temp_repo_dir, check=True)
+            run(["git", "commit", "-m", "Initial commit to create main branch"], cwd=temp_repo_dir, check=True)
+            run(["git", "push", "-u", "origin", "main"], cwd=temp_repo_dir, check=True)
 
     # Step 2) prepare local files (this stays the same)
     temp_dir = tempfile.mkdtemp(prefix="combined_")  # create temp dir manually
