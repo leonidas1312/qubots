@@ -18,6 +18,10 @@ dependencies = [
     "python-dotenv"
 ]
 
+[project.scripts]
+rastion = "rastion_cli.cli:main"
+
+
 [project.urls]
 "Source" = "https://github.com/leonidas1312/rastion-hub/tree/main"
 
