@@ -9,9 +9,8 @@ import json
 from pathlib import Path
 from typing import Optional
 from rastion_hub.auto_optimizer import AutoOptimizer
-from rastion_core.problems.traveling_salesman import TSPProblem
 
-app = typer.Typer(help="Rastion CLI - A tool for Git-based solver repos.")
+app = typer.Typer(help="Rastion CLI - A tool for Git-based solver/problem repos.")
 
 GITHUB_API = "https://api.github.com"
 
@@ -19,15 +18,15 @@ GITHUB_API = "https://api.github.com"
 @app.command()
 def create_repo(
     repo_name: str = typer.Argument(..., help="Name of the new GitHub repo"),
-    org: str = typer.Option("myorg", "--org", help="GitHub organization name"),
+    org: str = typer.Option("Rastion", "--org", help="GitHub organization name (default 'Rastion')"),
     private: bool = typer.Option(False, "--private", help="Make the repo private?"),
     github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
 ):
     """
-    Create a new GitHub repo under the specified org (default is 'myorg').
+    Create a new GitHub repo under the specified org (default 'Rastion').
     """
     if not github_token:
-        typer.echo("ERROR: GitHub token not provided (set GITHUB_TOKEN env var or use --github-token).")
+        typer.echo("ERROR: GitHub token not provided. Use --github-token or set GITHUB_TOKEN env var.")
         raise typer.Exit(1)
 
     url = f"{GITHUB_API}/orgs/{org}/repos"
@@ -43,63 +42,15 @@ def create_repo(
         raise typer.Exit(1)
     data = resp.json()
     clone_url = data["clone_url"]
-    typer.echo(f"Repo created successfully: {clone_url}")
-
-
-@app.command()
-def push_solver(
-    repo_name: str = typer.Argument(..., help="Name of the repo to push to (must already exist)"),
-    local_file: str = typer.Option(..., "--file", help="Path to the local .py solver file"),
-    solver_config: str = typer.Option(..., "--config", help="Path to solver_config.json"),
-    org: str = typer.Option("myorg", "--org", help="GitHub org"),
-    github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token"),
-    branch: str = typer.Option("main", help="Branch name to push to")
-):
-    """
-    Push a local solver .py file + solver_config.json to an existing GitHub repo.
-    We'll clone the repo locally, copy the files, commit, and push.
-    """
-    if not github_token:
-        typer.echo("ERROR: GitHub token not provided (set GITHUB_TOKEN env var or use --github-token).")
-        raise typer.Exit(1)
-
-    repo_url = f"https://github.com/{org}/{repo_name}.git"
-    # local temp dir
-    import tempfile
-    tmp_dir = tempfile.mkdtemp(prefix="rastion_")
-    typer.echo(f"Cloning {repo_url} into {tmp_dir}")
-
-    # clone
-    subprocess.run(["git", "clone", repo_url, "--branch", branch], cwd=tmp_dir, check=True)
-    local_repo_dir = Path(tmp_dir) / repo_name
-
-    # copy local_file and solver_config
-    solver_py = Path(local_file)
-    config_json = Path(solver_config)
-    if not solver_py.is_file():
-        typer.echo(f"ERROR: {solver_py} not found.")
-        raise typer.Exit(1)
-    if not config_json.is_file():
-        typer.echo(f"ERROR: {config_json} not found.")
-        raise typer.Exit(1)
-
-    shutil.copy(str(solver_py), str(local_repo_dir / solver_py.name))
-    shutil.copy(str(config_json), str(local_repo_dir / "solver_config.json"))
-
-    # commit & push
-    subprocess.run(["git", "add", "."], cwd=local_repo_dir, check=True)
-    subprocess.run(["git", "commit", "-m", "Add solver code & config"], cwd=local_repo_dir, check=True)
-    subprocess.run(["git", "push", "origin", branch], cwd=local_repo_dir, check=True)
-
-    typer.echo("Solver pushed to GitHub successfully!")
+    typer.echo(f"Repo created successfully under org='{org}': {clone_url}")
 
 
 @app.command()
 def clone_repo(
     repo_name: str = typer.Argument(..., help="Name of the repo to clone"),
-    org: str = typer.Option("myorg", "--org", help="GitHub org"),
-    branch: str = typer.Option("main", help="Branch name to checkout"),
-    dest: str = typer.Option(".", help="Destination folder to clone into")
+    org: str = typer.Option("Rastion", "--org", help="GitHub org (default 'Rastion')"),
+    branch: str = typer.Option("main", "--branch", help="Branch name to checkout"),
+    dest: str = typer.Option(".", "--dest", help="Destination folder to clone into")
 ):
     """
     Clone a GitHub repo locally (like git clone).
@@ -112,32 +63,123 @@ def clone_repo(
 
 
 @app.command()
-def run_solver(
-    repo_id: str = typer.Argument(..., help="'org_name/repo_name' on GitHub"),
-    revision: str = typer.Option("main", "--revision", help="Branch or tag"),
-    distance_matrix: str = typer.Option(None, help="Comma-delimited string for TSP distances, e.g. '0,2,9;2,0,6;9,6,0'")
+def push_solver(
+    repo_name: str = typer.Argument(..., help="Name of the solver repo (must already exist)"),
+    local_file: str = typer.Option(..., "--file", help="Path to the local .py solver file"),
+    solver_config: str = typer.Option(..., "--config", help="Path to solver_config.json"),
+    org: str = typer.Option("Rastion", "--org", help="GitHub org (default 'Rastion')"),
+    github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token"),
+    branch: str = typer.Option("main", "--branch", help="Branch name to push to")
 ):
     """
-    Example command that uses AutoOptimizerGit to clone/pull a solver repo, 
-    then run it on a TSP problem if distance_matrix is given, else no problem.
+    Push a local solver .py file + solver_config.json to an existing GitHub repo.
+    We'll clone the repo locally, copy the files, commit, and push.
     """
-    from rastion_hub.hub_integration.auto_optimizer_github import AutoOptimizerGit
+    if not github_token:
+        typer.echo("ERROR: GitHub token not provided.")
+        raise typer.Exit(1)
 
-    solver = AutoOptimizerGit.from_repo(repo_id, revision=revision)
+    repo_url = f"https://github.com/{org}/{repo_name}.git"
+    import tempfile
+    tmp_dir = tempfile.mkdtemp(prefix="rastion_")
+    typer.echo(f"Cloning {repo_url} into temp dir: {tmp_dir}")
 
-    if distance_matrix:
-        # parse the matrix
-        rows = distance_matrix.split(";")
-        dist_matrix = []
-        for row in rows:
-            dist_matrix.append([float(x) for x in row.split(",")])
-        from rastion_core.problems.traveling_salesman import TSPProblem
-        problem = TSPProblem(dist_matrix)
-        best_sol, best_cost = solver.optimize(problem)
-        typer.echo(f"Best TSP solution: {best_sol}, cost: {best_cost}")
+    subprocess.run(["git", "clone", repo_url, "--branch", branch], cwd=tmp_dir, check=True)
+    local_repo_dir = Path(tmp_dir) / repo_name
+
+    solver_py = Path(local_file)
+    config_json = Path(solver_config)
+    if not solver_py.is_file():
+        typer.echo(f"ERROR: {solver_py} not found.")
+        raise typer.Exit(1)
+    if not config_json.is_file():
+        typer.echo(f"ERROR: {config_json} not found.")
+        raise typer.Exit(1)
+
+    shutil.copy(str(solver_py), str(local_repo_dir / solver_py.name))
+    shutil.copy(str(config_json), str(local_repo_dir / "solver_config.json"))
+
+    subprocess.run(["git", "add", "."], cwd=local_repo_dir, check=True)
+    subprocess.run(["git", "commit", "-m", "Add solver code & config"], cwd=local_repo_dir, check=True)
+    subprocess.run(["git", "push", "origin", branch], cwd=local_repo_dir, check=True)
+
+    typer.echo("Solver pushed to GitHub successfully!")
+
+
+@app.command()
+def push_problem(
+    repo_name: str = typer.Argument(..., help="Name of the problem repo (must already exist)"),
+    local_file: str = typer.Option(..., "--file", help="Path to the local .py problem file"),
+    problem_config: str = typer.Option(..., "--config", help="Path to problem_config.json"),
+    org: str = typer.Option("Rastion", "--org", help="GitHub org (default 'Rastion')"),
+    github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token"),
+    branch: str = typer.Option("main", "--branch", help="Branch name to push to")
+):
+    """
+    Push a local problem .py file + problem_config.json to an existing GitHub repo.
+    Similar approach to push_solver.
+    """
+    if not github_token:
+        typer.echo("ERROR: GitHub token not provided.")
+        raise typer.Exit(1)
+
+    repo_url = f"https://github.com/{org}/{repo_name}.git"
+    import tempfile
+    tmp_dir = tempfile.mkdtemp(prefix="rastion_")
+    typer.echo(f"Cloning {repo_url} into temp dir: {tmp_dir}")
+
+    subprocess.run(["git", "clone", repo_url, "--branch", branch], cwd=tmp_dir, check=True)
+    local_repo_dir = Path(tmp_dir) / repo_name
+
+    prob_py = Path(local_file)
+    config_json = Path(problem_config)
+    if not prob_py.is_file():
+        typer.echo(f"ERROR: {prob_py} not found.")
+        raise typer.Exit(1)
+    if not config_json.is_file():
+        typer.echo(f"ERROR: {config_json} not found.")
+        raise typer.Exit(1)
+
+    shutil.copy(str(prob_py), str(local_repo_dir / prob_py.name))
+    shutil.copy(str(config_json), str(local_repo_dir / "problem_config.json"))
+
+    subprocess.run(["git", "add", "."], cwd=local_repo_dir, check=True)
+    subprocess.run(["git", "commit", "-m", "Add problem code & config"], cwd=local_repo_dir, check=True)
+    subprocess.run(["git", "push", "origin", branch], cwd=local_repo_dir, check=True)
+
+    typer.echo("Problem pushed to GitHub successfully!")
+
+
+@app.command()
+def run_solver(
+    solver_repo: str = typer.Argument(..., help="e.g. 'Rastion/my-solver-repo' on GitHub"),
+    solver_revision: str = typer.Option("main", "--solver-rev", help="Solver branch or tag"),
+    problem_repo: Optional[str] = typer.Option(None, "--problem-repo", help="e.g. 'Rastion/my-problem-repo'"),
+    problem_revision: str = typer.Option("main", "--problem-rev", help="Problem branch or tag"),
+):
+    """
+    Clone or pull the solver repo from GitHub, load the solver, 
+    optionally also load a problem from another repo, 
+    then call solver.optimize(problem).
+    """
+
+    # 1) Load solver from Git-based approach
+    typer.echo(f"Loading solver from: {solver_repo}@{solver_revision}")
+    solver = AutoOptimizer.from_repo(solver_repo, revision=solver_revision)
+
+    # 2) If problem_repo is provided, do the same approach for problem
+    if problem_repo:
+        typer.echo(f"Loading problem from: {problem_repo}@{problem_revision}")
+        from rastion_hub.auto_problem import AutoProblem
+        problem = AutoProblem.from_repo(problem_repo, revision=problem_revision)
     else:
-        # no problem, just show we can instantiate
-        typer.echo("No distance_matrix provided. Instantiated solver but did not run optimize().")
+        # if no problem, we can just do a dummy or None
+        typer.echo("No problem repo provided, not optimizing.")
+        return
+
+    # 3) We have solver + problem, run optimization
+    best_sol, best_cost = solver.optimize(problem)
+    typer.echo(f"Optimization completed: best_sol={best_sol}, best_cost={best_cost}")
 
 
 def main():
