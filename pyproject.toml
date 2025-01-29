@@ -7,7 +7,7 @@ name = "rastion-hub"
 version = "0.1.0"
 description = "A collaborative platform for optimization"
 authors = [
-    { name = "Ioannis Leonidas", email = "gleonidas303@gmail.com" }
+    { name = "Ioannis D. Leonidas", email = "gleonidas303@gmail.com" }
 ]
 license = {file = "LICENSE.txt"}
 dependencies = [
