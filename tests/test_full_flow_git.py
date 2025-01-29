@@ -9,6 +9,11 @@ from rastion_cli.cli import app
 from rastion_hub.auto_optimizer import AutoOptimizer
 from rastion_hub.auto_problem import AutoProblem
 
+from dotenv import load_dotenv
+
+load_dotenv()  # loads variables from .env if present
+
+
 runner = CliRunner()
 
 @pytest.fixture(scope="module")
@@ -36,7 +41,7 @@ def test_full_combined_repo_flow(github_token_check):
         "create_repo",
         repo_name,
         "--org", org,
-        "--private", "False",
+        #"--private", False,
         "--github-token", token
     ])
     assert create_result.exit_code == 0, f"create_repo failed: {create_result.stdout}"

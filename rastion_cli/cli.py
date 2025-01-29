@@ -15,11 +15,11 @@ app = typer.Typer(help="Rastion CLI - A tool for Git-based solver/problem repos.
 GITHUB_API = "https://api.github.com"
 
 
-@app.command()
+@app.command(name="create_repo")
 def create_repo(
     repo_name: str = typer.Argument(..., help="Name of the new GitHub repo"),
     org: str = typer.Option("Rastion", "--org", help="GitHub organization name (default 'Rastion')"),
-    private: bool = typer.Option(False, "--private", help="Make the repo private?"),
+    private: bool = typer.Option(False, "--private", is_flag=True, help="Omit for public repo, use for private repo"),
     github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
 ):
     """
@@ -45,7 +45,7 @@ def create_repo(
     typer.echo(f"Repo created successfully under org='{org}': {clone_url}")
 
 
-@app.command()
+@app.command(name="clone_repo")
 def clone_repo(
     repo_name: str = typer.Argument(..., help="Name of the repo to clone"),
     org: str = typer.Option("Rastion", "--org", help="GitHub org (default 'Rastion')"),
@@ -62,7 +62,7 @@ def clone_repo(
     typer.echo("Clone completed.")
 
 
-@app.command()
+@app.command(name="push_solver")
 def push_solver(
     repo_name: str = typer.Argument(..., help="Name of the solver repo (must already exist)"),
     local_file: str = typer.Option(..., "--file", help="Path to the local .py solver file"),
@@ -106,7 +106,7 @@ def push_solver(
     typer.echo("Solver pushed to GitHub successfully!")
 
 
-@app.command()
+@app.command(name="push_problem")
 def push_problem(
     repo_name: str = typer.Argument(..., help="Name of the problem repo (must already exist)"),
     local_file: str = typer.Option(..., "--file", help="Path to the local .py problem file"),
@@ -150,7 +150,7 @@ def push_problem(
     typer.echo("Problem pushed to GitHub successfully!")
 
 
-@app.command()
+@app.command(name="run_solver")
 def run_solver(
     solver_repo: str = typer.Argument(..., help="e.g. 'Rastion/my-solver-repo' on GitHub"),
     solver_revision: str = typer.Option("main", "--solver-rev", help="Solver branch or tag"),
