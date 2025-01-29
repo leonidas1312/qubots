@@ -86,4 +86,3 @@ def test_create_solver_with_supabase(test_client):
     assert resp.status_code == 200, resp.text
     data = resp.json()
     assert data["solver_id"] == "supabase-solver-1"
-    # ...
