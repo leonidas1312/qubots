@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rastion-hub"
+version = "0.1.0"
+description = "A collaborative platform for optimization"
+authors = [
+    { name = "Ioannis Leonidas", email = "gleonidas303@gmail.com" }
+]
+license = {file = "LICENSE.txt"}
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "requests",
+    "supabase",
+    "python-dotenv"
+]
+
+[project.urls]
+"Source" = "https://github.com/leonidas1312/rastion-hub/tree/main"
+
+[tool.setuptools.packages.find]
+where = ["."]
