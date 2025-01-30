@@ -57,6 +57,6 @@ class AutoProblem:
         else:
             subprocess.run(["git", "fetch"], cwd=local_repo_path, check=True)
             subprocess.run(["git", "checkout", revision], cwd=local_repo_path, check=True)
-            subprocess.run(["git", "pull"], cwd=local_repo_path, check=True)
+            subprocess.run(["git", "pull", "--allow-unrelated-histories"], cwd=local_repo_path, check=True)
 
         return local_repo_path
