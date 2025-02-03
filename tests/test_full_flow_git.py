@@ -31,7 +31,7 @@ def check_repo_exists(org, repo_name, token):
     response = requests.get(url, headers=headers)
     return response.status_code == 200  # If status is 200, repo exists
 
-def delete_temp_dir_with_retries(temp_dir, retries=3, delay=5):
+def delete_temp_dir_with_retries(temp_dir, retries=10, delay=1):
     """Attempt to delete the temporary directory with retries"""
     for _ in range(retries):
         try:
@@ -111,7 +111,10 @@ class MyProblem(TSPProblem):
         problem_cfg = Path(temp_dir) / "problem_config.json"
         problem_cfg.write_text("""{
   "entry_point": "my_problem:MyProblem",
-  "distance_matrix": [[0, 2, 9], [1, 0, 6], [3, 5, 0]]
+  "default_params": {
+    "distance_matrix": [[0, 2, 9], [1, 0, 6], [3, 5, 0]]
+  }
+  
 }
 """)
 
