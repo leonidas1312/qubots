@@ -1,0 +1,10 @@
+{
+    "entry_point": "network_flow:NetworkFlowProblem",
+    "default_params": {
+      "edges": [[0, 1], [1, 2], [0, 2]],
+      "capacities": [10, 5, 15],
+      "costs": [2, 3, 4],
+      "supplies": {"0": 10, "1": 0, "2": -10}
+    }
+  }
+  

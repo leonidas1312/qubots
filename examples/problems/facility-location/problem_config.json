@@ -1,0 +1,12 @@
+{
+    "entry_point": "facility_location:FacilityLocationProblem",
+    "default_params": {
+      "facility_costs": [100, 80, 120],
+      "assignment_costs": [
+        [20, 30, 25],
+        [35, 25, 30],
+        [25, 40, 20]
+      ]
+    }
+  }
+  

@@ -1,0 +1,7 @@
+{
+    "entry_point": "resource_allocation:ResourceAllocationProblem",
+    "default_params": {
+      "benefits": [10, 15, 20, 5]
+    }
+  }
+  

@@ -1,0 +1,8 @@
+{
+    "entry_point": "bin_packing:BinPackingProblem",
+    "default_params": {
+      "item_sizes": [4, 8, 1, 4, 2, 1],
+      "bin_capacity": 10
+    }
+  }
+  
