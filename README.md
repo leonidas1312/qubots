@@ -467,3 +467,18 @@ Below is a list of various classical and advanced problems and solvers that coul
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
+
+## Download the Codebase
+
+To download the entire codebase as it is shown here, please click the button below:
+
+[Download Codebase](data:text/plain,Here%20is%20the%20entire%20codebase%20in%20a%20compressed%20form.)
+
+*(Note: This download link is a placeholder. In a real system, you would provide a direct link to a `.zip` or `.tar.gz` file of this repository.)*
+
+Alternatively, you can clone the repository directly from GitHub if available:
+
+```bash
+git clone https://github.com/leonidas1312/rastion-hub.git
+```
+
