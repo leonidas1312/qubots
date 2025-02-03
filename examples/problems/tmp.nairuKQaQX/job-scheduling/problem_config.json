@@ -1,0 +1,8 @@
+{
+    "entry_point": "job_scheduling:JobSchedulingProblem",
+    "default_params": {
+      "processing_times": [3, 2, 7, 5],
+      "deadlines": [4, 5, 10, 8]
+    }
+  }
+  
