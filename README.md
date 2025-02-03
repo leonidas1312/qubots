@@ -420,71 +420,37 @@ Below is a list of various classical and advanced problems and solvers that coul
 - [x] QUBO Problem
 - [ ] Vehicle Routing Problem (VRP)
    - Optimize routes for a fleet of vehicles delivering to various locations under capacity constraints.
-- [ ] Saturn
-- [ ] Uranus
-- [ ] Neptune
-- [ ] Comet Haley
+- [ ] Job Scheduling Problem (JSP)
+   - Schedule jobs on machines while minimizing the total completion time or meeting deadlines.
+- [ ] Facility Location Problem (FLP)
+   - Decide where to place facilities (warehouses, factories) to minimize distribution costs.
+- [ ] Portfolio Optimization Problem
+   - Allocate asset weights to minimize risk (or maximize the Sharpe ratio) given returns and covariance data.
+- [ ] Network Flow Optimization
+   - Optimize the flow through a network (e.g., transportation or communication networks) while minimizing cost or maximizing throughput.
+- [ ] Graph Coloring Problem
+   - Color the nodes of a graph such that adjacent nodes do not share the same color while minimizing the number of colors used.
+- [ ] Bin Packing Problem
+   - Pack objects of varying sizes into a finite number of bins in a way that minimizes the number of bins.
+- [ ] Resource Allocation Problem
+   - Allocate limited resources among competing activities to optimize a given objective.
+- [ ] Inventory Management Problem
+   - Optimize order quantities and reorder points in supply chains to balance holding costs with shortage risks.
+- [ ] Hyperparameter Optimization
+   - Optimize hyperparameters for machine learning models using black‐box optimization methods.
+- [ ] Neural Architecture Search (NAS)
+   - Automatically design neural network architectures for specific tasks.
+- [ ] Optimal Control Problems
+   - Solve dynamic optimization problems (e.g., in robotics or finance) using methods like dynamic programming.
+- [ ] Energy Management / Smart Grid Optimization
+   - Optimize energy generation/distribution in smart grids to balance supply, demand, and cost.
+- [ ] Sensor Placement Optimization
+   - Determine the optimal sensor locations in a network to maximize coverage or information gain.
+- [ ] Supply Chain Optimization
+   - Optimize decisions along a supply chain such as transportation, inventory, and production scheduling.
+- [ ] Data Center Resource Optimization
+   - Allocate computing resources (CPU, memory, bandwidth) in data centers to minimize energy consumption and maximize throughput.
 
-
-Traveling Salesman Problem (TSP)
-Already implemented.
-
-Knapsack Problem
-Already implemented.
-
-Quadratic Optimization Problem
-Already implemented.
-
-QUBO Problem
-Already implemented.
-
-Vehicle Routing Problem (VRP)
-– Optimize routes for a fleet of vehicles delivering to various locations under capacity constraints.
-
-Job Scheduling Problem (JSP)
-– Schedule jobs on machines while minimizing the total completion time or meeting deadlines.
-
-Facility Location Problem (FLP)
-– Decide where to place facilities (warehouses, factories) to minimize distribution costs.
-
-Portfolio Optimization Problem
-– Allocate asset weights to minimize risk (or maximize the Sharpe ratio) given returns and covariance data.
-
-Network Flow Optimization
-– Optimize the flow through a network (e.g., transportation or communication networks) while minimizing cost or maximizing throughput.
-
-Graph Coloring Problem
-– Color the nodes of a graph such that adjacent nodes do not share the same color while minimizing the number of colors used.
-
-Bin Packing Problem
-– Pack objects of varying sizes into a finite number of bins in a way that minimizes the number of bins.
-
-Resource Allocation Problem
-– Allocate limited resources among competing activities to optimize a given objective.
-
-Inventory Management Problem
-– Optimize order quantities and reorder points in supply chains to balance holding costs with shortage risks.
-
-Hyperparameter Optimization
-– Optimize hyperparameters for machine learning models using black‐box optimization methods.
-
-Neural Architecture Search (NAS)
-– Automatically design neural network architectures for specific tasks.
-
-Optimal Control Problems
-– Solve dynamic optimization problems (e.g., in robotics or finance) using methods like dynamic programming.
-
-Energy Management / Smart Grid Optimization
-– Optimize energy generation/distribution in smart grids to balance supply, demand, and cost.
-
-Sensor Placement Optimization
-– Determine the optimal sensor locations in a network to maximize coverage or information gain.
-
-Supply Chain Optimization
-– Optimize decisions along a supply chain such as transportation, inventory, and production scheduling.
-
-Data Center Resource Optimization
-– Allocate computing resources (CPU, memory, bandwidth) in data centers to minimize energy consumption and maximize throughput.
 
 ### Potential Solvers (Optimizers)
 
