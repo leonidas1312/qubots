@@ -20,8 +20,9 @@ A collaborative platform for building, testing, and sharing optimization algorit
    - [Example 1: Custom Problem with a Predefined Optimizer](#example-1-custom-problem-with-a-predefined-optimizer)
    - [Example 2: Custom Optimizer with a Predefined Problem](#example-2-custom-optimizer-with-a-predefined-problem)
    - [Example 3: Using the CLI to Create and Run a Custom Solver & Problem](#example-3-using-the-cli-to-create-and-run-a-custom-solver--problem)
-5. [License](#license)
-6. [Download the Codebase](#download-the-codebase)
+5. [Potential Problems & Solvers](#potential-problems--solvers)
+6. [License](#license)
+7. [Download the Codebase](#download-the-codebase)
 
 ## Installation
 
@@ -271,6 +272,7 @@ print("Best cost:", best_cost)
 This section shows how to use the `rastion` CLI to create two repositories on GitHub—one for a custom solver and one for a custom problem—and then run them together.
 
 > **Prerequisites**:
+>
 > 1. You must have your GitHub token set as an environment variable `GITHUB_TOKEN`.
 > 2. You must have `git` installed and accessible.
 
@@ -387,6 +389,7 @@ rastion run_solver MyOrg/my-solver-repo \
 ```
 
 This will:
+
 1. Clone or pull the solver repo `my-solver-repo`.
 2. Load the `MyExampleSolver` with `iterations=50` (from `solver_config.json`).
 3. Clone or pull the problem repo `my-problem-repo`.
@@ -404,21 +407,88 @@ Optimization completed: best_sol=[2,0,1,0,3], best_cost=6
 
 Feel free to tweak the parameters in your JSON config, or pass `--override_params` if you want to override them on the command line in the future.
 
+## Potential Problems & Solvers
+
+Below is a list of various classical and advanced problems and solvers that could be integrated into Rastion:
+
+### Potential Problems
+
+- [x] Traveling Salesman Problem (TSP)
+- [x] Knapsack Problem
+- [x] Quadratic Optimization Problem
+- [x] QUBO Problem
+- [ ] Vehicle Routing Problem (VRP)
+   - Optimize routes for a fleet of vehicles delivering to various locations under capacity constraints.
+- [ ] Saturn
+- [ ] Uranus
+- [ ] Neptune
+- [ ] Comet Haley
+
+
+Traveling Salesman Problem (TSP)
+Already implemented.
+
+Knapsack Problem
+Already implemented.
+
+Quadratic Optimization Problem
+Already implemented.
+
+QUBO Problem
+Already implemented.
+
+Vehicle Routing Problem (VRP)
+– Optimize routes for a fleet of vehicles delivering to various locations under capacity constraints.
+
+Job Scheduling Problem (JSP)
+– Schedule jobs on machines while minimizing the total completion time or meeting deadlines.
+
+Facility Location Problem (FLP)
+– Decide where to place facilities (warehouses, factories) to minimize distribution costs.
+
+Portfolio Optimization Problem
+– Allocate asset weights to minimize risk (or maximize the Sharpe ratio) given returns and covariance data.
+
+Network Flow Optimization
+– Optimize the flow through a network (e.g., transportation or communication networks) while minimizing cost or maximizing throughput.
+
+Graph Coloring Problem
+– Color the nodes of a graph such that adjacent nodes do not share the same color while minimizing the number of colors used.
+
+Bin Packing Problem
+– Pack objects of varying sizes into a finite number of bins in a way that minimizes the number of bins.
+
+Resource Allocation Problem
+– Allocate limited resources among competing activities to optimize a given objective.
+
+Inventory Management Problem
+– Optimize order quantities and reorder points in supply chains to balance holding costs with shortage risks.
+
+Hyperparameter Optimization
+– Optimize hyperparameters for machine learning models using black‐box optimization methods.
+
+Neural Architecture Search (NAS)
+– Automatically design neural network architectures for specific tasks.
+
+Optimal Control Problems
+– Solve dynamic optimization problems (e.g., in robotics or finance) using methods like dynamic programming.
+
+Energy Management / Smart Grid Optimization
+– Optimize energy generation/distribution in smart grids to balance supply, demand, and cost.
+
+Sensor Placement Optimization
+– Determine the optimal sensor locations in a network to maximize coverage or information gain.
+
+Supply Chain Optimization
+– Optimize decisions along a supply chain such as transportation, inventory, and production scheduling.
+
+Data Center Resource Optimization
+– Allocate computing resources (CPU, memory, bandwidth) in data centers to minimize energy consumption and maximize throughput.
+
+### Potential Solvers (Optimizers)
+
+-
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
-
-## Download the Codebase
-
-To download the entire codebase as it is shown here, please click the button below:
-
-[Download Codebase](data:text/plain,Here%20is%20the%20entire%20codebase%20in%20a%20compressed%20form.)
-
-*(Note: This download link is a placeholder. In a real system, you would provide a direct link to a `.zip` or `.tar.gz` file of this repository.)*
-
-Alternatively, you can clone the repository directly from GitHub if available:
-
-```bash
-git clone https://github.com/leonidas1312/rastion-hub.git
-```
-
