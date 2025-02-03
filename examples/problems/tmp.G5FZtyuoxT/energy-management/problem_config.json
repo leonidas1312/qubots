@@ -1,0 +1,9 @@
+{
+    "entry_point": "energy_management:EnergyManagementProblem",
+    "default_params": {
+      "demand": [100, 150, 120, 130],
+      "production_cost": [5, 6, 5, 7],
+      "production_bounds": [[80, 120], [130, 170], [100, 140], [110, 150]]
+    }
+  }
+  
