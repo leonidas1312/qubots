@@ -62,10 +62,14 @@ class AutoProblem:
             # Clone the repository
             subprocess.run(["git", "clone", "--branch", revision, repo_url, local_repo_path], check=True)
         else:
-            # Pull the repository and reset to the specified revision (remote)
-            subprocess.run(["git", "fetch"], cwd=local_repo_path, check=True)
-            subprocess.run(["git", "checkout", revision], cwd=local_repo_path, check=True)
-            subprocess.run(["git", "reset", "--hard", "origin/main"], cwd=local_repo_path, check=True)
+            # Attempt to clean up any merge conflicts first.
+            subprocess.run(["git", "fetch", "--all"], cwd=local_repo_path, check=True)
+            # Abort any in-progress merge if needed (ignore errors if not in merge state)
+            subprocess.run(["git", "merge", "--abort"], cwd=local_repo_path, check=False)
+            # Force checkout and reset
+            subprocess.run(["git", "checkout", "-f", revision], cwd=local_repo_path, check=True)
+            subprocess.run(["git", "reset", "--hard", f"origin/{revision}"], cwd=local_repo_path, check=True)
 
         return local_repo_path
+
 
