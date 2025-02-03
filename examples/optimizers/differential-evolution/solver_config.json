@@ -1,0 +1,11 @@
+{
+    "entry_point": "differential_evolution_optimizer:DifferentialEvolution",
+    "default_params": {
+      "population_size": 50,
+      "max_iters": 100,
+      "F": 0.8,
+      "CR": 0.9,
+      "verbose": true
+    }
+  }
+  

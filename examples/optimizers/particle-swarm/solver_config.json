@@ -1,0 +1,12 @@
+{
+    "entry_point": "particle_swarm_optimizer:ParticleSwarmOptimizer",
+    "default_params": {
+      "swarm_size": 30,
+      "max_iters": 100,
+      "inertia": 0.5,
+      "cognitive": 1.0,
+      "social": 1.0,
+      "verbose": true
+    }
+  }
+  

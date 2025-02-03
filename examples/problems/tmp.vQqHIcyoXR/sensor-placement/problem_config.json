@@ -1,8 +1,0 @@
-{
-    "entry_point": "sensor_placement:SensorPlacementProblem",
-    "default_params": {
-      "region_bounds": [[0, 100], [0, 100]],
-      "num_sensors": 5
-    }
-  }
-  

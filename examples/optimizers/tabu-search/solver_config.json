@@ -1,0 +1,9 @@
+{
+    "entry_point": "tabu_search_optimizer:TabuSearchOptimizer",
+    "default_params": {
+      "max_iters": 100,
+      "tabu_tenure": 5,
+      "verbose": true
+    }
+  }
+  
