@@ -1,0 +1,10 @@
+{
+    "entry_point": "inventory_management:InventoryManagementProblem",
+    "default_params": {
+      "demand": [20, 15, 25, 10],
+      "holding_cost": 1,
+      "shortage_cost": 5,
+      "initial_inventory": 10
+    }
+  }
+  
