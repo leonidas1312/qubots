@@ -18,6 +18,7 @@ A collaborative platform for building, testing, and sharing optimization algorit
 4. [Examples](#examples)
    - [Example 1: Custom Problem with a Predefined Optimizer](#example-1-custom-problem-with-a-predefined-optimizer)
    - [Example 2: Custom Optimizer with a Predefined Problem](#example-2-custom-optimizer-with-a-predefined-problem)
+   - [Example 3: Using the CLI to Create and Run a Custom Solver & Problem](#example-3-using-the-cli-to-create-and-run-a-custom-solver--problem)
 5. [License](#license)
 6. [Download the Codebase](#download-the-codebase)
 
@@ -263,6 +264,159 @@ print("Best knapsack solution:", best_sol)
 print("Best cost:", best_cost)
 ```
 
+### Example 3: Using the CLI to Create and Run a Custom Solver & Problem
+
+This section shows how to use the `rastion` CLI to create two repositories on GitHub—one for a custom solver and one for a custom problem—and then run them together.
+
+> **Prerequisites**:
+> 1. You must have your GitHub token set as an environment variable `GITHUB_TOKEN`.
+> 2. You must have `git` installed and accessible.
+
+**Step 0: Installation**
+
+Make sure you have installed `rastion-hub` in your environment (e.g., `pip install .`).
+
+```bash
+pip install .
+```
+
+**Step 1: Create a new solver repository**
+
+```bash
+rastion create_repo my-solver-repo --org MyOrg --private False
+```
+
+This creates a new public repo under `MyOrg` called `my-solver-repo`. You can verify it on GitHub.
+
+**Step 2: Push a custom solver**
+
+1. Create a Python file `my_solver.py`:
+
+   ```python
+   from rastion_core.base_optimizer import BaseOptimizer
+   import random
+
+   class MyExampleSolver(BaseOptimizer):
+       def __init__(self, iterations=100):
+           self.iterations = iterations
+
+       def optimize(self, problem, **kwargs):
+           best_sol = None
+           best_cost = float("inf")
+           for _ in range(self.iterations):
+               candidate = problem.random_solution()
+               cost = problem.evaluate_solution(candidate)
+               if cost < best_cost:
+                   best_sol, best_cost = candidate, cost
+           return best_sol, best_cost
+   ```
+
+2. Create the `solver_config.json`:
+
+   ```json
+   {
+     "entry_point": "my_solver:MyExampleSolver",
+     "default_params": {
+       "iterations": 50
+     }
+   }
+   ```
+
+3. Push them to GitHub:
+
+   ```bash
+   rastion push_solver my-solver-repo --file my_solver.py --config solver_config.json --org MyOrg
+   ```
+
+**Step 3: Create a new problem repository**
+
+```bash
+rastion create_repo my-problem-repo --org MyOrg --private False
+```
+
+**Step 4: Push a custom problem**
+
+1. Create a Python file `my_problem.py`:
+
+   ```python
+   from rastion_core.base_problem import BaseProblem
+   import random
+
+   class MyExampleProblem(BaseProblem):
+       def __init__(self, size=5):
+           self.size = size
+
+       def evaluate_solution(self, solution):
+           # We'll treat the sum of the solution's elements as a cost.
+           # Minimizing sum => smaller sum is better.
+           return sum(solution)
+
+       def random_solution(self):
+           # Generate random integers in [0, 10]
+           return [random.randint(0, 10) for _ in range(self.size)]
+   ```
+
+2. Create the `problem_config.json`:
+
+   ```json
+   {
+     "entry_point": "my_problem:MyExampleProblem",
+     "default_params": {
+       "size": 5
+     }
+   }
+   ```
+
+3. Push them to GitHub:
+
+   ```bash
+   rastion push_problem my-problem-repo --file my_problem.py --config problem_config.json --org MyOrg
+   ```
+
+**Step 5: Run the solver on the problem**
+
+To run everything together, call:
+
+```bash
+rastion run_solver MyOrg/my-solver-repo \
+    --solver-rev main \
+    --problem-repo MyOrg/my-problem-repo \
+    --problem-rev main
+```
+
+This will:
+1. Clone or pull the solver repo `my-solver-repo`.
+2. Load the `MyExampleSolver` with `iterations=50` (from `solver_config.json`).
+3. Clone or pull the problem repo `my-problem-repo`.
+4. Load the `MyExampleProblem` with `size=5` (from `problem_config.json`).
+5. Call `solver.optimize(problem)`.
+6. Print out the best solution found and its cost.
+
+You should see output similar to:
+
+```
+Loading solver from: MyOrg/my-solver-repo@main
+Loading problem from: MyOrg/my-problem-repo@main
+Optimization completed: best_sol=[2,0,1,0,3], best_cost=6
+```
+
+Feel free to tweak the parameters in your JSON config, or pass `--override_params` if you want to override them on the command line in the future.
+
 ## License
 
 This project is licensed under the [MIT License](./LICENSE).
+
+## Download the Codebase
+
+To download the entire codebase as it is shown here, please click the button below:
+
+[Download Codebase](data:text/plain,Here%20is%20the%20entire%20codebase%20in%20a%20compressed%20form.)
+
+*(Note: This download link is a placeholder. In a real system, you would provide a direct link to a `.zip` or `.tar.gz` file of this repository.)*
+
+Alternatively, you can clone the repository directly from GitHub if available:
+
+```bash
+git clone https://github.com/leonidas1312/rastion-hub.git
+```
+
