@@ -453,7 +453,16 @@ Below is a list of various classical and advanced problems and solvers that coul
 
 ### Potential Solvers (Optimizers)
 
--
+- [x] Genetic Algorithm (GA)
+- [x] Simulated Annealing (SA)
+- [x] Hill Climbing (HC)
+- [x] Gradient Descent (GD)
+- [ ] Particle Swarm Optimization (PSO)
+- [ ] Ant Colony Optimization (ACO)
+- [ ] Differential Optimization (DE)
+- [ ] Tabu Search
+- [ ] Bayesian Optimization
+- [ ] Evolution Strategies (ES)
 
 ## License
 
