@@ -1,8 +1,10 @@
 {
     "entry_point": "graph_coloring:GraphColoringProblem",
     "default_params": {
-      "adjacency_list": {"0": [1, 2], "1": [0, 2], "2": [0, 1]},
-      "num_colors": 3
+      "num_vertices": 10,
+      "num_colors": 3,
+      "edge_probability": 0.5,
+      "penalty": 10
     }
   }
   

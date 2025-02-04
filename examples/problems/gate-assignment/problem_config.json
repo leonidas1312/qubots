@@ -1,0 +1,17 @@
+{
+    "entry_point": "gate_assignment:GateAssignmentProblem",
+    "default_params": {
+      "num_flights": 5,
+      "num_gates": 3,
+      "transfer_probability": 0.3,
+      "min_tr_passengers": 10,
+      "max_tr_passengers": 50,
+      "min_flight_duration": 30,
+      "max_flight_duration": 180,
+      "min_onboard_passengers": 50,
+      "max_onboard_passengers": 200,
+      "min_departing_passengers": 50,
+      "max_departing_passengers": 200
+    }
+  }
+  

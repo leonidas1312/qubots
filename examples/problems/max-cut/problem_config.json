@@ -1,0 +1,10 @@
+{
+    "entry_point": "max_cut:MaxCutProblem",
+    "default_params": {
+      "num_nodes": 6,
+      "edge_probability": 0.5,
+      "min_weight": 1,
+      "max_weight": 10
+    }
+  }
+  

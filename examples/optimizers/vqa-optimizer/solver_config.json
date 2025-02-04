@@ -1,0 +1,13 @@
+{
+    "entry_point": "vqa_optimizer:VQAOptimizer",
+    "default_params": {
+      "num_layers": 4,
+      "max_iters": 1,
+      "nbitstrings": 1,
+      "opt_time": 5,
+      "rl_time": 5,
+      "initial_temperature": 10,
+      "verbose": false
+    }
+  }
+  

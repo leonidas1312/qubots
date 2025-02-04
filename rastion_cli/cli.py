@@ -8,6 +8,9 @@ import shutil
 import json
 from pathlib import Path
 from typing import Optional
+import tempfile
+from subprocess import run
+
 from rastion_hub.auto_optimizer import AutoOptimizer
 
 app = typer.Typer(help="Rastion CLI - A tool for Git-based solver/problem repos.")
@@ -40,9 +43,50 @@ def create_repo(
     if resp.status_code >= 300:
         typer.echo(f"ERROR: Failed to create repo: {resp.status_code} {resp.text}")
         raise typer.Exit(1)
+    
+
+    with tempfile.TemporaryDirectory() as temp_repo_dir:
+            run(["git", "init"], cwd=temp_repo_dir, check=True)
+            run(["git", "remote", "add", "origin", f"https://github.com/{org}/{repo_name}.git"], cwd=temp_repo_dir, check=True)
+            with open(Path(temp_repo_dir) / "README.md", "w") as readme:
+                readme.write("# Initialized repository\n")
+            run(["git", "add", "."], cwd=temp_repo_dir, check=True)
+            run(["git", "commit", "-m", "Initial commit to create main branch"], cwd=temp_repo_dir, check=True)
+
+            # Ensure the branch is named 'main' and push it
+            run(["git", "branch", "-M", "main"], cwd=temp_repo_dir, check=True)  # Rename to 'main'
+            run(["git", "push", "-u", "origin", "main"], cwd=temp_repo_dir, check=True)
+
+
+
     data = resp.json()
     clone_url = data["clone_url"]
     typer.echo(f"Repo created successfully under org='{org}': {clone_url}")
+
+
+@app.command(name="delete_repo")
+def delete_repo(
+    repo_name: str = typer.Argument(..., help="Name of the repository to delete"),
+    org: str = typer.Option("Rastion", "--org", help="GitHub organization (default 'Rastion')"),
+    github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
+):
+    """
+    Delete a GitHub repository from the specified organization.
+    """
+    if not github_token:
+        typer.echo("ERROR: GitHub token not provided. Use --github-token or set GITHUB_TOKEN env var.")
+        raise typer.Exit(1)
+
+    url = f"{GITHUB_API}/repos/{org}/{repo_name}"
+    headers = {"Authorization": f"token {github_token}"}
+
+    typer.echo(f"Deleting repository '{repo_name}' from organization '{org}'...")
+    response = requests.delete(url, headers=headers)
+    if response.status_code == 204:
+        typer.echo(f"Repository '{repo_name}' deleted successfully.")
+    else:
+        typer.echo(f"Failed to delete repository: {response.status_code} {response.text}")
+        raise typer.Exit(1)
 
 
 @app.command(name="clone_repo")
