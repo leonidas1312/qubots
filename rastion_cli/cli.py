@@ -64,6 +64,68 @@ def create_repo(
     typer.echo(f"Repo created successfully under org='{org}': {clone_url}")
 
 
+@app.command(name="update_repo")
+def update_repo(
+    repo_name: str = typer.Argument(..., help="Name of the repository to update"),
+    local_dir: str = typer.Option(".", "--local-dir", help="Local directory with updated files"),
+    org: str = typer.Option("Rastion", "--org", help="GitHub organization (default 'Rastion')"),
+    branch: str = typer.Option("main", "--branch", help="Branch to update (default 'main')"),
+    github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
+):
+    """
+    Update an existing GitHub repo with new local changes.
+    
+    This command clones the repository into a temporary directory, copies all files from
+    the given local directory into the cloned repo, commits the changes, and pushes them.
+    """
+    if not github_token:
+        typer.echo("ERROR: GitHub token not provided. Use --github-token or set GITHUB_TOKEN env var.")
+        raise typer.Exit(1)
+    
+    repo_url = f"https://github.com/{org}/{repo_name}.git"
+    typer.echo(f"Updating repository '{repo_name}' from organization '{org}' using branch '{branch}'...")
+    
+    # Create a temporary directory to clone the repo
+    tmp_dir = tempfile.mkdtemp(prefix="rastion_update_")
+    try:
+        # Clone the repo
+        clone_cmd = ["git", "clone", "--branch", branch, repo_url, tmp_dir]
+        typer.echo("Cloning repository...")
+        subprocess.run(clone_cmd, cwd=".", check=True)
+        
+        # Copy updated files from local_dir into the cloned repository.
+        # Here we copy all files from local_dir (except .git directory) into tmp_dir.
+        local_path = Path(local_dir).resolve()
+        repo_path = Path(tmp_dir)
+        typer.echo(f"Copying files from {local_path} to repository clone...")
+        for item in local_path.iterdir():
+            if item.name == ".git":
+                continue
+            dest = repo_path / item.name
+            if item.is_dir():
+                if dest.exists():
+                    shutil.rmtree(dest)
+                shutil.copytree(item, dest)
+            else:
+                shutil.copy(item, dest)
+        
+        # Commit and push the changes.
+        typer.echo("Staging changes...")
+        subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
+        commit_message = "Update repository with local changes"
+        typer.echo("Committing changes...")
+        subprocess.run(["git", "commit", "-m", commit_message], cwd=repo_path, check=True)
+        typer.echo("Pushing changes...")
+        subprocess.run(["git", "push", "origin", branch], cwd=repo_path, check=True)
+        typer.echo("Repository updated successfully!")
+    except subprocess.CalledProcessError as e:
+        typer.echo(f"ERROR: {e}")
+        raise typer.Exit(1)
+    finally:
+        # Clean up the temporary directory
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
 @app.command(name="delete_repo")
 def delete_repo(
     repo_name: str = typer.Argument(..., help="Name of the repository to delete"),

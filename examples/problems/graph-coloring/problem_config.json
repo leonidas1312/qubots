@@ -1,8 +1,8 @@
 {
     "entry_point": "graph_coloring:GraphColoringProblem",
     "default_params": {
-      "num_vertices": 10,
-      "num_colors": 3,
+      "num_vertices": 6,
+      "num_colors": 2,
       "edge_probability": 0.5,
       "penalty": 10
     }

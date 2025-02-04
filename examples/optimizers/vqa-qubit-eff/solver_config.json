@@ -1,0 +1,9 @@
+{
+    "entry_point": "vqa_qubit_eff:VQAOptimizer",
+    "default_params": {
+      "num_layers": 4,
+      "max_iters": 100,
+      "nbitstrings": 1000
+    }
+  }
+  

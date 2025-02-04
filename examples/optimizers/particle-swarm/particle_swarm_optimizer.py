@@ -21,7 +21,7 @@ class ParticleSwarmOptimizer(BaseOptimizer):
             x = np.array(initial_solution, dtype=float)
         dim = len(x)
         if bounds is None:
-            bounds = [(-10, 10)] * dim
+            bounds = [(0, 1)] * dim
         
         swarm = []
         for _ in range(self.swarm_size):
