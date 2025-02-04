@@ -25,13 +25,9 @@ def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exha
         f"{org}/{vqa_repo}",
         revision="main",
         override_params={
-            "num_layers": 3,         # adjust as needed for your instance
-            "max_iters": 1,
-            "nbitstrings": 1,
-            "opt_time": 3,           # seconds for the variational circuit optimization
-            "rl_time": 3,            # seconds for the RL branching search
-            "initial_temperature": 10,
-            "verbose": False
+            "num_layers": 4,         # adjust as needed for your instance
+            "max_iters": 100,
+            "nbitstrings": 5,
         }
     )
     
@@ -40,9 +36,6 @@ def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exha
     classical_optimizer = AutoOptimizer.from_repo(
         f"{org}/{classical_repo}",
         revision="main",
-        override_params={
-            "max_iters": 100  # adjust as needed
-        }
     )
     
     # Compose the VQA pipeline by combining the quantum and classical routines.
@@ -93,24 +86,24 @@ def main():
     benchmark_problem(
         problem_repo="max-cut",
         problem_name="MaxCut",
-        classical_repo="particle-swarm",
-        vqa_repo="vqa-optimizer",
+        classical_repo="rl-optimizer",
+        vqa_repo="vqa-qubit-eff",
         exhaustive_repo="exhaustive-search"
     )
     
     benchmark_problem(
         problem_repo="graph-coloring",
         problem_name="Graph Coloring",
-        classical_repo="particle-swarm",
-        vqa_repo="vqa-optimizer",
+        classical_repo="rl-optimizer",
+        vqa_repo="vqa-qubit-eff",
         exhaustive_repo="exhaustive-search"
     )
     
     benchmark_problem(
         problem_repo="knapsack",
         problem_name="Knapsack",
-        classical_repo="particle-swarm",
-        vqa_repo="vqa-optimizer",
+        classical_repo="rl-optimizer",
+        vqa_repo="vqa-qubit-eff",
         exhaustive_repo="exhaustive-search"
     )
 
