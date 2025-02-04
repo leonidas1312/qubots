@@ -4,6 +4,7 @@ import subprocess
 import json
 import importlib
 from pathlib import Path
+from typing import Optional
 
 class AutoProblem:
     """
@@ -16,7 +17,8 @@ class AutoProblem:
         cls,
         repo_id: str,
         revision: str = "main",
-        cache_dir: str = "~/.cache/rastion_hub"
+        cache_dir: str = "~/.cache/rastion_hub",
+        override_params: Optional[dict] = None  
     ):
         cache_dir = os.path.expanduser(cache_dir)
         os.makedirs(cache_dir, exist_ok=True)
@@ -35,10 +37,10 @@ class AutoProblem:
         if not entry_point or ":" not in entry_point:
             raise ValueError("Invalid 'entry_point' in problem_config.json. Must be 'module:ClassName'.")
 
-        problem_params = {}
+        problem_params = config_data.get("default_params", {})
 
-        if 'default_params' in config_data:
-            problem_params.update(config_data['default_params'])
+        if override_params:
+            problem_params = {**problem_params, **override_params}
 
         # Dynamic import and instantiate the problem class
         module_path, class_name = entry_point.split(":")
