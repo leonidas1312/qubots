@@ -3,7 +3,6 @@ import time
 import pennylane as qml
 from pennylane import numpy as np
 import numpy as cnp
-import torch
 
 from rastion_core.base_optimizer import BaseOptimizer
 
