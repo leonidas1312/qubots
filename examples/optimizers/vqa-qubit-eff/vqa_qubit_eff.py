@@ -6,7 +6,6 @@ import numpy as cnp
 
 from rastion_core.base_optimizer import BaseOptimizer
 
-# === Helper Functions for the VQA (as provided) ===
 
 def pennylane_HEcirc(angles):
     """
@@ -128,9 +127,8 @@ def quantum_opt(QUBO_m, c, num_layers, max_iters, nbitstrings):
     
     return best_bitstring, best_cost, progress_opt_costs
 
-# === End Helper Functions ===
 
-# === VQAOptimizer Class ===
+
 
 class VQAOptimizer(BaseOptimizer):
     """

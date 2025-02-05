@@ -10,7 +10,6 @@ def run_portfolio_optimization_independently():
     org = "Rastion"
     
     # Load the portfolio optimization problem.
-    # This assumes your "portfolio-optimization" repo contains the necessary files.
     problem = AutoProblem.from_repo(f"{org}/portfolio-optimization", revision="main")
     
     # Load several optimizers with optional parameter overrides.

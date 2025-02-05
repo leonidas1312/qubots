@@ -20,7 +20,6 @@ def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exha
     problem = AutoProblem.from_repo(f"{org}/{problem_repo}", revision="main")
     
     # 2. Load the VQA pipeline components.
-    # Load the quantum optimizer (this solver internally uses Pennylane’s ADAM and RL routines)
     quantum_optimizer = AutoOptimizer.from_repo(
         f"{org}/{vqa_repo}",
         revision="main",
@@ -32,7 +31,6 @@ def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exha
     )
     
     # Load a classical optimizer to refine the quantum output.
-    # Here we use a Particle Swarm optimizer as an example.
     classical_optimizer = AutoOptimizer.from_repo(
         f"{org}/{classical_repo}",
         revision="main",
@@ -80,7 +78,7 @@ def main():
     #   - Knapsack problem repo: "knapsack"
     # And the solvers:
     #   - Quantum optimizer for VQA: "vqa-optimizer"
-    #   - Classical optimizer for refining (e.g., Particle Swarm): "particle-swarm"
+    #   - Classical optimizer for refining 
     #   - Exhaustive search: "exhaustive-search"
     
     benchmark_problem(
