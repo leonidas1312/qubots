@@ -2,7 +2,7 @@
 
 from rastion_hub.auto_problem import AutoProblem
 from rastion_hub.auto_optimizer import AutoOptimizer
-from rastion_hub.vqa_pipeline import create_vqa
+from rastion_hub.quantum_classical_pipeline import create_vqa
 
 def run_vqa_pipeline():
     org = "Rastion"

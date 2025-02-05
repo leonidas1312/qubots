@@ -1,6 +1,6 @@
 from rastion_core.base_optimizer import BaseOptimizer
 
-class VQAPipeline(BaseOptimizer):
+class QuantumClassicalPipeline(BaseOptimizer):
     def __init__(self, quantum_routine, classical_optimizer):
         self.quantum_routine = quantum_routine
         self.classical_optimizer = classical_optimizer
@@ -27,5 +27,5 @@ class VQAPipeline(BaseOptimizer):
         
         return classical_solution, classical_cost
 
-def create_vqa(quantum_routine, classical_optimizer):
-    return VQAPipeline(quantum_routine, classical_optimizer)
+def create_quantum_classical_pipeline(quantum_routine, classical_optimizer):
+    return QuantumClassicalPipeline(quantum_routine, classical_optimizer)

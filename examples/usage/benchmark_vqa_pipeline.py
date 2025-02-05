@@ -8,7 +8,7 @@ The VQA pipeline is built by composing a quantum optimizer and a classical optim
 import time
 from rastion_hub.auto_problem import AutoProblem
 from rastion_hub.auto_optimizer import AutoOptimizer
-from rastion_hub.vqa_pipeline import create_vqa
+from rastion_hub.quantum_classical_pipeline import create_quantum_classical_pipeline
 
 def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exhaustive_repo):
     org = "Rastion"
@@ -24,8 +24,8 @@ def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exha
         f"{org}/{vqa_repo}",
         revision="main",
         override_params={
-            "num_layers": 4,         # adjust as needed for your instance
-            "max_iters": 100,
+            "num_layers": 6,        
+            "max_iters": 200,
             "nbitstrings": 5,
         }
     )
@@ -34,15 +34,18 @@ def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exha
     classical_optimizer = AutoOptimizer.from_repo(
         f"{org}/{classical_repo}",
         revision="main",
+        override_params={
+            "time_limit": 15
+        }
     )
     
-    # Compose the VQA pipeline by combining the quantum and classical routines.
-    vqa_pipeline = create_vqa(quantum_routine=quantum_optimizer, classical_optimizer=classical_optimizer)
+    # Compose the pipeline by combining the quantum and classical routines.
+    quantum_classical_pipeline = create_quantum_classical_pipeline(quantum_routine=quantum_optimizer, classical_optimizer=classical_optimizer)
     
     # Run the VQA pipeline and time it.
     print("Running VQA pipeline ...")
     start = time.time()
-    vqa_solution, vqa_cost = vqa_pipeline.optimize(problem)
+    vqa_solution, vqa_cost = quantum_classical_pipeline.optimize(problem)
     end = time.time()
     vqa_time = end - start
     print(f"VQA Pipeline Solution: {vqa_solution}")
@@ -98,8 +101,8 @@ def main():
     )
     
     benchmark_problem(
-        problem_repo="knapsack",
-        problem_name="Knapsack",
+        problem_repo="gate-assignment",
+        problem_name="Gate-assignment",
         classical_repo="rl-optimizer",
         vqa_repo="vqa-qubit-eff",
         exhaustive_repo="exhaustive-search"

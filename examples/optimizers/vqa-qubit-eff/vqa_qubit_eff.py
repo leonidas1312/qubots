@@ -66,12 +66,16 @@ def draw_bitstrings_minenc(angles, nbitstrings):
             blist.append(0.5)
         else:
             blist.append(data[2 * p + 1] / clist[p])
-    list_of_bitstrings = set()
     rz1 = cnp.random.RandomState()
-    while len(list_of_bitstrings) < nbitstrings:
-        bitstring = tuple(rz1.choice(2, p=[1 - bitprob, bitprob]) for bitprob in blist)
-        list_of_bitstrings.add(bitstring)
-    return [np.array(bitstring) for bitstring in list_of_bitstrings]
+    list_of_bitstrings = []
+    for _ in range(nbitstrings):
+        bitstring = tuple(
+            rz1.choice(2, p=[1 - bitprob, bitprob]) 
+            for bitprob in blist
+        )
+        list_of_bitstrings.append(bitstring)
+
+    return [np.array(bs) for bs in list_of_bitstrings]
 
 
 def OPT_step(opt, theta):
