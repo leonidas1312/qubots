@@ -1,0 +1,8 @@
+{
+  "entry_point": "torch_adam_optimizer:TorchAdamOptimizer",
+  "default_params": {
+    "lr": 0.01,
+    "max_steps": 100,
+    "verbose": true
+  }
+}
