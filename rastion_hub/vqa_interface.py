@@ -4,7 +4,7 @@ import copy
 import numpy as np
 import random
 import pennylane as qml
-from rastion_core.base_problem import BaseProblem
+from rastion_hub.base_problem import BaseProblem
 
 ###############################################################################
 # Helper Class: Wrap a cost function (over θ) into a BaseProblem.
@@ -72,7 +72,6 @@ class VQACycleInterface:
     def optimize(self):
         # Unpack quantum_kwargs.
         num_layers = self.quantum_kwargs["num_layers"]
-        max_iters = self.quantum_kwargs["max_iters"]
         nbitstrings = self.quantum_kwargs["nbitstrings"]
         quantum_circuit_fn = self.quantum_kwargs["quantum_circuit_fn"]
         cost_function = self.quantum_kwargs["cost_function"]
@@ -87,8 +86,8 @@ class VQACycleInterface:
         # Set up the simulator.
         if simulator_fn is None:
             num_shots = 10000
-            dev = qml.device("lightning.qubit", wires=nqq, shots=num_shots)
-            my_qnode = qml.QNode(quantum_circuit_fn, dev, diff_method="parameter-shift")
+            dev = qml.device("lightning.qubit", wires=nqq, shots=num_shots, interface="torch")
+            my_qnode = qml.QNode(quantum_circuit_fn, dev, diff_method="parameter-shift", interface="torch")
         else:
             my_qnode = simulator_fn(quantum_circuit_fn, nqq)
 

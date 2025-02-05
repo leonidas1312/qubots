@@ -1,4 +1,4 @@
-from rastion_core.base_optimizer import BaseOptimizer
+from rastion_hub.base_optimizer import BaseOptimizer
 
 class QuantumClassicalPipeline(BaseOptimizer):
     def __init__(self, quantum_routine, classical_optimizer):

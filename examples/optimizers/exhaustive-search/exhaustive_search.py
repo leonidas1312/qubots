@@ -1,6 +1,6 @@
 import numpy as np
 from itertools import product
-from rastion_core.base_optimizer import BaseOptimizer
+from rastion_hub.base_optimizer import BaseOptimizer
 
 class ExhaustiveSearch(BaseOptimizer):
     """

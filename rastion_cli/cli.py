@@ -1,5 +1,3 @@
-# rastion_cli/cli.py
-
 import typer
 import os
 import requests

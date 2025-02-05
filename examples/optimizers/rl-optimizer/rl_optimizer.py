@@ -1,12 +1,8 @@
-# File: rl_optimizer.py
-
 import time
-import copy
 import numpy as np
-import numpy as cnp
 import torch
 import random
-from rastion_core.base_optimizer import BaseOptimizer
+from rastion_hub.base_optimizer import BaseOptimizer
 
 def softmax(x, temperature=1.0):
     e_x = np.exp((x - np.max(x)) / temperature)

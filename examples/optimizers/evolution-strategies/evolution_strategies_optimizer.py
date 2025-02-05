@@ -1,4 +1,4 @@
-from rastion_core.base_optimizer import BaseOptimizer
+from rastion_hub.base_optimizer import BaseOptimizer
 import numpy as np
 import random
 

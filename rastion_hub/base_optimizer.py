@@ -1,5 +1,3 @@
-# rastion_core/base_optimizer.py
-
 from abc import ABC, abstractmethod
 
 class BaseOptimizer(ABC):

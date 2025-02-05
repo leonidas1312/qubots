@@ -1,5 +1,5 @@
 import numpy as np
-from rastion_core.base_problem import BaseProblem
+from rastion_hub.base_problem import BaseProblem
 
 def setup_problem(num_nodes, edge_probability=0.5, min_weight=1, max_weight=10):
     """

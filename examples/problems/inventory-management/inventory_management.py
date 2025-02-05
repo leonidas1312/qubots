@@ -1,4 +1,4 @@
-from rastion_core.base_problem import BaseProblem
+from rastion_hub.base_problem import BaseProblem
 import random
 
 class InventoryManagementProblem(BaseProblem):

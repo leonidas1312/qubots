@@ -1,10 +1,8 @@
 import copy
-import time
 import pennylane as qml
 from pennylane import numpy as np
 import numpy as cnp
-
-from rastion_core.base_optimizer import BaseOptimizer
+from rastion_hub.base_optimizer import BaseOptimizer
 
 
 def pennylane_HEcirc(angles):
