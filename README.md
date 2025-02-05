@@ -137,7 +137,7 @@ python run_portfolio_with_chains.py
 ```
 
 ### 3. `run_vqa_pipeline.py` 
-```diff -failing ```
+$${\color{red}Failing}$$
 Illustrates a variational quantum algorithm pipeline, combining a quantum ansatz with a classical optimizer (like Torch Adam). Example:
 ```bash
 cd examples/usage
