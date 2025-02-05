@@ -42,8 +42,8 @@ Below is a brief overview of the main files and directories included in this cod
 - **base_optimizer.py** / **base_problem.py**: Abstract base classes that define minimal interfaces for any solver (`optimize(problem)`) or problem (`evaluate_solution(solution)` / `random_solution()`).
 - **optimizer_runner.py**: Helper functions for running multiple solvers either independently or in a chain.
 - **quantum_classical_pipeline.py**: A pipeline for combining a quantum routine and a classical optimizer.
-- **qubit_eff.py**: An example quantum helper that sets up a hardware-efficient ansatz for QUBO problems.
-- **vqa_interface.py**: A wrapper class (`VQACycleInterface`) for building VQA workflows. It sets up a `QuantumParameterProblem` so a classical optimizer can tune quantum circuit parameters.
+- **qubit_eff.py**: An example quantum helper that sets up a hardware-efficient ansatz for QUBO problems (Under developement).
+- **vqa_interface.py**: A wrapper class (`VQACycleInterface`) for building VQA workflows. It sets up a `QuantumParameterProblem` so a classical optimizer can tune quantum circuit parameters (Under developement).
 
 ## How the Platform Works
 1. **Solvers**:
