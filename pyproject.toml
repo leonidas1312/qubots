@@ -5,14 +5,21 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "rastion-hub"
 version = "0.1.0"
-description = "A collaborative platform for optimization"
+description = "A collaborative platform for the optimization community."
 authors = [
     { name = "Ioannis D. Leonidas", email = "gleonidas303@gmail.com" }
 ]
-license = {file = "LICENSE.txt"}
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["optimization", "quantum", "classical", "cli"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent"
+]
 dependencies = [
-    "fastapi",
-    "uvicorn",
+    "typer",
     "requests",
     "python-dotenv"
 ]

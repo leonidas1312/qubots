@@ -14,12 +14,12 @@ def main():
     classical_optimizer = AutoOptimizer.from_repo("Rastion/torch-adam-optimizer", 
                                                   revision="main",
                                                   override_params={
-                                                      "max_steps":20000
+                                                      "max_steps":200
                                                   })
     
     # 3. Define the kwargs for the quantum program.
     quantum_kwargs = {
-        "num_layers": 6,
+        "num_layers": 4,
         "nbitstrings": 10,
         "quantum_circuit_fn": pennylane_HEcirc,  # the quantum ansatz
         "cost_function": calmecf,                # cost function (which uses globals from qubit_eff)
