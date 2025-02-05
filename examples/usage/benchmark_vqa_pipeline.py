@@ -78,7 +78,7 @@ def main():
     # For each, we assume the repositories are named as follows:
     #   - MaxCut problem repo: "max-cut"
     #   - Graph Coloring problem repo: "graph-coloring"
-    #   - Knapsack problem repo: "knapsack"
+    #   - Gate assignment problem repo: "gate-assignment"
     # And the solvers:
     #   - Quantum optimizer for VQA: "vqa-optimizer"
     #   - Classical optimizer for refining 
