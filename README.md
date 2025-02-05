@@ -99,7 +99,7 @@ Below is a brief overview of the main files and directories included in this cod
    - `create_quantum_classical_pipeline(quantum_routine, classical_optimizer)` -> Returns a composite pipeline optimizer.
    - Runs quantum routine first, then classical refinement.
 
-6. **`vqa_interface`**:
+6. **`vqa_interface`** (Under developement):
    - `VQACycleInterface` is a more specialized approach for VQA loops.
    - Ties together a circuit ansatz, cost function, and classical optimization of quantum parameters.
 
