@@ -35,7 +35,7 @@ def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exha
         f"{org}/{classical_repo}",
         revision="main",
         override_params={
-            "time_limit": 15
+            "time_limit": 5 #seconds
         }
     )
     

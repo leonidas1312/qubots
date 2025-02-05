@@ -157,7 +157,9 @@ Below is an example session demonstrating how to use the **Rastion** CLI to mana
 # 1. Create a new solver repository in the 'Rastion' org.
 $ export GITHUB_TOKEN="<YOUR_PERSONAL_ACCESS_TOKEN>"
 $ rastion create_repo my-solver --org Rastion --github-token $GITHUB_TOKEN
+```
 
+```bash
 # 2. Push your solver code and config to GitHub.
 $ cd /path/to/local/my-solver
 $ ls
@@ -167,10 +169,14 @@ $ rastion push_solver my-solver \
     --config solver_config.json \
     --org Rastion \
     --github-token $GITHUB_TOKEN
+```
 
+```bash
 # 3. Create a new problem repository in the 'Rastion' org.
 $ rastion create_repo my-problem --org Rastion --github-token $GITHUB_TOKEN
+```
 
+```bash
 # 4. Push your problem code and config.
 $ cd /path/to/local/my-problem
 $ ls
@@ -180,23 +186,31 @@ $ rastion push_problem my-problem \
     --config problem_config.json \
     --org Rastion \
     --github-token $GITHUB_TOKEN
+```
 
+```bash
 # 5. Optionally, update existing repos if local changes are made.
 $ rastion update_repo my-solver \
     --local-dir /path/to/local/my-solver \
     --org Rastion \
     --branch main \
     --github-token $GITHUB_TOKEN
+```
 
+```bash
 # 6. (Optional) Clone a repo to inspect or develop further.
 $ rastion clone_repo my-solver --org Rastion --branch main
+```
 
+```bash
 # 7. Use 'run_solver' to test the solver with a problem from the hub.
 $ rastion run_solver Rastion/my-solver-repo \
     --solver-rev main \
     --problem-repo Rastion/my-problem-repo \
     --problem-rev main
+```
 
+```bash
 # 8. Delete a repo if no longer needed.
 $ rastion delete_repo my-solver --org Rastion --github-token $GITHUB_TOKEN
 ```
