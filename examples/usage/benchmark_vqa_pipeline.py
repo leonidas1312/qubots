@@ -91,7 +91,7 @@ def main():
         vqa_repo="vqa-qubit-eff",
         exhaustive_repo="exhaustive-search"
     )
-    """
+    
     benchmark_problem(
         problem_repo="graph-coloring",
         problem_name="Graph Coloring",
@@ -109,7 +109,6 @@ def main():
     )
 
     
-    """
     
 if __name__ == "__main__":
     main()

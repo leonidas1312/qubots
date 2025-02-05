@@ -4,7 +4,7 @@ from rastion_hub.base_optimizer import BaseOptimizer
 class TorchAdamOptimizer(BaseOptimizer):
     """
     A classical optimizer that uses PyTorch's Adam optimizer to update
-    the variational parameters.
+    the variational parameters of a quantum circuit.
     """
     def __init__(self, lr=0.01, max_steps=100, verbose=False):
         """

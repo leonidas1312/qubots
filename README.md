@@ -42,8 +42,8 @@ Below is a brief overview of the main files and directories included in this cod
 - **base_optimizer.py** / **base_problem.py**: Abstract base classes that define minimal interfaces for any solver (`optimize(problem)`) or problem (`evaluate_solution(solution)` / `random_solution()`).
 - **optimizer_runner.py**: Helper functions for running multiple solvers either independently or in a chain.
 - **quantum_classical_pipeline.py**: A pipeline for combining a quantum routine and a classical optimizer.
-- **qubit_eff.py**: An example quantum helper that sets up a hardware-efficient ansatz for QUBO problems (Under developement).
-- **vqa_interface.py**: A wrapper class (`VQACycleInterface`) for building VQA workflows. It sets up a `QuantumParameterProblem` so a classical optimizer can tune quantum circuit parameters (Under developement).
+- **qubit_eff.py**: An example quantum helper that sets up a hardware-efficient ansatz for QUBO problems.
+- **vqa_interface.py**: A wrapper class (`VQACycleInterface`) for building VQA workflows. It sets up a `QuantumParameterProblem` so a classical optimizer can tune quantum circuit parameters.
 
 ## How the Platform Works
 1. **Solvers**:
@@ -99,50 +99,109 @@ Below is a brief overview of the main files and directories included in this cod
    - `create_quantum_classical_pipeline(quantum_routine, classical_optimizer)` -> Returns a composite pipeline optimizer.
    - Runs quantum routine first, then classical refinement.
 
-6. **`vqa_interface`** (Under developement):
+6. **`vqa_interface`**:
    - `VQACycleInterface` is a more specialized approach for VQA loops.
    - Ties together a circuit ansatz, cost function, and classical optimization of quantum parameters.
 
-## Usage Examples
+## Installation
+1. **Clone** this repository locally:
+   ```bash
+   git clone https://github.com/Rastion/rastion-hub.git
+   cd rastion-hub
+   ```
+2. **Install** dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Install** the package so that `rastion` CLI is recognized:
+   ```bash
+   pip install .
+   ```
 
-A few example scripts are provided in `examples/usage`:
+## Detailed Usage and Examples
+Below are some showcased scripts from the `examples/usage` directory, along with a fully fledged example of how you might interact with Rastion from scratch.
 
-1. **`run_vehicle_routing.py`**:
-   - Demonstrates loading a Vehicle Routing Problem from the hub and solving it with an Ant Colony Optimizer.
+### 1. `run_portfolio_optimization.py`
+Shows how to load a portfolio optimization problem and solve it with a Particle Swarm Optimizer. Example usage:
+```bash
+cd examples/usage
+python run_portfolio_optimization.py
+```
+You will see output describing the best portfolio weights and the corresponding cost.
 
-2. **`run_portfolio_optimization.py`**:
-   - Loads a portfolio optimization problem and solves it with a Particle Swarm Optimizer.
+### 2. `run_portfolio_with_chains.py`
+Demonstrates running multiple optimizers independently vs. chaining them sequentially. This is ideal for prototyping a hybrid strategy (e.g., a global search approach followed by a local refinement). Example:
+```bash
+cd examples/usage
+python run_portfolio_with_chains.py
+```
 
-3. **`benchmark_vqa_pipeline.py`**:
-   - Compares a quantum-classical pipeline approach with an exhaustive search for small QUBO problems.
+### 3. `run_vqa_pipeline.py`
+Illustrates a variational quantum algorithm pipeline, combining a quantum ansatz with a classical optimizer (like Torch Adam). Example:
+```bash
+cd examples/usage
+python run_vqa_pipeline.py
+```
 
-4. **`run_portfolio_with_chains.py`**:
-   - Shows how to run multiple optimizers independently vs. in a chain.
+### 4. `benchmark_vqa_pipeline.py`
+Compares a quantum-classical pipeline approach to an exhaustive search on small QUBO problems, providing insights into performance, accuracy, and runtime. Example:
+```bash
+cd examples/usage
+python benchmark_vqa_pipeline.py
+```
 
-## Getting Started
-1. **Installation**:
-   - Clone this repo locally.
-   - Install the dependencies:
-     ```bash
-     pip install -r requirements.txt
-     ```
-2. **Using the CLI**:
-   - Install the package (so that `rastion` CLI is recognized) by running:
-     ```bash
-     pip install .
-     ```
-   - Now you can use commands like:
-     ```bash
-     rastion create_repo my-solver
-     rastion push_solver my-solver --file my_solver.py --config solver_config.json
-     ```
+## Complete Rastion CLI Walkthrough
+Below is an example session demonstrating how to use the **Rastion** CLI to manage both solver and problem repos, then run them:
 
-3. **Running Examples**:
-   - Explore `examples/`. For instance:
-     ```bash
-     cd examples/usage
-     python run_vehicle_routing.py
-     ```
+```bash
+# 1. Create a new solver repository in the 'Rastion' org.
+$ export GITHUB_TOKEN="<YOUR_PERSONAL_ACCESS_TOKEN>"
+$ rastion create_repo my-solver --org Rastion --github-token $GITHUB_TOKEN
+
+# 2. Push your solver code and config to GitHub.
+$ cd /path/to/local/my-solver
+$ ls
+my_solver.py solver_config.json
+$ rastion push_solver my-solver \
+    --file my_solver.py \
+    --config solver_config.json \
+    --org Rastion \
+    --github-token $GITHUB_TOKEN
+
+# 3. Create a new problem repository in the 'Rastion' org.
+$ rastion create_repo my-problem --org Rastion --github-token $GITHUB_TOKEN
+
+# 4. Push your problem code and config.
+$ cd /path/to/local/my-problem
+$ ls
+my_problem.py problem_config.json
+$ rastion push_problem my-problem \
+    --file my_problem.py \
+    --config problem_config.json \
+    --org Rastion \
+    --github-token $GITHUB_TOKEN
+
+# 5. Optionally, update existing repos if local changes are made.
+$ rastion update_repo my-solver \
+    --local-dir /path/to/local/my-solver \
+    --org Rastion \
+    --branch main \
+    --github-token $GITHUB_TOKEN
+
+# 6. (Optional) Clone a repo to inspect or develop further.
+$ rastion clone_repo my-solver --org Rastion --branch main
+
+# 7. Use 'run_solver' to test the solver with a problem from the hub.
+$ rastion run_solver Rastion/my-solver-repo \
+    --solver-rev main \
+    --problem-repo Rastion/my-problem-repo \
+    --problem-rev main
+
+# 8. Delete a repo if no longer needed.
+$ rastion delete_repo my-solver --org Rastion --github-token $GITHUB_TOKEN
+```
+
+This sequence covers the primary Rastion CLI commands—creating, pushing, updating, cloning, running, and optionally deleting.
 
 ## Contributing
 We encourage you to add new solvers and problems! Follow these steps:
@@ -154,4 +213,3 @@ Feel free to open issues, propose enhancements, or submit pull requests.
 
 ## License
 This project is licensed under the [Apache 2.0 License](LICENSE). See the `LICENSE` file for more details.
-
