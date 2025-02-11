@@ -13,7 +13,7 @@ You can find all the repos hosted with Rastion at our website : https://repo-blo
 
 ## Installation
 ```bash
-   pip install rastion
+pip install rastion
 ```
 
 ## Example 1: Run PSO for portfolio optimization problem
@@ -39,7 +39,7 @@ from rastion_hub.auto_optimizer import AutoOptimizer
 from rastion_hub.quantum_classical_pipeline import create_quantum_classical_pipeline
 
 # 1. Load the problem instance (assumed to be a QUBO problem with a get_qubo() method).
-problem = AutoProblem.from_repo(f"Rastion/maxcut", revision="main")
+problem = AutoProblem.from_repo(f"Rastion/max-cut", revision="main")
 
 # 2. Load the quantum optimizer for the VQA pipeline.
 quantum_optimizer = AutoOptimizer.from_repo(
@@ -78,8 +78,8 @@ print(f"VQA Pipeline Cost: {vqa_cost}")
 from rastion_hub.auto_problem import AutoProblem
 from rastion_hub.auto_optimizer import AutoOptimizer
 from rastion_hub.optimizer_runner import run_optimizers_independently
-# Load the portfolio optimization problem.
-problem = AutoProblem.from_repo(f"Rastion/portfolio-optimization", revision="main")
+# Load a small maxcut optimization problem.
+problem = AutoProblem.from_repo(f"Rastion/max-cut", revision="main")
 
 # Load several optimizers with optional parameter overrides.
 optimizer1 = AutoOptimizer.from_repo(
@@ -90,7 +90,7 @@ optimizer1 = AutoOptimizer.from_repo(
 optimizer2 = AutoOptimizer.from_repo(
    f"Rastion/tabu-search",
    revision="main",
-   override_params={"max_iters": 100, "tabu_tenure": 10, "verbose": false}
+   override_params={"max_iters": 100, "tabu_tenure": 10, "verbose": True}
 )
 optimizer3 = AutoOptimizer.from_repo(
    f"Rastion/exhaustive-search",
@@ -115,7 +115,7 @@ print(f"\nBest optimizer: {best_optimizer} with cost = {best_cost}, solution = {
 from rastion_hub.auto_problem import AutoProblem
 from rastion_hub.auto_optimizer import AutoOptimizer
 from rastion_hub.optimizer_runner import run_optimizers_in_chain
-# Load the portfolio optimization problem.
+# Load a small maxcut optimization problem.
 problem = AutoProblem.from_repo(f"Rastion/max-cut", revision="main", override_params={"num_nodes": 8})
 
 # Load a chain of optimizers.
@@ -129,7 +129,7 @@ optimizer1 = AutoOptimizer.from_repo(
 optimizer2 = AutoOptimizer.from_repo(
    f"Rastion/tabu-search",
    revision="main",
-   override_params={"max_iters": 100, "tabu_tenure": 10, "verbose": false}
+   override_params={"max_iters": 100, "tabu_tenure": 10, "verbose": True}
 )
 optimizer3 = AutoOptimizer.from_repo(
    f"Rastion/rl-optimizer",
@@ -145,6 +145,16 @@ final_solution, final_cost = run_optimizers_in_chain(problem, optimizers_chain)
 
 print("=== Chained Refinement Results ===")
 print(f"Final refined solution: {final_solution} with cost: {final_cost}\n")
+
+exhaustive_optimizer = AutoOptimizer.from_repo(
+   f"Rastion/exhaustive-search",
+   revision="main",
+)
+
+best_solution, best_cost = exhaustive_optimizer.optimize(problem)
+print("=== Exhaustive Results ===")
+print(f"Best solution: {best_solution} with cost: {best_cost}\n")
+
 ```
 
 ## Repository Overview
