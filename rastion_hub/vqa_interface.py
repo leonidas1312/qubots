@@ -86,8 +86,8 @@ class VQACycleInterface:
         # Set up the simulator.
         if simulator_fn is None:
             num_shots = 10000
-            dev = qml.device("lightning.qubit", wires=nqq, shots=num_shots, interface="torch")
-            my_qnode = qml.QNode(quantum_circuit_fn, dev, diff_method="parameter-shift", interface="torch")
+            dev = qml.device("lightning.qubit", wires=nqq, shots=num_shots)
+            my_qnode = qml.QNode(quantum_circuit_fn, dev, diff_method="parameter-shift")
         else:
             my_qnode = simulator_fn(quantum_circuit_fn, nqq)
 
