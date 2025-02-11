@@ -239,38 +239,6 @@ Below is a brief overview of the main files and directories included in this cod
    - `VQACycleInterface` is a more specialized approach for VQA loops.
    - Ties together a circuit ansatz, cost function, and classical optimization of quantum parameters.
 
-## Detailed Usage and Examples
-Below are some showcased scripts from the `examples/usage` directory, along with a fully fledged example of how you might interact with Rastion from scratch.
-
-### 1. `run_portfolio_optimization.py`
-Shows how to load a portfolio optimization problem and solve it with a Particle Swarm Optimizer. Example usage:
-```bash
-cd examples/usage
-python run_portfolio_optimization.py
-```
-You will see output describing the best portfolio weights and the corresponding cost.
-
-### 2. `run_portfolio_with_chains.py`
-Demonstrates running multiple optimizers independently vs. chaining them sequentially. This is ideal for prototyping a hybrid strategy (e.g., a global search approach followed by a local refinement). Example:
-```bash
-cd examples/usage
-python run_portfolio_with_chains.py
-```
-
-### 3. `run_vqa_pipeline.py` 
-Illustrates a variational quantum algorithm pipeline, combining a quantum ansatz with a classical optimizer (like Torch Adam). Example:
-```bash
-cd examples/usage
-python run_vqa_pipeline.py
-```
-
-### 4. `benchmark_vqa_pipeline.py`
-Compares a quantum-classical pipeline approach to an exhaustive search on small QUBO problems, providing insights into performance, accuracy, and runtime. Example:
-```bash
-cd examples/usage
-python benchmark_vqa_pipeline.py
-```
-
 ## Complete Rastion CLI Walkthrough
 Below is an example session demonstrating how to use the **Rastion** CLI to manage both solver and problem repos, then run them:
 
