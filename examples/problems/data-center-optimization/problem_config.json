@@ -1,8 +1,0 @@
-{
-    "entry_point": "data_center_optimization:DataCenterOptimizationProblem",
-    "default_params": {
-      "task_requirements": [10, 20, 15, 5],
-      "total_resources": 60
-    }
-  }
-  

@@ -1,9 +1,0 @@
-{
-    "entry_point": "optimal_control:OptimalControlProblem",
-    "default_params": {
-      "target_state": [10, 10],
-      "time_steps": 5,
-      "control_bounds": [[-2, 2], [-2, 2]]
-    }
-  }
-  
