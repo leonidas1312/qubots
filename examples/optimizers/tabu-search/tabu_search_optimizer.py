@@ -13,8 +13,20 @@ class TabuSearchOptimizer(BaseOptimizer):
         self.tabu_tenure = tabu_tenure
         self.verbose = verbose
 
-    def optimize(self, problem, **kwargs):
-        current_solution = problem.random_solution()
+    def optimize(self, problem, initial_solution=None, **kwargs):
+
+        
+
+        if initial_solution is None:
+            # Attempt to use the problem's random_solution
+            try:
+                initial_solution = problem.random_solution()
+            except NotImplementedError:
+                raise ValueError(
+                    "No initial_solution provided and problem.random_solution() "
+                    "is not implemented!"
+                )
+        current_solution = initial_solution
         best_solution = copy.deepcopy(current_solution)
         best_score = problem.evaluate_solution(best_solution)
         tabu_list = []

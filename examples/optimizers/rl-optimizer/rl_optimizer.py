@@ -96,14 +96,23 @@ class RLLocalSearchOptimizer(BaseOptimizer):
         self.temperature = temperature    # Temperature parameter for simulated annealing.
         self.verbose = verbose
 
-    def optimize(self, problem, **kwargs):
-        # Get an initial candidate from the problem.
-        init_candidate = problem.random_solution()
+    def optimize(self, problem, initial_solution=None, **kwargs):
+
+        if initial_solution is None:
+            # Attempt to use the problem's random_solution
+            try:
+                initial_solution = problem.random_solution()
+            except NotImplementedError:
+                raise ValueError(
+                    "No initial_solution provided and problem.random_solution() "
+                    "is not implemented!"
+                )
+
         # Extract QUBO matrix and constant.
         QUBO_matrix, qubo_constant = problem.get_qubo()
         # Run the RL local search.
         best_solution, best_cost, progress = rl_local_search(
-            init_candidate,
+            initial_solution,
             QUBO_matrix,
             qubo_constant,
             time_limit=self.time_limit,
