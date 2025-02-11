@@ -3,10 +3,9 @@ This script benchmarks the performance of the VQA pipeline (a hybrid quantum-cla
 against the optimal solution obtained by an exhaustive search solver for small QUBO problems.
 It runs benchmarks for three problems: MaxCut, Graph Coloring, and Knapsack.
 The VQA pipeline is built by composing a quantum optimizer and a classical optimizer in series.
-In this test, we compare the performance of four classical optimizers:
+In this test, we compare the performance of three classical optimizers:
     - rl-optimizer
     - particle-swarm optimizer
-    - bayesian-optimization optimizer
     - tabu-search optimizer
 with their respective parameters.
 """

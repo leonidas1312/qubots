@@ -2,31 +2,31 @@ from rastion_hub.auto_problem import AutoProblem
 from rastion_hub.auto_optimizer import AutoOptimizer
 from rastion_hub.optimizer_runner import run_optimizers_independently, run_optimizers_in_chain
 
-def run_portfolio_optimization_independently():
+def run_maxcut_optimization_independently():
     """
-    Load the portfolio optimization problem and run multiple optimizers
+    Load the maxcut optimization problem and run multiple optimizers
     independently (each with no initial solution). The results are then compared.
     """
     org = "Rastion"
     
-    # Load the portfolio optimization problem.
-    problem = AutoProblem.from_repo(f"{org}/portfolio-optimization", revision="main")
+    # Load the maxcut optimization problem.
+    problem = AutoProblem.from_repo(f"{org}/max-cut", revision="main")
     
     # Load several optimizers with optional parameter overrides.
     optimizer1 = AutoOptimizer.from_repo(
         f"{org}/particle-swarm",
         revision="main",
-        override_params={"swarm_size": 50, "max_iters": 100}
+        override_params={"swarm_size": 50, "max_iters": 20}
     )
     optimizer2 = AutoOptimizer.from_repo(
-        f"{org}/differential-evolution",
+        f"{org}/tabu-search",
         revision="main",
-        override_params={"population_size": 50, "max_iters": 100}
+        override_params={"tabu_tenure": 10, "max_iters": 20}
     )
     optimizer3 = AutoOptimizer.from_repo(
-        f"{org}/evolution-strategies",
+        f"{org}/rl-optimizer",
         revision="main",
-        override_params={"population_size": 50, "max_iters": 100}
+        override_params={"time_limit": 1}#1 seconds
     )
     
     optimizers = [optimizer1, optimizer2, optimizer3]
@@ -42,33 +42,31 @@ def run_portfolio_optimization_independently():
     print(f"\nBest optimizer: {best_optimizer} with cost = {best_cost}, solution = {best_solution}\n")
 
 
-def run_portfolio_optimization_chained():
+def run_maxcut_optimization_chained():
     """
-    Load the portfolio optimization problem and run a chain of optimizers sequentially.
+    Load the maxcut optimization problem and run a chain of optimizers sequentially.
     Each optimizer refines the solution provided by its predecessor.
     """
     org = "Rastion"
     
-    # Load the portfolio optimization problem.
-    problem = AutoProblem.from_repo(f"{org}/portfolio-optimization", revision="main")
+    # Load the maxcut optimization problem.
+    problem = AutoProblem.from_repo(f"{org}/max-cut", revision="main")
     
     # Load a chain of optimizers.
-    # For example, start with a global search (Particle Swarm), then refine using
-    # Differential Evolution and finally Evolution Strategies.
     optimizer1 = AutoOptimizer.from_repo(
         f"{org}/particle-swarm",
         revision="main",
-        override_params={"swarm_size": 50, "max_iters": 100}
+        override_params={"swarm_size": 50, "max_iters": 20}
     )
     optimizer2 = AutoOptimizer.from_repo(
-        f"{org}/differential-evolution",
+        f"{org}/tabu-search",
         revision="main",
-        override_params={"population_size": 50, "max_iters": 100}
+        override_params={"tabu_tenure": 10, "max_iters": 20}
     )
     optimizer3 = AutoOptimizer.from_repo(
-        f"{org}/evolution-strategies",
+        f"{org}/rl-optimizer",
         revision="main",
-        override_params={"population_size": 50, "max_iters": 100}
+        override_params={"time_limit": 1}#1 seconds
     )
     
     optimizers_chain = [optimizer1, optimizer2, optimizer3]
@@ -80,11 +78,11 @@ def run_portfolio_optimization_chained():
 
 
 def main():
-    print("=== Running Portfolio Optimization with Independent Optimizer Runs ===")
-    run_portfolio_optimization_independently()
+    print("=== Running Maxcut Optimization with Independent Optimizer Runs ===")
+    run_maxcut_optimization_independently()
     
-    print("=== Running Portfolio Optimization with Chained Refinement ===")
-    run_portfolio_optimization_chained()
+    print("=== Running Maxcut Optimization with Chained Refinement ===")
+    run_maxcut_optimization_chained()
 
 
 if __name__ == "__main__":
