@@ -14,17 +14,16 @@ from rastion_hub.auto_optimizer import AutoOptimizer
 app = typer.Typer(help="Rastion CLI - A tool for Git-based solver/problem repos.")
 
 GITHUB_API = "https://api.github.com"
-
+org = "Rastion"
 
 @app.command(name="create_repo")
 def create_repo(
     repo_name: str = typer.Argument(..., help="Name of the new GitHub repo"),
-    org: str = typer.Option("Rastion", "--org", help="GitHub organization name (default 'Rastion')"),
     private: bool = typer.Option(False, "--private", is_flag=True, help="Omit for public repo, use for private repo"),
     github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
 ):
     """
-    Create a new GitHub repo under the specified org (default 'Rastion').
+    Create a new GitHub repo under the 'Rastion' org.
     """
     if not github_token:
         typer.echo("ERROR: GitHub token not provided. Use --github-token or set GITHUB_TOKEN env var.")
@@ -66,7 +65,6 @@ def create_repo(
 def update_repo(
     repo_name: str = typer.Argument(..., help="Name of the repository to update"),
     local_dir: str = typer.Option(".", "--local-dir", help="Local directory with updated files"),
-    org: str = typer.Option("Rastion", "--org", help="GitHub organization (default 'Rastion')"),
     branch: str = typer.Option("main", "--branch", help="Branch to update (default 'main')"),
     github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
 ):
@@ -127,11 +125,10 @@ def update_repo(
 @app.command(name="delete_repo")
 def delete_repo(
     repo_name: str = typer.Argument(..., help="Name of the repository to delete"),
-    org: str = typer.Option("Rastion", "--org", help="GitHub organization (default 'Rastion')"),
     github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
 ):
     """
-    Delete a GitHub repository from the specified organization.
+    Delete a GitHub repository.
     """
     if not github_token:
         typer.echo("ERROR: GitHub token not provided. Use --github-token or set GITHUB_TOKEN env var.")
@@ -152,7 +149,6 @@ def delete_repo(
 @app.command(name="clone_repo")
 def clone_repo(
     repo_name: str = typer.Argument(..., help="Name of the repo to clone"),
-    org: str = typer.Option("Rastion", "--org", help="GitHub org (default 'Rastion')"),
     branch: str = typer.Option("main", "--branch", help="Branch name to checkout"),
     dest: str = typer.Option(".", "--dest", help="Destination folder to clone into")
 ):
@@ -171,7 +167,6 @@ def push_solver(
     repo_name: str = typer.Argument(..., help="Name of the solver repo (must already exist)"),
     local_file: str = typer.Option(..., "--file", help="Path to the local .py solver file"),
     solver_config: str = typer.Option(..., "--config", help="Path to solver_config.json"),
-    org: str = typer.Option("Rastion", "--org", help="GitHub org (default 'Rastion')"),
     github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token"),
     branch: str = typer.Option("main", "--branch", help="Branch name to push to")
 ):
@@ -215,13 +210,11 @@ def push_problem(
     repo_name: str = typer.Argument(..., help="Name of the problem repo (must already exist)"),
     local_file: str = typer.Option(..., "--file", help="Path to the local .py problem file"),
     problem_config: str = typer.Option(..., "--config", help="Path to problem_config.json"),
-    org: str = typer.Option("Rastion", "--org", help="GitHub org (default 'Rastion')"),
     github_token: Optional[str] = typer.Option(None, envvar="GITHUB_TOKEN", help="Your GitHub personal access token"),
     branch: str = typer.Option("main", "--branch", help="Branch name to push to")
 ):
     """
     Push a local problem .py file + problem_config.json to an existing GitHub repo.
-    Similar approach to push_solver.
     """
     if not github_token:
         typer.echo("ERROR: GitHub token not provided.")

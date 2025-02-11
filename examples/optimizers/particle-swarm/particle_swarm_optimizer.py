@@ -4,7 +4,7 @@ import numpy as np
 
 class ParticleSwarmOptimizer(BaseOptimizer):
     """
-    Particle Swarm Optimization (PSO) for continuous optimization.
+    Particle Swarm Optimization (PSO).
     """
     def __init__(self, swarm_size=30, max_iters=100, inertia=0.5, cognitive=1.0, social=1.0, verbose=False):
         self.swarm_size = swarm_size

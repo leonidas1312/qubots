@@ -16,7 +16,7 @@ def run_portfolio_optimization_independently():
     optimizer1 = AutoOptimizer.from_repo(
         f"{org}/particle-swarm",
         revision="main",
-        override_params={"swarm_size": 60, "max_iters": 100}
+        override_params={"swarm_size": 50, "max_iters": 100}
     )
     optimizer2 = AutoOptimizer.from_repo(
         f"{org}/differential-evolution",
@@ -58,7 +58,7 @@ def run_portfolio_optimization_chained():
     optimizer1 = AutoOptimizer.from_repo(
         f"{org}/particle-swarm",
         revision="main",
-        override_params={"swarm_size": 60, "max_iters": 100}
+        override_params={"swarm_size": 50, "max_iters": 100}
     )
     optimizer2 = AutoOptimizer.from_repo(
         f"{org}/differential-evolution",
