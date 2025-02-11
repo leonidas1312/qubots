@@ -9,7 +9,7 @@ Welcome to **Rastion Hub**, a collaborative platform for hosting and sharing bot
 - You can push a `solver_config.json` and a `.py` solver file to share your optimizer. Similarly, for a problem, you push a `problem_config.json` and a `.py` file describing the problem.
 
 ## Website
-You can find all the repos hosted with Rastion at our website : https://repo-bloom-portal.lovable.app/
+You can find all the repos (optimizers & problems) hosted with Rastion at our website : https://repo-bloom-portal.lovable.app/
 
 ## Installation
 ```bash
