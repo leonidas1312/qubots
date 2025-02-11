@@ -14,7 +14,7 @@ def run_portfolio_optimization():
     # named "particle_swarm_optimizer.py" and a valid "solver_config.json".
     optimizer = AutoOptimizer.from_repo(f"{org}/particle-swarm",
                                         revision="main",
-                                        override_params={"swarm_size":60,"max_iters":500})
+                                        override_params={"swarm_size":60,"max_iters":300})
     
     best_solution, best_cost = optimizer.optimize(problem)
     print("Portfolio Optimization with PSO")
