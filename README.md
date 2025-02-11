@@ -18,133 +18,133 @@ You can find all the repos hosted with Rastion at our website : https://repo-blo
 
 ## Example 1: Run PSO for portfolio optimization problem
 ```bash
-   from rastion_hub.auto_problem import AutoProblem
-   from rastion_hub.auto_optimizer import AutoOptimizer
+from rastion_hub.auto_problem import AutoProblem
+from rastion_hub.auto_optimizer import AutoOptimizer
 
-   problem = AutoProblem.from_repo(f"Rastion/portfolio-optimization", revision="main")
-   optimizer = AutoOptimizer.from_repo(f"Rastion/particle-swarm",
-                                       revision="main",
-                                       override_params={"swarm_size":60,"max_iters":500})
-   
-   best_solution, best_cost = optimizer.optimize(problem)
-   print("Portfolio Optimization with PSO")
-   print("Best Solution:", best_solution)
-   print("Best Cost:", best_cost)
+problem = AutoProblem.from_repo(f"Rastion/portfolio-optimization", revision="main")
+optimizer = AutoOptimizer.from_repo(f"Rastion/particle-swarm",
+                                    revision="main",
+                                    override_params={"swarm_size":60,"max_iters":500})
+
+best_solution, best_cost = optimizer.optimize(problem)
+print("Portfolio Optimization with PSO")
+print("Best Solution:", best_solution)
+print("Best Cost:", best_cost)
 ```
 
 ## Example 2: Use variational quantum algorithms as warm starters for custom classical optimization algorithms 
 ```bash
-   from rastion_hub.auto_problem import AutoProblem
-   from rastion_hub.auto_optimizer import AutoOptimizer
-   from rastion_hub.quantum_classical_pipeline import create_quantum_classical_pipeline
+from rastion_hub.auto_problem import AutoProblem
+from rastion_hub.auto_optimizer import AutoOptimizer
+from rastion_hub.quantum_classical_pipeline import create_quantum_classical_pipeline
 
-   # 1. Load the problem instance (assumed to be a QUBO problem with a get_qubo() method).
-   problem = AutoProblem.from_repo(f"Rastion/maxcut", revision="main")
-   
-   # 2. Load the quantum optimizer for the VQA pipeline.
-   quantum_optimizer = AutoOptimizer.from_repo(
-      f"Rastion/vqa-qubit-eff",
+# 1. Load the problem instance (assumed to be a QUBO problem with a get_qubo() method).
+problem = AutoProblem.from_repo(f"Rastion/maxcut", revision="main")
+
+# 2. Load the quantum optimizer for the VQA pipeline.
+quantum_optimizer = AutoOptimizer.from_repo(
+   f"Rastion/vqa-qubit-eff",
+   revision="main",
+   override_params={
+      "num_layers": 6,        
+      "max_iters": 100,
+      "nbitstrings": 5,
+   }
+)
+# 3. Load the classical optimizer for the VQA pipeline. Here we use a custom RL local search.
+classical_optimizer = AutoOptimizer.from_repo(
+      f"Rastion/rl-optimizer",
       revision="main",
       override_params={
-         "num_layers": 6,        
-         "max_iters": 100,
-         "nbitstrings": 5,
+            "time_limit": 1  # seconds
       }
-   )
-   # 3. Load the classical optimizer for the VQA pipeline. Here we use a custom RL local search.
-   classical_optimizer = AutoOptimizer.from_repo(
-         f"Rastion/rl-optimizer",
-         revision="main",
-         override_params={
-               "time_limit": 1  # seconds
-         }
-   )
-        
-   # Compose the quantum-classical pipeline.
-   pipeline = create_quantum_classical_pipeline(
-      quantum_routine=quantum_optimizer,
-      classical_optimizer=classical_optimizer
-   )
-   
-   # Run the VQA pipeline and time its execution.
-   print("Running VQA pipeline ...")
-   vqa_solution, vqa_cost = pipeline.optimize(problem)
-   print(f"VQA Pipeline Solution: {vqa_solution}")
-   print(f"VQA Pipeline Cost: {vqa_cost}")
+)
+      
+# Compose the quantum-classical pipeline.
+pipeline = create_quantum_classical_pipeline(
+   quantum_routine=quantum_optimizer,
+   classical_optimizer=classical_optimizer
+)
+
+# Run the VQA pipeline and time its execution.
+print("Running VQA pipeline ...")
+vqa_solution, vqa_cost = pipeline.optimize(problem)
+print(f"VQA Pipeline Solution: {vqa_solution}")
+print(f"VQA Pipeline Cost: {vqa_cost}")
 ```
 
 ## Example 3: Run multiple solvers independently for a problem
 ```bash
-   from rastion_hub.auto_problem import AutoProblem
-   from rastion_hub.auto_optimizer import AutoOptimizer
-   from rastion_hub.optimizer_runner import run_optimizers_independently
-   # Load the portfolio optimization problem.
-    problem = AutoProblem.from_repo(f"Rastion/portfolio-optimization", revision="main")
-    
-    # Load several optimizers with optional parameter overrides.
-    optimizer1 = AutoOptimizer.from_repo(
-        f"Rastion/particle-swarm",
-        revision="main",
-        override_params={"swarm_size": 50, "max_iters": 100}
-    )
-    optimizer2 = AutoOptimizer.from_repo(
-        f"Rastion/tabu-search",
-        revision="main",
-        override_params={"max_iters": 100, "tabu_tenure": 10, "verbose": false}
-    )
-    optimizer3 = AutoOptimizer.from_repo(
-        f"Rastion/exhaustive-search",
-        revision="main",
-    )
-    
-    optimizers = [optimizer1, optimizer2, optimizer3]
-    
-    results = run_optimizers_independently(problem, optimizers)
-    
-    # Find the best result (assuming lower cost is better).
-    best_optimizer, best_solution, best_cost = min(results, key=lambda x: x[2])
-    
-    print("=== Independent Runs Results ===")
-    for name, sol, cost in results:
-        print(f"Optimizer {name}: Cost = {cost}, Solution = {sol}")
-    print(f"\nBest optimizer: {best_optimizer} with cost = {best_cost}, solution = {best_solution}\n")
+from rastion_hub.auto_problem import AutoProblem
+from rastion_hub.auto_optimizer import AutoOptimizer
+from rastion_hub.optimizer_runner import run_optimizers_independently
+# Load the portfolio optimization problem.
+problem = AutoProblem.from_repo(f"Rastion/portfolio-optimization", revision="main")
+
+# Load several optimizers with optional parameter overrides.
+optimizer1 = AutoOptimizer.from_repo(
+   f"Rastion/particle-swarm",
+   revision="main",
+   override_params={"swarm_size": 50, "max_iters": 100}
+)
+optimizer2 = AutoOptimizer.from_repo(
+   f"Rastion/tabu-search",
+   revision="main",
+   override_params={"max_iters": 100, "tabu_tenure": 10, "verbose": false}
+)
+optimizer3 = AutoOptimizer.from_repo(
+   f"Rastion/exhaustive-search",
+   revision="main",
+)
+
+optimizers = [optimizer1, optimizer2, optimizer3]
+
+results = run_optimizers_independently(problem, optimizers)
+
+# Find the best result (assuming lower cost is better).
+best_optimizer, best_solution, best_cost = min(results, key=lambda x: x[2])
+
+print("=== Independent Runs Results ===")
+for name, sol, cost in results:
+   print(f"Optimizer {name}: Cost = {cost}, Solution = {sol}")
+print(f"\nBest optimizer: {best_optimizer} with cost = {best_cost}, solution = {best_solution}\n")
 ```
 
 ## Example 4: Run multiple solvers chained together for a problem
 ```bash
-   from rastion_hub.auto_problem import AutoProblem
-   from rastion_hub.auto_optimizer import AutoOptimizer
-   from rastion_hub.optimizer_runner import run_optimizers_in_chain
-   # Load the portfolio optimization problem.
-    problem = AutoProblem.from_repo(f"Rastion/max-cut", revision="main", override_params={"num_nodes": 8})
-    
-    # Load a chain of optimizers.
-    # For example, start with a global search particle swarm, then refine using
-    # tabu search and finally the custom rl optimizer.
-    optimizer1 = AutoOptimizer.from_repo(
-        f"Rastion/particle-swarm",
-        revision="main",
-        override_params={"swarm_size": 50, "max_iters": 100}
-    )
-    optimizer2 = AutoOptimizer.from_repo(
-        f"Rastion/tabu-search",
-        revision="main",
-        override_params={"max_iters": 100, "tabu_tenure": 10, "verbose": false}
-    )
-    optimizer3 = AutoOptimizer.from_repo(
-        f"Rastion/rl-optimizer",
-        revision="main",
-        override_params={"time_limit": 1  # seconds
-        
-        }
-    )
-    
-    optimizers_chain = [optimizer1, optimizer2, optimizer3]
-    
-    final_solution, final_cost = run_optimizers_in_chain(problem, optimizers_chain)
-    
-    print("=== Chained Refinement Results ===")
-    print(f"Final refined solution: {final_solution} with cost: {final_cost}\n")
+from rastion_hub.auto_problem import AutoProblem
+from rastion_hub.auto_optimizer import AutoOptimizer
+from rastion_hub.optimizer_runner import run_optimizers_in_chain
+# Load the portfolio optimization problem.
+problem = AutoProblem.from_repo(f"Rastion/max-cut", revision="main", override_params={"num_nodes": 8})
+
+# Load a chain of optimizers.
+# For example, start with a global search particle swarm, then refine using
+# tabu search and finally the custom rl optimizer.
+optimizer1 = AutoOptimizer.from_repo(
+   f"Rastion/particle-swarm",
+   revision="main",
+   override_params={"swarm_size": 50, "max_iters": 100}
+)
+optimizer2 = AutoOptimizer.from_repo(
+   f"Rastion/tabu-search",
+   revision="main",
+   override_params={"max_iters": 100, "tabu_tenure": 10, "verbose": false}
+)
+optimizer3 = AutoOptimizer.from_repo(
+   f"Rastion/rl-optimizer",
+   revision="main",
+   override_params={"time_limit": 1  # seconds
+   
+   }
+)
+
+optimizers_chain = [optimizer1, optimizer2, optimizer3]
+
+final_solution, final_cost = run_optimizers_in_chain(problem, optimizers_chain)
+
+print("=== Chained Refinement Results ===")
+print(f"Final refined solution: {final_solution} with cost: {final_cost}\n")
 ```
 
 ## Repository Overview
