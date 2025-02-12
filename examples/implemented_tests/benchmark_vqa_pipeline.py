@@ -6,9 +6,9 @@ The VQA pipeline is built by composing a quantum optimizer and a classical optim
 """
 
 import time
-from rastion_hub.auto_problem import AutoProblem
-from rastion_hub.auto_optimizer import AutoOptimizer
-from rastion_hub.quantum_classical_pipeline import create_quantum_classical_pipeline
+from qubots.auto_problem import AutoProblem
+from qubots.auto_optimizer import AutoOptimizer
+from qubots.quantum_classical_pipeline import create_quantum_classical_pipeline
 
 def benchmark_problem(problem_repo, problem_name, classical_repo, vqa_repo, exhaustive_repo):
     org = "Rastion"

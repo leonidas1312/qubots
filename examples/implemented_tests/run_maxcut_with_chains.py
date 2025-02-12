@@ -1,6 +1,6 @@
-from rastion_hub.auto_problem import AutoProblem
-from rastion_hub.auto_optimizer import AutoOptimizer
-from rastion_hub.optimizer_runner import run_optimizers_independently, run_optimizers_in_chain
+from qubots.auto_problem import AutoProblem
+from qubots.auto_optimizer import AutoOptimizer
+from qubots.optimizer_runner import run_optimizers_independently, run_optimizers_in_chain
 
 def run_maxcut_optimization_independently():
     """
