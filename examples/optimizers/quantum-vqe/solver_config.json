@@ -1,0 +1,10 @@
+{
+    "entry_point": "vqe_optimizer:VQEOptimizer",
+    "default_params": {
+        "num_layers": 2,
+        "max_iters": 100,
+        "learning_rate": 0.1,
+        "n_shots": 10000,
+        "verbose": false
+    }
+}
