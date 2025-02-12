@@ -2,7 +2,7 @@ import time
 import numpy as np
 import torch
 import random
-from rastion_hub.base_optimizer import BaseOptimizer
+from qubots.base_optimizer import BaseOptimizer
 
 def softmax(x, temperature=1.0):
     e_x = np.exp((x - np.max(x)) / temperature)

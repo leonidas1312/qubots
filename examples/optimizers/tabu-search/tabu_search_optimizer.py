@@ -1,4 +1,4 @@
-from rastion_hub.base_optimizer import BaseOptimizer
+from qubots.base_optimizer import BaseOptimizer
 import random
 import copy
 

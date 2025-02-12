@@ -1,9 +1,9 @@
-from rastion_hub.auto_problem import AutoProblem
-from rastion_hub.auto_optimizer import AutoOptimizer
-from rastion_hub.vqa_interface import VQACycleInterface
+from qubots.auto_problem import AutoProblem
+from qubots.auto_optimizer import AutoOptimizer
+from qubots.vqa_interface import VQACycleInterface
 
 # Import quantum functions from qubit_eff (our module containing the ansatz, cost, and draw functions)
-from rastion_hub.qubit_eff import pennylane_HEcirc, calmecf, draw_bitstrings_minenc
+from qubots.qubit_eff import pennylane_HEcirc, calmecf, draw_bitstrings_minenc
 
 def main():
     # 1. Load the MaxCut problem instance (assumed to be a QUBO problem with get_qubo())

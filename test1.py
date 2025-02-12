@@ -1,5 +1,5 @@
-from rastion_hub.auto_problem import AutoProblem
-from rastion_hub.auto_optimizer import AutoOptimizer
+from qubots.auto_problem import AutoProblem
+from qubots.auto_optimizer import AutoOptimizer
 
 problem = AutoProblem.from_repo(f"Rastion/portfolio-optimization", revision="main")
 optimizer = AutoOptimizer.from_repo(f"Rastion/particle-swarm",

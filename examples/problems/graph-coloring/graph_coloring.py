@@ -1,5 +1,5 @@
 import numpy as np
-from rastion_hub.base_problem import BaseProblem
+from qubots.base_problem import BaseProblem
 
 def setup_problem(num_vertices, num_colors, edge_probability=0.3):
     """

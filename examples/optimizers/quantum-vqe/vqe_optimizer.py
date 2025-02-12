@@ -1,6 +1,6 @@
 # File: examples/optimizers/vqe/vqe_optimizer.py
 
-from rastion_hub.base_optimizer import BaseOptimizer
+from qubots.base_optimizer import BaseOptimizer
 import pennylane as qml
 import numpy as np
 from pennylane import numpy as pnp

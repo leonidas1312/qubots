@@ -14,8 +14,8 @@ import math
 import itertools
 import time
 
-from rastion_hub.base_problem import BaseProblem
-from rastion_hub.auto_optimizer import AutoOptimizer
+from qubots.base_problem import BaseProblem
+from qubots.auto_optimizer import AutoOptimizer
 
 #############################
 # Define Test Continuous Problems

@@ -1,5 +1,5 @@
 import numpy as np
-from rastion_hub.base_problem import BaseProblem
+from qubots.base_problem import BaseProblem
 
 def setup_problem(num_items, capacity, min_value=1, max_value=20, min_weight=1, max_weight=10):
     """

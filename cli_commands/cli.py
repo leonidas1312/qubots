@@ -10,7 +10,7 @@ import tempfile
 from subprocess import run
 import re
 
-from rastion_hub.auto_optimizer import AutoOptimizer
+from qubots.auto_optimizer import AutoOptimizer
 
 app = typer.Typer(help="Rastion CLI - A tool for Git-based solver/problem repos.")
 
@@ -284,7 +284,7 @@ def run_solver(
     # 2) If problem_repo is provided, do the same approach for problem
     if problem_repo:
         typer.echo(f"Loading problem from: {problem_repo}@{problem_revision}")
-        from rastion_hub.auto_problem import AutoProblem
+        from qubots.auto_problem import AutoProblem
         problem = AutoProblem.from_repo(problem_repo, revision=problem_revision)
     else:
         # if no problem, we can just do a dummy or None
