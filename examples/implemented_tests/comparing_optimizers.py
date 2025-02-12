@@ -29,9 +29,9 @@ def benchmark_problem(problem_repo, problem_name, classical_optimizers, vqa_repo
         f"{org}/{vqa_repo}",
         revision="main",
         override_params={
-            "num_layers": 6,        
+            "num_layers": 1,        
             "max_iters": 100,
-            "nbitstrings": 5,
+            "verbose": True
         }
     )
     
@@ -113,7 +113,7 @@ def main():
     
     
     # The repository for the quantum optimizer and the exhaustive search solver.
-    vqa_repo = "vqa-qubit-eff"
+    vqa_repo = "quantum-qaoa"
     exhaustive_repo = "exhaustive-search"
     org = "Rastion"
     # Load the Exhaustive Search solver to obtain the optimal solution.

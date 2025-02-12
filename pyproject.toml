@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "rastion-hub"
+name = "qubots"
 version = "0.1.0"
 description = "A collaborative platform for the optimization community."
 authors = [
@@ -12,7 +12,7 @@ authors = [
 license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.7"
-keywords = ["optimization", "quantum", "classical", "cli"]
+keywords = ["optimization", "quantum", "classical", "cli", "community", "operation research", "decision variables", "QUBO"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
@@ -25,11 +25,11 @@ dependencies = [
 ]
 
 [project.scripts]
-rastion = "rastion_cli.cli:main"
+rastion = "cli_commands.cli:main"
 
 
 [project.urls]
-"Source" = "https://github.com/leonidas1312/rastion-hub/tree/main"
+"Source" = "https://github.com/leonidas1312/qubots/tree/main"
 
 [tool.setuptools.packages.find]
 where = ["."]
