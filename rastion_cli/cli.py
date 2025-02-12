@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Optional
 import tempfile
 from subprocess import run
+import re
 
 from rastion_hub.auto_optimizer import AutoOptimizer
 
@@ -15,6 +16,25 @@ app = typer.Typer(help="Rastion CLI - A tool for Git-based solver/problem repos.
 
 GITHUB_API = "https://api.github.com"
 org = "Rastion"
+
+
+def generate_requirements(py_file: Path, req_file: Path):
+    """
+    Reads the given Python file, extracts import statements, filters out
+    standard libraries, and writes the module names (one per line) to req_file.
+    """
+    content = py_file.read_text()
+    # Regex to capture "import X" or "from X import ...".
+    pattern = re.compile(r'^(?:from\s+([a-zA-Z0-9_]+)|import\s+([a-zA-Z0-9_]+))', re.MULTILINE)
+    modules = set()
+    for match in pattern.finditer(content):
+        mod = match.group(1) or match.group(2)
+        modules.add(mod)
+    # Filter out some common standard libraries.
+    stdlib = {"os", "sys", "subprocess", "shutil", "re", "json", "tempfile", "pathlib", "time", "random", "copy"}
+    third_party = modules - stdlib
+    # Write the third-party modules to the requirements file.
+    req_file.write_text("\n".join(sorted(third_party)))
 
 @app.command(name="create_repo")
 def create_repo(
@@ -198,6 +218,10 @@ def push_solver(
     shutil.copy(str(solver_py), str(local_repo_dir / solver_py.name))
     shutil.copy(str(config_json), str(local_repo_dir / "solver_config.json"))
 
+    # Auto-generate requirements.txt if not present.
+    req_path = local_repo_dir / "requirements.txt"
+    generate_requirements(solver_py, req_path)
+
     subprocess.run(["git", "add", "."], cwd=local_repo_dir, check=True)
     subprocess.run(["git", "commit", "-m", "Add solver code & config"], cwd=local_repo_dir, check=True)
     subprocess.run(["git", "push", "origin", branch], cwd=local_repo_dir, check=True)
@@ -239,6 +263,10 @@ def push_problem(
 
     shutil.copy(str(prob_py), str(local_repo_dir / prob_py.name))
     shutil.copy(str(config_json), str(local_repo_dir / "problem_config.json"))
+
+    # Auto-generate requirements.txt if not present.
+    req_path = local_repo_dir / "requirements.txt"
+    generate_requirements(prob_py, req_path)
 
     subprocess.run(["git", "add", "."], cwd=local_repo_dir, check=True)
     subprocess.run(["git", "commit", "-m", "Add problem code & config"], cwd=local_repo_dir, check=True)

@@ -25,6 +25,11 @@ class AutoProblem:
 
         local_repo_path = cls._clone_or_pull(repo_id, revision, cache_dir)
 
+        # After local_repo_path is set:
+        req_file = Path(local_repo_path) / "requirements.txt"
+        if req_file.is_file():
+            subprocess.run(["pip", "install", "-r", str(req_file)], check=True)
+
         # Load problem configuration
         config_path = Path(local_repo_path) / "problem_config.json"
         if not config_path.is_file():
