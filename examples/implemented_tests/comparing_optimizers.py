@@ -10,7 +10,6 @@ In this test, we compare the performance of three classical optimizers:
 with their respective parameters.
 """
 
-import time
 from qubots.auto_problem import AutoProblem
 from qubots.auto_optimizer import AutoOptimizer
 from qubots.quantum_classical_pipeline import create_quantum_classical_pipeline
@@ -53,25 +52,17 @@ def benchmark_problem(problem_repo, problem_name, classical_optimizers, vqa_repo
             classical_optimizer=classical_optimizer
         )
         
-        # Run the VQA pipeline and time its execution.
+        # Run the VQA pipeline.
         print("Running VQA pipeline ...")
-        start = time.time()
         vqa_solution, vqa_cost = pipeline.optimize(problem)
-        end = time.time()
-        vqa_time = end - start
         print(f"VQA Pipeline Solution: {vqa_solution}")
         print(f"VQA Pipeline Cost: {vqa_cost}")
-        print(f"Time taken: {vqa_time:.2f} seconds")
         
         
         print("Running Exhaustive Search ...")
-        start = time.time()
         opt_solution, opt_cost = exhaustive_solver.optimize(problem)
-        end = time.time()
-        ex_time = end - start
         print(f"Exhaustive Search Optimal Solution: {opt_solution}")
         print(f"Exhaustive Search Optimal Cost: {opt_cost}")
-        print(f"Time taken: {ex_time:.2f} seconds")
         
         # 5. Compare the results.
         error = abs(vqa_cost - opt_cost)

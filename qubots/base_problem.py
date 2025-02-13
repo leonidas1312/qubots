@@ -10,7 +10,6 @@ class BaseProblem(ABC):
     def evaluate_solution(self, solution) -> float:
         """
         Given a candidate solution, return its objective value (a float).
-        By convention, 'lower' is better (unless otherwise stated).
         """
         pass
 

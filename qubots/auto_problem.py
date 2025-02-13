@@ -8,7 +8,7 @@ from typing import Optional
 
 class AutoProblem:
     """
-    Similar approach as AutoOptimizerGit, but for 'problem_config.json'
+    Similar approach as AutoOptimizer, but for 'problem_config.json'
     which references 'entry_point': 'module:ClassName'.
     """
 
