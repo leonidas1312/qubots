@@ -25,10 +25,10 @@ class AutoProblem:
 
         local_repo_path = cls._clone_or_pull(repo_id, revision, cache_dir)
 
-        # After local_repo_path is set:
+        # Install dependencies from requirements.txt if it exists
         req_file = Path(local_repo_path) / "requirements.txt"
         if req_file.is_file():
-            subprocess.run(["pip", "install", "-r", str(req_file)], check=True)
+            subprocess.run([sys.executable, "-m", "pip", "install", "-r", str(req_file)], check=True)
 
         # Load problem configuration
         config_path = Path(local_repo_path) / "problem_config.json"
@@ -78,5 +78,3 @@ class AutoProblem:
             subprocess.run(["git", "reset", "--hard", f"origin/{revision}"], cwd=local_repo_path, check=True)
 
         return local_repo_path
-
-

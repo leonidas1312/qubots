@@ -9,7 +9,7 @@ from typing import Optional
 class AutoOptimizer:
     """
     A loader that clones/pulls a GitHub repo containing
-    solver code + a solver_config.json with an `entry_point` and `default_params`.
+    solver code and a solver_config.json with an `entry_point` and `default_params`.
     """
 
     @classmethod
@@ -44,6 +44,11 @@ class AutoOptimizer:
         else:
             final_params = default_params
 
+        # Install dependencies from requirements.txt if it exists
+        req_path = Path(local_repo_path) / "requirements.txt"
+        if req_path.is_file():
+            subprocess.run([sys.executable, "-m", "pip", "install", "-r", str(req_path)], check=True)
+
         # Dynamic import and instantiate the solver class
         module_path, class_name = entry_point.split(":")
         if str(local_repo_path) not in sys.path:
@@ -74,4 +79,3 @@ class AutoOptimizer:
             subprocess.run(["git", "reset", "--hard", f"origin/{revision}"], cwd=local_repo_path, check=True)
 
         return local_repo_path
-

@@ -4,7 +4,7 @@ Qubots is a Python library that turns optimization problems and optimization alg
 
 ## Rastion Hub:
 
-Rastion serves as the central repository hub for all qubots-related projects. On the Rastion page you’ll find detailed documentation, guides on usage, contribution instructions, and real-world use cases that demonstrate how to combine and chain qubots for advanced optimization workflows.
+Rastion serves as the central repository hub for all qubots-related projects. On the Rastion page you’ll find detailed documentation, guides on usage, contribution instructions, and real-world use cases that demonstrate how to combine and chain qubots for advanced optimization workflows. Visit the demo page here: https://repo-bloom-portal.lovable.app/
 
 ## Table of Contents
 
@@ -36,23 +36,22 @@ Qubots is available on PyPI. To install, simply run:
 pip install qubots
 ```
 
-For full documentation and guides, please visit the Rastion Hub.
+For full documentation and guides, please visit the Rastion Hub demo page (https://repo-bloom-portal.lovable.app/).
 
 ## Getting Started
 
-Here’s a brief example showing how to load a problem and a solver from the Rastion hub, then run an optimization:
+Here’s a brief example showing how to load a problem and a solver from the Rastion hub, then run the optimization:
 
 ```python
 from qubots.auto_problem import AutoProblem
 from qubots.auto_optimizer import AutoOptimizer
 
 # Load the portfolio optimization problem from the Rastion GitHub repository.
-problem = AutoProblem.from_repo("Rastion/portfolio-optimization", revision="main")
+problem = AutoProblem.from_repo("Rastion/portfolio-optimization")
 
 # Load the Particle Swarm Optimizer with overridden parameters.
 optimizer = AutoOptimizer.from_repo(
     "Rastion/particle-swarm",
-    revision="main",
     override_params={"swarm_size": 60, "max_iters": 500}
 )
 
@@ -97,10 +96,11 @@ To encourage modularity and collaboration, qubots can be dynamically loaded from
 
 - **AutoOptimizer**
   - Follows a similar process using a `solver_config.json` file.
+  - Installs required packages (via `requirements.txt`).
   - Merges default parameters with any user-supplied `override_params`.
   - Dynamically loads the optimizer class and returns an instance ready for use.
 
-This design allows developers to share their work as self-contained GitHub repos that anyone can load, test, and incorporate into larger workflows.
+This design allows developers to share their work as self-contained GitHub repos that anyone can load, test, and incorporate into larger workflows. **Remote execution of python code files, including installing packages via requirements.txt, is not a good practice**. For this reason it is suggested to use Rastion & Qubots in a secure environment using `python -m venv` or `conda create --name my_rastion_env python=3.9`. Developing a sandbox environment & shareable object for qubots should definitely be in the future plans.
 
 ### Chaining and Pipelines
 
@@ -123,20 +123,17 @@ The package includes a set of command-line utilities (via the `rastion` script) 
 For example, to run a solver from the command line:
 
 ```bash
-rastion run_solver Rastion/my-solver-repo --solver-rev main --problem-repo Rastion/my-problem-repo --problem-rev main
+rastion run_solver Rastion/particle-swarm --problem-repo Rastion/max-cut
 ```
 
-## Use Cases & Examples
+Most CLI tools need a verified github token to work. Currently this github token must be from a member of the Rastion org. We are working on a way to make Rastion automate this process (via a login option to the website).
 
-The `examples/` directory contains numerous real-world examples and test cases, including:
+## Examples
 
-- **Portfolio Optimization**: Solve financial portfolio optimization problems using Particle Swarm Optimizer.
-- **MaxCut, Graph Coloring, Knapsack**: Classic combinatorial optimization problems with custom QUBO formulations.
-- **Quantum Optimization**: Implementations of QAOA and VQE for quantum-based optimization.
-- **Continuous Optimization Tests**: Compare solvers on classical continuous functions (Quadratic, Rosenbrock, Rastrigin) using grid search as a benchmark.
-- **Chained Optimization**: Demonstrate independent and chained optimizer runs, showing how sequential refinement can improve solution quality.
+The `examples/` directory contains some examples and test cases, including:
 
-Each example illustrates how to instantiate problems and solvers, override default parameters, and integrate them into complete optimization pipelines.
+- **Implemented tests**: Tests about the qubots library that have been tested to working locally.
+- **Testing to do**: Tests that fail locally.
 
 ## Contributing
 

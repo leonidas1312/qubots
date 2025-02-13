@@ -38,12 +38,11 @@ def verify_github_token(token: str) -> str:
         typer.echo("ERROR: Could not determine the username from the token.")
         raise typer.Exit(1)
 
-    # Check if the user is a member of the organization
-    membership_url = f"{GITHUB_API}/orgs/{org}/people/{username}"
+    membership_url = f"{GITHUB_API}/orgs/{org}/members/{username}"
     membership_response = requests.get(
         membership_url, headers={"Authorization": f"token {token}"}
     )
-    
+
     return username
 
 
@@ -58,7 +57,6 @@ def require_valid_token(func):
         if not github_token:
             typer.echo("ERROR: GitHub token not provided. Use --github-token or set GITHUB_TOKEN env var.")
             raise typer.Exit(1)
-        # Verify the token and org membership
         verify_github_token(github_token)
         return func(*args, **kwargs)
     return wrapper
@@ -72,15 +70,36 @@ def generate_requirements_for_repo(repo_dir: Path):
     subprocess.run(["pipreqs", str(repo_dir), "--force", "--ignore", ".git", "--mode", "no-pin"], check=True)
 
 
+def copy_source(source: Path, destination: Path):
+    """
+    Copies the contents of the source (file or directory) into the destination directory.
+    If source is a directory, its entire content is copied (skipping .git).
+    If source is a file, it is copied directly.
+    """
+    if source.is_dir():
+        for item in source.iterdir():
+            if item.name == ".git":
+                continue
+            dest = destination / item.name
+            if item.is_dir():
+                if dest.exists():
+                    shutil.rmtree(dest)
+                shutil.copytree(item, dest)
+            else:
+                shutil.copy(item, dest)
+    else:
+        shutil.copy(source, destination / source.name)
+
+
 @app.command(name="create_repo")
 @require_valid_token
 def create_repo(
     repo_name: str = typer.Argument(..., help="Name of the new GitHub repo"),
-    private: bool = typer.Option(False, "--private", is_flag=True, help="Omit for public repo, use for private repo"),
+    private: bool = typer.Option(False, "--private", is_flag=True, help="Use for private repo; omit for public repo"),
     github_token: str = typer.Option(..., envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
 ):
     """
-    Create a new GitHub repo under the 'Rastion' org.
+    Create a new GitHub repo under the 'Rastion' organization.
     """
     url = f"{GITHUB_API}/orgs/{org}/repos"
     headers = {"Authorization": f"token {github_token}"}
@@ -101,7 +120,7 @@ def create_repo(
             readme.write("# Initialized repository\n")
         run(["git", "add", "."], cwd=temp_repo_dir, check=True)
         run(["git", "commit", "-m", "Initial commit to create main branch"], cwd=temp_repo_dir, check=True)
-        run(["git", "branch", "-M", "main"], cwd=temp_repo_dir, check=True)  # Rename to 'main'
+        run(["git", "branch", "-M", "main"], cwd=temp_repo_dir, check=True)
         run(["git", "push", "-u", "origin", "main"], cwd=temp_repo_dir, check=True)
 
     data = resp.json()
@@ -113,12 +132,12 @@ def create_repo(
 @require_valid_token
 def update_repo(
     repo_name: str = typer.Argument(..., help="Name of the repository to update"),
-    local_dir: str = typer.Option(".", "--local-dir", help="Local directory with updated files"),
+    source: str = typer.Option(".", "--source", help="Local directory with updated files"),
     branch: str = typer.Option("main", "--branch", help="Branch to update (default 'main')"),
     github_token: str = typer.Option(..., envvar="GITHUB_TOKEN", help="Your GitHub personal access token")
 ):
     """
-    Update an existing GitHub repo with new local changes.
+    Update an existing GitHub repo with new local changes from a source directory.
     """
     repo_url = f"https://github.com/{org}/{repo_name}.git"
     typer.echo(f"Updating repository '{repo_name}' from organization '{org}' using branch '{branch}'...")
@@ -129,19 +148,10 @@ def update_repo(
         typer.echo("Cloning repository...")
         subprocess.run(clone_cmd, cwd=".", check=True)
         
-        local_path = Path(local_dir).resolve()
+        source_path = Path(source).resolve()
         repo_path = Path(tmp_dir)
-        typer.echo(f"Copying files from {local_path} to repository clone...")
-        for item in local_path.iterdir():
-            if item.name == ".git":
-                continue
-            dest = repo_path / item.name
-            if item.is_dir():
-                if dest.exists():
-                    shutil.rmtree(dest)
-                shutil.copytree(item, dest)
-            else:
-                shutil.copy(item, dest)
+        typer.echo(f"Copying files from {source_path} to repository clone...")
+        copy_source(source_path, repo_path)
         
         typer.echo("Staging changes...")
         subprocess.run(["git", "add", "."], cwd=repo_path, check=True)
@@ -197,36 +207,32 @@ def clone_repo(
 @require_valid_token
 def push_solver(
     repo_name: str = typer.Argument(..., help="Name of the solver repo (must already exist)"),
-    local_file: str = typer.Option(..., "--file", help="Path to the local .py solver file"),
-    solver_config: str = typer.Option(..., "--config", help="Path to solver_config.json"),
+    source: str = typer.Option(..., "--source", help="Path to the local directory containing solver files"),
     github_token: str = typer.Option(..., envvar="GITHUB_TOKEN", help="Your GitHub personal access token"),
     branch: str = typer.Option("main", "--branch", help="Branch name to push to")
 ):
     """
-    Push a local solver .py file + solver_config.json to an existing GitHub repo.
+    Push the contents of a local source directory (containing solver code, config, etc.)
+    to an existing GitHub repo.
     """
     repo_url = f"https://github.com/{org}/{repo_name}.git"
     tmp_dir = tempfile.mkdtemp(prefix="rastion_")
-    typer.echo(f"Cloning {repo_url} into temp dir: {tmp_dir}")
+    typer.echo(f"Cloning {repo_url} into temporary directory: {tmp_dir}")
     subprocess.run(["git", "clone", repo_url, "--branch", branch], cwd=tmp_dir, check=True)
     local_repo_dir = Path(tmp_dir) / repo_name
 
-    solver_py = Path(local_file)
-    config_json = Path(solver_config)
-    if not solver_py.is_file():
-        typer.echo(f"ERROR: {solver_py} not found.")
-        raise typer.Exit(1)
-    if not config_json.is_file():
-        typer.echo(f"ERROR: {config_json} not found.")
+    source_path = Path(source)
+    if not source_path.exists():
+        typer.echo(f"ERROR: The source path '{source_path}' does not exist.")
         raise typer.Exit(1)
 
-    shutil.copy(str(solver_py), str(local_repo_dir / solver_py.name))
-    shutil.copy(str(config_json), str(local_repo_dir / "solver_config.json"))
+    copy_source(source_path, local_repo_dir)
 
+    # Automatically generate/update requirements.txt using pipreqs.
     generate_requirements_for_repo(local_repo_dir)
 
     subprocess.run(["git", "add", "."], cwd=local_repo_dir, check=True)
-    subprocess.run(["git", "commit", "-m", "Add solver code & config"], cwd=local_repo_dir, check=True)
+    subprocess.run(["git", "commit", "-m", "Add/Update solver code & config"], cwd=local_repo_dir, check=True)
     subprocess.run(["git", "push", "origin", branch], cwd=local_repo_dir, check=True)
 
     typer.echo("Solver pushed to GitHub successfully!")
@@ -236,36 +242,31 @@ def push_solver(
 @require_valid_token
 def push_problem(
     repo_name: str = typer.Argument(..., help="Name of the problem repo (must already exist)"),
-    local_file: str = typer.Option(..., "--file", help="Path to the local .py problem file"),
-    problem_config: str = typer.Option(..., "--config", help="Path to problem_config.json"),
+    source: str = typer.Option(..., "--source", help="Path to the local directory containing problem files"),
     github_token: str = typer.Option(..., envvar="GITHUB_TOKEN", help="Your GitHub personal access token"),
     branch: str = typer.Option("main", "--branch", help="Branch name to push to")
 ):
     """
-    Push a local problem .py file + problem_config.json to an existing GitHub repo.
+    Push the contents of a local source directory (containing problem code, config, etc.)
+    to an existing GitHub repo.
     """
     repo_url = f"https://github.com/{org}/{repo_name}.git"
     tmp_dir = tempfile.mkdtemp(prefix="rastion_")
-    typer.echo(f"Cloning {repo_url} into temp dir: {tmp_dir}")
+    typer.echo(f"Cloning {repo_url} into temporary directory: {tmp_dir}")
     subprocess.run(["git", "clone", repo_url, "--branch", branch], cwd=tmp_dir, check=True)
     local_repo_dir = Path(tmp_dir) / repo_name
 
-    prob_py = Path(local_file)
-    config_json = Path(problem_config)
-    if not prob_py.is_file():
-        typer.echo(f"ERROR: {prob_py} not found.")
-        raise typer.Exit(1)
-    if not config_json.is_file():
-        typer.echo(f"ERROR: {config_json} not found.")
+    source_path = Path(source)
+    if not source_path.exists():
+        typer.echo(f"ERROR: The source path '{source_path}' does not exist.")
         raise typer.Exit(1)
 
-    shutil.copy(str(prob_py), str(local_repo_dir / prob_py.name))
-    shutil.copy(str(config_json), str(local_repo_dir / "problem_config.json"))
+    copy_source(source_path, local_repo_dir)
 
     generate_requirements_for_repo(local_repo_dir)
 
     subprocess.run(["git", "add", "."], cwd=local_repo_dir, check=True)
-    subprocess.run(["git", "commit", "-m", "Add problem code & config"], cwd=local_repo_dir, check=True)
+    subprocess.run(["git", "commit", "-m", "Add/Update problem code & config"], cwd=local_repo_dir, check=True)
     subprocess.run(["git", "push", "origin", branch], cwd=local_repo_dir, check=True)
 
     typer.echo("Problem pushed to GitHub successfully!")
@@ -279,8 +280,7 @@ def run_solver(
     problem_revision: str = typer.Option("main", "--problem-rev", help="Problem branch or tag"),
 ):
     """
-    Clone or pull the solver repo from GitHub, load the solver, 
-    optionally also load a problem from another repo, 
+    Clone (or pull) the solver repo from GitHub, load the solver, optionally also load a problem from another repo,
     then call solver.optimize(problem).
     """
     typer.echo(f"Loading solver from: {solver_repo}@{solver_revision}")
