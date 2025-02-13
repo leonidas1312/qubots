@@ -11,7 +11,7 @@ authors = [
 ]
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 keywords = ["optimization", "quantum", "classical", "cli", "community", "operation research", "decision variables", "QUBO"]
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -21,7 +21,8 @@ classifiers = [
 dependencies = [
     "typer",
     "requests",
-    "python-dotenv"
+    "python-dotenv",
+    "pipreqs"
 ]
 
 [project.scripts]
