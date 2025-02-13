@@ -88,7 +88,7 @@ def main():
         problem_repo="max-cut",
         problem_name="MaxCut",
         classical_repo="rl-optimizer",
-        vqa_repo="vqa-qubit-eff",
+        vqa_repo="quantum-vqe",
         exhaustive_repo="exhaustive-search"
     )
     
@@ -96,7 +96,7 @@ def main():
         problem_repo="graph-coloring",
         problem_name="Graph Coloring",
         classical_repo="rl-optimizer",
-        vqa_repo="vqa-qubit-eff",
+        vqa_repo="quantum-vqe",
         exhaustive_repo="exhaustive-search"
     )
     
@@ -104,7 +104,7 @@ def main():
         problem_repo="gate-assignment",
         problem_name="Gate-assignment",
         classical_repo="rl-optimizer",
-        vqa_repo="vqa-qubit-eff",
+        vqa_repo="quantum-vqe",
         exhaustive_repo="exhaustive-search"
     )
 

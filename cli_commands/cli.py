@@ -24,7 +24,7 @@ def generate_requirements_for_repo(repo_dir: Path):
     It will force overwrite any existing file and ignore the .git folder.
     """
     # Run pipreqs on the repository directory. The "--force" flag overwrites any existing file.
-    subprocess.run(["pipreqs", str(repo_dir), "--force", "--ignore", ".git"], check=True)
+    subprocess.run(["pipreqs", str(repo_dir), "--force", "--ignore", ".git", "--mode", "no-pin"], check=True)
 
 
 @app.command(name="create_repo")

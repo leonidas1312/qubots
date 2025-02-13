@@ -1,9 +1,0 @@
-{
-    "entry_point": "rl_optimizer:RLLocalSearchOptimizer",
-    "default_params": {
-      "time_limit": 5,
-      "temperature": 10,
-      "verbose": false
-    }
-  }
-  
