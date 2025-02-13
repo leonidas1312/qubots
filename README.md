@@ -155,7 +155,6 @@ This project is licensed under the [Apache License 2.0](./LICENSE).
 
 By leveraging the flexible design of qubots and the collaborative power of Rastion, you can rapidly prototype, share, and improve optimization solutions—be it for classical problems, quantum algorithms, or hybrid systems.
 
-Happy optimizing!
 
-For more information, visit the Rastion Hub and check out our detailed docs and guides.
+For more information, contact gleonidas303@gmail.com.
 
