@@ -22,7 +22,7 @@ org = "Rastion"
 def verify_github_token(token: str) -> str:
     """
     Verifies that the provided GitHub token is valid and that the user
-    is a member of the 'Rastion' organization.
+    is a member of the 'Rastion' org.
     Returns the GitHub username if the token is valid.
     """
     # Validate token by fetching user data
