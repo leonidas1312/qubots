@@ -1,8 +1,12 @@
 # Qubots: A Collaborative Optimization Framework
 
+[![PyPI version](https://img.shields.io/pypi/v/qubots.svg)](https://test.pypi.org/project/qubots/)
+[![Build Status](https://github.com/leonidas1312/qubots/actions/workflows/publish.yml/badge.svg)](https://github.com/leonidas1312/qubots/actions)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+
 Qubots is a Python library that turns optimization problems and optimization algorithms (optimizers) into shareable, modular “qubots”. Whether you’re developing a new optimizer or formulating a complex problem, qubots makes it easy to package, share, and run your work. Through our central hub, Rastion, you can browse, download, and contribute to a growing ecosystem of GitHub repositories dedicated to cutting-edge optimization – spanning classical, quantum, and hybrid methods.
 
-## Rastion Hub:
+## Rastion
 
 Rastion serves as the central repository hub for all qubots-related projects. On the Rastion page you’ll find detailed documentation, guides on usage, contribution instructions, and real-world use cases that demonstrate how to combine and chain qubots for advanced optimization workflows. Visit the demo page here: https://repo-bloom-portal.lovable.app/
 
@@ -36,7 +40,7 @@ Qubots is available on PyPI. To install, simply run:
 pip install qubots
 ```
 
-For full documentation and guides, please visit the Rastion Hub demo page (https://repo-bloom-portal.lovable.app/).
+For full documentation and guides, please visit the Rastion Hub demo page https://repo-bloom-portal.lovable.app/docs .
 
 ## Getting Started
 
