@@ -67,7 +67,15 @@ def generate_requirements_for_repo(repo_dir: Path):
     Uses pipreqs to automatically generate a requirements.txt file for the given repo directory.
     It will force overwrite any existing file and ignore the .git folder.
     """
-    subprocess.run(["pipreqs", str(repo_dir), "--force", "--ignore", ".git", "--mode", "no-pin"], check=True)
+    try:
+        subprocess.run(
+            ["pipreqs", str(repo_dir), "--force", "--ignore", ".git", "--mode", "no-pin"],
+            check=True
+        )
+    except subprocess.CalledProcessError as e:
+        typer.echo("Error running pipreqs. Please ensure pipreqs is installed (pip install pipreqs) and try again.")
+        raise
+
 
 
 def copy_source(source: Path, destination: Path):
