@@ -49,7 +49,7 @@ def verify_github_token(token: str) -> str:
 def require_valid_token(func):
     """
     Decorator to ensure that a valid GitHub token is provided and that
-    the token belongs to a member of the Rastion organization.
+    the token belongs to a member of the Rastion org.
     """
     @wraps(func)
     def wrapper(*args, **kwargs):
