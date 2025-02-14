@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qubots"
-version = "0.1.0"
+version = "0.1.1"
 description = "A collaborative platform for the optimization community."
 authors = [
     { name = "Ioannis D. Leonidas", email = "gleonidas303@gmail.com" }
@@ -22,7 +22,6 @@ dependencies = [
     "typer",
     "requests",
     "python-dotenv",
-    "pipreqs"
 ]
 
 [project.scripts]
