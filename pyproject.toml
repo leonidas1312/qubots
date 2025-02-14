@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qubots"
-version = "0.1.1"
+version = "0.1.2"
 description = "A collaborative platform for the optimization community."
 authors = [
     { name = "Ioannis D. Leonidas", email = "gleonidas303@gmail.com" }
