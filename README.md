@@ -3,6 +3,8 @@
 [![PyPI version](https://img.shields.io/pypi/v/qubots.svg)](https://test.pypi.org/project/qubots/)
 [![Build Status](https://github.com/leonidas1312/qubots/actions/workflows/publish.yml/badge.svg)](https://github.com/leonidas1312/qubots/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/leonidas1312/qubots.svg)](https://github.com/leonidas1312/qubots/issues)
+[![GitHub forks](https://img.shields.io/github/forks/leonidas1312/qubots.svg)](https://github.com/leonidas1312/qubots/network)
 
 Qubots is a Python library that turns optimization problems and optimization algorithms (optimizers) into shareable, modular “qubots”. Whether you’re developing a new optimizer or formulating a complex problem, qubots makes it easy to package, share, and run your work. Through our central hub, Rastion, you can browse, download, and contribute to a growing ecosystem of GitHub repositories dedicated to cutting-edge optimization – spanning classical, quantum, and hybrid methods.
 
