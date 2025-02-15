@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qubots"
-version = "0.1.2"
+version = "0.1.3"
 description = "A collaborative optimization framework."
 authors = [
     { name = "Ioannis D. Leonidas", email = "gleonidas303@gmail.com" }
@@ -12,7 +12,7 @@ authors = [
 license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.9"
-keywords = ["optimization", "quantum", "classical", "cli", "community", "operation research", "decision variables", "QUBO"]
+keywords = ["optimization", "quantum", "classical", "community", "operation research", "decision variables"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
@@ -23,10 +23,6 @@ dependencies = [
     "requests",
     "python-dotenv",
 ]
-
-[project.scripts]
-rastion = "cli_commands.cli:main"
-
 
 [project.urls]
 "Source" = "https://github.com/leonidas1312/qubots/tree/main"
