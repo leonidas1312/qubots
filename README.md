@@ -1,6 +1,6 @@
 # Qubots: A Collaborative Optimization Framework
 
-[![PyPI version](https://img.shields.io/pypi/v/qubots.svg)](https://test.pypi.org/project/qubots/)
+[![PyPI version](https://img.shields.io/pypi/v/qubots.svg)](https://pypi.org/project/qubots/)
 [![Build Status](https://github.com/leonidas1312/qubots/actions/workflows/publish.yml/badge.svg)](https://github.com/leonidas1312/qubots/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/leonidas1312/qubots.svg)](https://github.com/leonidas1312/qubots/issues)
