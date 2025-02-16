@@ -10,7 +10,7 @@ Qubots is a Python library that turns optimization problems and optimization alg
 
 ## Rastion
 
-Rastion serves as the central repository hub for all qubots-related projects. On the Rastion page you’ll find detailed documentation, guides on usage, contribution instructions, and real-world use cases that demonstrate how to combine and chain qubots for advanced optimization workflows. Visit the demo page here: https://repo-bloom-portal.lovable.app/
+Rastion serves as the central repository hub for all qubots-related projects. On the Rastion page you’ll find detailed documentation, guides on usage, contribution instructions, and real-world use cases that demonstrate how to combine and chain qubots for advanced optimization workflows. Visit the demo page here: https://rastion.netlify.app/
 
 ## Table of Contents
 
@@ -21,7 +21,6 @@ Rastion serves as the central repository hub for all qubots-related projects. On
   - [Base Classes](#base-classes)
   - [Dynamic Qubot Loading: AutoProblem & AutoOptimizer](#dynamic-qubot-loading-autoproblem--autooptimizer)
   - [Chaining and Pipelines](#chaining-and-pipelines)
-  - [CLI Tools](#cli-tools)
 - [Use Cases & Examples](#use-cases--examples)
 - [Contributing](#contributing)
 - [License](#license)
@@ -42,7 +41,7 @@ Qubots is available on PyPI. To install, simply run:
 pip install qubots
 ```
 
-For full documentation and guides, please visit the Rastion Hub demo page https://repo-bloom-portal.lovable.app/docs .
+For full documentation and guides, please visit the Rastion Hub demo page https://rastion.netlify.app/docs .
 
 ## Getting Started
 
@@ -53,6 +52,7 @@ from qubots.auto_problem import AutoProblem
 from qubots.auto_optimizer import AutoOptimizer
 
 # Load the portfolio optimization problem from the Rastion GitHub repository.
+# By default this toy portfolio optimization problem is solved if the sum of the 3 elements to be equal to 1.
 problem = AutoProblem.from_repo("Rastion/portfolio-optimization")
 
 # Load the Particle Swarm Optimizer with overridden parameters.
@@ -117,22 +117,6 @@ Qubots also supports more advanced patterns:
 - **Chained Refinement**: Sequentially refine a solution by passing the output of one optimizer as the initial solution for the next.
 
 - **Quantum-Classical Pipelines**: The `QuantumClassicalPipeline` class (and its helper function `create_quantum_classical_pipeline`) enables you to combine a quantum routine with a classical optimizer. For example, a quantum solver might generate a candidate solution which is then refined by a classical optimizer.
-
-### CLI Tools
-
-The package includes a set of command-line utilities (via the `rastion` script) to:
-
-- **Create, Update, and Delete Repositories**: Easily manage GitHub repositories under the Rastion organization.
-- **Push Solver and Problem Code**: Automate the process of packaging your qubot (along with its configuration and dependencies) and pushing it to GitHub.
-- **Run Solvers Directly**: Load a solver and a problem from GitHub repositories and run the optimization in one command.
-
-For example, to run a solver from the command line:
-
-```bash
-rastion run_solver Rastion/particle-swarm --problem-repo Rastion/max-cut
-```
-
-Most CLI tools need a verified github token to work. Currently this github token must be from a member of the Rastion org. We are working on a way to make Rastion automate this process (via a login option to the website).
 
 ## Examples
 
