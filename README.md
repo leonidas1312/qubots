@@ -21,6 +21,7 @@ Rastion serves as the central repository hub for all qubots-related projects. On
   - [Base Classes](#base-classes)
   - [Dynamic Qubot Loading: AutoProblem & AutoOptimizer](#dynamic-qubot-loading-autoproblem--autooptimizer)
   - [Chaining and Pipelines](#chaining-and-pipelines)
+- [Roadmap](#roadmap)
 - [Use Cases & Examples](#use-cases--examples)
 - [Contributing](#contributing)
 - [License](#license)
@@ -117,6 +118,51 @@ Qubots also supports more advanced patterns:
 - **Chained Refinement**: Sequentially refine a solution by passing the output of one optimizer as the initial solution for the next.
 
 - **Quantum-Classical Pipelines**: The `QuantumClassicalPipeline` class (and its helper function `create_quantum_classical_pipeline`) enables you to combine a quantum routine with a classical optimizer. For example, a quantum solver might generate a candidate solution which is then refined by a classical optimizer.
+
+## Roadmap
+
+We're building Qubots into an open source optimization community! Here's our trajectory:
+
+- ✅ **Core Framework (v0.1.2)**  
+  Launched dynamic loading of qubots, hybrid pipelines, CLI tools and guides
+
+- 🚧 **Metadata & Compatibility (Current Focus)**  
+  Adding problem/optimizer tags and validation tools for:  
+  - *Quantum Computing* (QAOA optimizers, Ising models)  
+  - *Operations Research* (TSP solvers, scheduling problems)  
+  - *Machine Learning* (Hyperparameter tuning, NAS frameworks)  
+
+- ⏳ **Hardware-Compatible Ecosystem**  
+  - Quantum Backends (Qiskit, Braket, D-Wave integration)  
+  - GPU Accelerated Optimizers (PyTorch/TF integration)  
+  - Edge Device Deployment (ONNX-optimized qubots)
+
+- ⏳ **Domain-Specific Qubots**  
+  **First Wave Targets:**  
+  - 🧪 *Chemical Engineering*  
+    - Molecular docking problems  
+    - Quantum chemistry optimizers  
+  - ✈️ *Aerospace Design*  
+    - CFD parameter optimization  
+    - Lightweight structure solvers  
+  - 🔐 *Cryptography*  
+    - Lattice-based optimization  
+    - Post-quantum crypto challenges  
+
+- ⏳ **Rastion Hub Expansion**  
+  - Domain-specific leaderboards  
+  - Hardware compatibility filters  
+  - User-curated collections  
+  - Live optimization visualizations
+
+- ⏳ **Real-World Impact Programs**  
+  Partnered challenges in:  
+  - Climate Tech (Carbon capture optimization)  
+  - Healthcare (Drug discovery pipelines)  
+  - Logistics (Last-mile delivery optimizers)
+
+
+
 
 ## Examples
 
