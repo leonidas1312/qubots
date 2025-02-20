@@ -52,21 +52,32 @@ Here’s a brief example showing how to load a problem and a solver from the Ras
 from qubots.auto_problem import AutoProblem
 from qubots.auto_optimizer import AutoOptimizer
 
-# Load the portfolio optimization problem from the Rastion GitHub repository.
-# By default this toy portfolio optimization problem is solved if the sum of the 3 elements to be equal to 1.
-problem = AutoProblem.from_repo("Rastion/portfolio-optimization")
+# Load qubot problem
+problem = AutoProblem.from_repo("Rastion/traveling_salesman_problem")
 
-# Load the Particle Swarm Optimizer with overridden parameters.
-optimizer = AutoOptimizer.from_repo(
-    "Rastion/particle-swarm",
-    override_params={"swarm_size": 60, "max_iters": 500}
+# Load first qubot optimizer based on ortools and constraint programming logic for TSP
+optimizer1 = AutoOptimizer.from_repo(
+    "Rastion/ortools_tsp_solver"
 )
 
-# Run the optimization and print results.
-best_solution, best_cost = optimizer.optimize(problem)
-print("Portfolio Optimization with PSO")
-print("Best Solution:", best_solution)
-print("Best Cost:", best_cost)
+# Run optimization
+best_solution, best_cost = optimizer1.optimize(problem)
+print(f"Best cost: {best_cost}")
+print(f"Best solution: {best_solution}")
+
+# Load second qubot optimizer based on a heuristic simulated annealing algorithm
+# that solves the QUBO formulation of the TSP qubot problem and decodes the solution back to 
+# original format
+optimizer2 = AutoOptimizer.from_repo(
+    "Rastion/sa_tsp_qubo_optimizer",
+    #override_params={"initial_temp": 100000, "cooling_rate": 0.9}
+)
+
+# Run optimization
+best_solution, best_cost = optimizer2.optimize(problem)
+print(f"Best cost: {best_cost}")
+print(f"Best solution: {best_solution}")
+
 ```
 
 This simple workflow demonstrates how qubots allow you to plug and play various optimization modules with minimal boilerplate.
@@ -121,16 +132,15 @@ Qubots also supports more advanced patterns:
 
 ## Roadmap
 
-We're building Qubots into an open source optimization community! Here's our trajectory:
+We're building qubots into an open source optimization community! Here's our trajectory:
 
 - ✅ **Core Framework (v0.1.2)**  
   Launched dynamic loading of qubots, hybrid pipelines, CLI tools and guides
 
 - 🚧 **Metadata & Compatibility (Current Focus)**  
   Adding problem/optimizer tags and validation tools for:  
-  - *Quantum Computing* (QAOA optimizers, Ising models)  
-  - *Operations Research* (TSP solvers, scheduling problems)  
-  - *Machine Learning* (Hyperparameter tuning, NAS frameworks)  
+  - *Qubot problems* (Combinatorial, Linear & Integer programming, Math functions)  
+  - *Qubot optimizers* (TSP solvers, scheduling problems)
 
 - ⏳ **Hardware-Compatible Ecosystem**  
   - Quantum Backends (Qiskit, Braket, D-Wave integration)  
@@ -155,12 +165,6 @@ We're building Qubots into an open source optimization community! Here's our tra
   - User-curated collections  
   - Live optimization visualizations
 
-- ⏳ **Real-World Impact Programs**  
-  Partnered challenges in:  
-  - Climate Tech (Carbon capture optimization)  
-  - Healthcare (Drug discovery pipelines)  
-  - Logistics (Last-mile delivery optimizers)
-
 
 
 
@@ -173,14 +177,9 @@ The `examples/` directory contains some examples and test cases, including:
 
 ## Contributing
 
-We welcome contributions to expand the qubots ecosystem! Here’s how you can get involved:
+We welcome contributions to expand the qubots ecosystem! 
 
-- **Report Issues**: If you encounter bugs or have feature suggestions, please open an issue on the GitHub repository.
-- **Submit Pull Requests**: Follow the coding guidelines and ensure that your changes include tests and documentation updates as needed.
-- **Share Your Qubots**: Have an innovative optimizer or an interesting problem formulation? Create a GitHub repo under the Rastion organization and share it via the Rastion hub.
-- **Improve Documentation**: Enhance guides, tutorials, and examples to help others get started with qubots.
-
-For more detailed contribution guidelines, please refer to our `CONTRIBUTING.md`.
+For more detailed contribution guidelines, please refer to our www.rastion.com/docs.
 
 ## License
 
