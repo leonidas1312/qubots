@@ -10,7 +10,7 @@ Qubots is a Python library that turns optimization problems and optimization alg
 
 ## Rastion
 
-Rastion serves as the central repository hub for all qubots-related projects. On the Rastion page you’ll find detailed documentation, guides on usage, contribution instructions, and real-world use cases that demonstrate how to combine and chain qubots for advanced optimization workflows. Visit the demo page here: https://rastion.netlify.app/
+Rastion serves as the central repository hub for all qubots-related projects. On the Rastion page you’ll find detailed documentation, guides on usage, contribution instructions, and real-world use cases that demonstrate how to combine and chain qubots for advanced optimization workflows. Visit the demo page here: https://rastion.com
 
 ## Table of Contents
 
@@ -42,7 +42,7 @@ Qubots is available on PyPI. To install, simply run:
 pip install qubots
 ```
 
-For full documentation and guides, please visit the Rastion Hub demo page https://rastion.netlify.app/docs .
+For full documentation and guides, please visit the Rastion Hub demo page https://rastion.com/docs .
 
 ## Getting Started
 
