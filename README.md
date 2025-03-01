@@ -16,6 +16,7 @@ Qubots is a Python library that turns optimization problems and optimization alg
   - [Base Classes](#base-classes)
   - [Formulations](#formulations)
   - [Dynamic Qubot Loading: AutoProblem & AutoOptimizer](#dynamic-qubot-loading-autoproblem--autooptimizer)
+- [Community & Qubot Cards](#community--qubot-cards)
 - [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
@@ -91,6 +92,10 @@ To encourage modularity and collaboration, qubots can be dynamically loaded from
   - Dynamically loads the optimizer class and returns an instance ready for use.
 
 This design allows developers to share their work as self-contained GitHub repos that anyone can load, test, and incorporate into larger workflows. **Remote execution of python code files, including installing packages via requirements.txt, is not a good practice**. For this reason it is suggested to use Rastion & Qubots in a secure environment using `python -m venv` or `conda create --name my_rastion_env python=3.9`.
+
+## Community & Qubot Cards 
+
+Each qubot problem and optimizer is served with an additional configuration file we call "qubot card". This file helps the **AutoProblem** and **AutoOptimizer** correctly load qubots by telling them which file contains the base class of the qubot. The qubot card is also designed to keep metadata for helping the **community** better share their work and better organize it on the website where we show all the repositories. For templates see here : 
 
 ## Examples
 
