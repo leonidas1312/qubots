@@ -1,5 +1,4 @@
 import numpy as np
-from collections import defaultdict
 from qubots.base_problem import BaseProblem
 
 class QUBOTSPProblem(BaseProblem):
