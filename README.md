@@ -94,11 +94,7 @@ This design allows developers to share their work as self-contained GitHub repos
 
 ## Examples
 
-The `examples/` directory contains some examples and test cases, including:
-
-- **Implemented tests**: Tests about the qubots library that have been tested to working locally.
-- **Testing to do**: Tests that fail locally.
-
+Please visit https://rastion.com/docs
 ## Contributing
 
 Currently under developement, please sent me an email at jonhkarystos@gmail.com .
