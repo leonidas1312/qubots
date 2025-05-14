@@ -95,7 +95,7 @@ This design allows developers to share their work as self-contained GitHub repos
 
 ## Community & Qubot Cards 
 
-Each qubot problem and optimizer is served with an additional configuration file we call "qubot card". This file helps the **AutoProblem** and **AutoOptimizer** correctly load qubots by telling them which file contains the base class of the qubot. The qubot card is also designed to keep metadata for helping the **community** better share their work and better organize it on the website where we show all the repositories. For templates see here : 
+Each qubot problem and optimizer is served with an additional configuration file we call "qubot card". This file helps the **AutoProblem** and **AutoOptimizer** correctly load qubots by telling them which file contains the base class of the qubot. The qubot card is also designed to keep metadata for helping the **community** better share their work and better organize it on the website where we show all the repositories. 
 
 ## Examples
 

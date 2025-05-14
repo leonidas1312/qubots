@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qubots"
-version = "0.1.5"
+version = "0.1.6"
 description = "A collaborative optimization framework."
 authors = [
     { name = "Ioannis D. Leonidas", email = "gleonidas303@gmail.com" }
@@ -25,7 +25,7 @@ dependencies = [
 ]
 
 [project.urls]
-"Source" = "https://github.com/leonidas1312/qubots/tree/main"
+"Source" = "https://github.com/Rastion/qubots"
 
 [tool.setuptools.packages.find]
 where = ["."]
