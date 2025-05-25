@@ -6,107 +6,278 @@
 [![GitHub issues](https://img.shields.io/github/issues/leonidas1312/qubots.svg)](https://github.com/leonidas1312/qubots/issues)
 [![GitHub forks](https://img.shields.io/github/forks/leonidas1312/qubots.svg)](https://github.com/leonidas1312/qubots/network)
 
-Qubots is a Python library that turns optimization problems and optimization algorithms (optimizers) into shareable, modular “qubots”. The github organization, called Rastion (https://rastion.com), currently serves as a central repository system. 
+**Qubots** is a powerful Python framework that transforms optimization problems and algorithms into shareable, modular components called "qubots". With seamless integration to the [Rastion platform](https://rastion.com), qubots enables collaborative optimization development, sharing, and deployment across domains including routing, scheduling, logistics, finance, energy, and more.
 
-## Table of Contents
+## 🚀 Key Features
 
-- [Installation](#installation)
-- [Getting Started](#getting-started)
-- [Technical Overview](#technical-overview)
-  - [Base Classes](#base-classes)
-  - [Formulations](#formulations)
-  - [Dynamic Qubot Loading: AutoProblem & AutoOptimizer](#dynamic-qubot-loading-autoproblem--autooptimizer)
-- [Community & Qubot Cards](#community--qubot-cards)
-- [Examples](#examples)
-- [Contributing](#contributing)
-- [License](#license)
+- **🔧 Modular Design**: Create reusable optimization components that work together seamlessly
+- **🌐 Cloud Integration**: Upload, share, and load optimization models with the Rastion platform
+- **🎯 Domain-Specific**: Pre-built optimizers for routing, scheduling, logistics, finance, energy, and fantasy sports
+- **⚡ High Performance**: Integration with OR-Tools, CasADi, and other optimization libraries
+- **📊 Benchmarking**: Built-in performance testing and comparison tools
+- **🔍 Discovery**: Search and discover optimization models from the community
+- **📚 Educational**: Comprehensive tutorials and examples for learning optimization
 
-## Installation
+## 📦 Installation
 
-Qubots is available on PyPI. To install, simply run:
+Install qubots from PyPI:
 
 ```bash
 pip install qubots
 ```
 
-## Getting Started
+For domain-specific optimizations, install optional dependencies:
 
-Here’s a brief example showing how to load a problem and a optimizer from the Rastion hub, then run the optimization:
+```bash
+# For routing and scheduling (OR-Tools)
+pip install qubots[routing]
 
-```python
-from qubots.auto_problem import AutoProblem
-from qubots.auto_optimizer import AutoOptimizer
+# For continuous optimization (CasADi)
+pip install qubots[continuous]
 
-# TSP from the Rastion GitHub repository.
-problem = AutoProblem.from_repo("Rastion/traveling_salesman_problem")
-
-# Optimizer that uses ortools to solve the TSP
-ortools_optimizer = AutoOptimizer.from_repo("Rastion/ortools_tsp_solver")
-
-# Run the optimization and print results.
-best_solution, best_cost = optimizer.optimize(problem)
-print("Best Solution:", best_solution)
-print("Best Cost:", best_cost)
+# For all features
+pip install qubots[all]
 ```
 
-## Technical Overview
+## 🚀 Quick Start
 
-### Base Classes
+### Basic Usage
 
-At the core of qubots are two abstract base classes:
+Here's a simple example showing how to create and solve an optimization problem:
 
-- **BaseProblem**
-  - Defines the interface for any optimization problem. Every problem qubot must implement:
-    - `evaluate_solution(solution) -> float`
-      - Computes the objective value (or cost) for a given candidate solution.
-    - `random_solution() (optional)`
-      - Generates a random feasible solution for the problem. Having this function serves as a starting point for optimizers when initial solution is not given. 
+```python
+from qubots import BaseProblem, BaseOptimizer
+import qubots.rastion as rastion
 
-- **BaseOptimizer**
-  - Provides the interface for optimization algorithms. Every optimizer qubot must implement:
-    - `optimize(problem, initial_solution=None, **kwargs) -> (solution, cost)`
-      - Runs the optimization on a given problem, optionally starting from an initial solution.
+# Load a problem from the Rastion platform
+problem = rastion.load_qubots_model("traveling_salesman_problem")
 
-These interfaces ensure that every qubot—whether problem or optimizer—can be seamlessly interchanged and composed. Splitting problem and optimizer information like this helps us build shareable specialized optimizers for **BaseProblem**. That is, we achieve a many-to-one connection of optimizers to problems.
+# Load an optimizer
+optimizer = rastion.load_qubots_model("ortools_tsp_solver")
 
-### Formulations
+# Run optimization
+result = optimizer.optimize(problem)
+print(f"Best Solution: {result.best_solution}")
+print(f"Best Cost: {result.best_value}")
+```
 
-Formulations are what makes problems versatile for optimizers. Different problems can have many formulations or mathematical representations. Since formulations are variants of problem, thus problems themselves, it makes sense to define them as **BaseProblem**.
+### Creating Custom Optimizers
 
-A formulation should contain the logic of transforming **BaseProblem** to the formulation we want **and** the logic of decoding a solution from the formulation problem space back to **BaseProblem**. This ensures that for all the optimizers that uses different formulations of the problem, we have a way to compare them in the original **BaseProblem**. `\qubots\formulations` holds some formulations we tried on the TSP.
+```python
+from qubots import BaseOptimizer, OptimizationResult
 
-### Dynamic Qubot Loading: AutoProblem & AutoOptimizer
+class MyOptimizer(BaseOptimizer):
+    def _optimize_implementation(self, problem, initial_solution=None):
+        # Your optimization logic here
+        solution = problem.get_random_solution()
+        cost = problem.evaluate_solution(solution)
+        
+        return OptimizationResult(
+            best_solution=solution,
+            best_value=cost,
+            iterations=1,
+            runtime_seconds=0.1
+        )
 
-To encourage modularity and collaboration, qubots can be dynamically loaded from GitHub repositories. This is accomplished using:
+# Use your optimizer
+optimizer = MyOptimizer()
+result = optimizer.optimize(problem)
+```
 
-- **AutoProblem**
-  - Clones (or pulls) a repository from GitHub.
-  - Installs required packages (via `requirements.txt`).
-  - Reads a `problem_config.json` file that specifies an `entry_point` (formatted as `module:ClassName`) and default parameters.
-  - Dynamically imports and instantiates the problem qubot.
+## 🌐 Rastion Platform Integration
 
-- **AutoOptimizer**
-  - Follows a similar process using a `solver_config.json` file.
-  - Installs required packages (via `requirements.txt`).
-  - Merges default parameters with any user-supplied `override_params`.
-  - Dynamically loads the optimizer class and returns an instance ready for use.
+Qubots seamlessly integrates with the Rastion platform for model sharing and collaboration:
 
-This design allows developers to share their work as self-contained GitHub repos that anyone can load, test, and incorporate into larger workflows. **Remote execution of python code files, including installing packages via requirements.txt, is not a good practice**. For this reason it is suggested to use Rastion & Qubots in a secure environment using `python -m venv` or `conda create --name my_rastion_env python=3.9`.
+### Authentication
 
-## Community & Qubot Cards 
+```python
+import qubots.rastion as rastion
 
-Each qubot problem and optimizer is served with an additional configuration file we call "qubot card". This file helps the **AutoProblem** and **AutoOptimizer** correctly load qubots by telling them which file contains the base class of the qubot. The qubot card is also designed to keep metadata for helping the **community** better share their work and better organize it on the website where we show all the repositories. 
+# Authenticate with your Rastion token
+rastion.authenticate("your_rastion_token_here")
+```
 
-## Examples
+### Loading Models
 
-Please visit https://rastion.com/docs
-## Contributing
+```python
+# Load any available model with one line
+problem = rastion.load_qubots_model("traveling_salesman_problem")
+optimizer1 = rastion.load_qubots_model("genetic_algorithm_tsp")
 
-Currently under developement, please sent me an email at jonhkarystos@gmail.com .
+# Load with specific username
+optimizer2 = rastion.load_qubots_model("custom_optimizer", username="researcher123")
+```
 
-## License
+### Uploading Models
+
+```python
+# Share your optimization models with the community
+my_optimizer = MyOptimizer()
+url = rastion.upload_model(
+    model=my_optimizer,
+    name="my_awesome_optimizer", 
+    description="A novel optimization algorithm for routing problems",
+    requirements=["numpy", "scipy", "qubots"]
+)
+```
+
+### Model Discovery
+
+```python
+# Search for specific algorithms
+genetic_algorithms = rastion.search_models("genetic algorithm")
+
+# Discover routing optimization models
+routing_models = rastion.discover_models("routing")
+
+# List all available models
+all_models = rastion.discover_models()
+```
+
+## 📚 Domain Examples
+
+Qubots includes comprehensive examples across multiple optimization domains:
+
+### 🚛 Routing and Logistics
+- **Vehicle Routing Problem (VRP)**: Multi-vehicle delivery optimization
+- **Traveling Salesman Problem (TSP)**: Classic route optimization
+- **Supply Chain Optimization**: Warehouse and distribution planning
+
+### ⏰ Scheduling
+- **Job Shop Scheduling**: Manufacturing and production planning
+- **Resource Allocation**: Optimal resource assignment
+- **Project Scheduling**: Timeline and dependency management
+
+### 💰 Finance
+- **Portfolio Optimization**: Risk-return optimization
+- **Asset Allocation**: Investment strategy optimization
+- **Risk Management**: Financial risk minimization
+
+### ⚡ Energy
+- **Power Grid Optimization**: Energy distribution planning
+- **Renewable Energy**: Solar and wind optimization
+- **Energy Storage**: Battery and storage optimization
+
+### 🏈 Fantasy Sports
+- **Fantasy Football**: Lineup optimization with salary constraints
+- **Daily Fantasy Sports**: Multi-contest optimization
+- **Player Selection**: Statistical analysis and optimization
+
+## 🛠️ Creating Custom Optimizers
+
+### Step-by-Step Tutorial
+
+1. **Inherit from Base Classes**:
+```python
+from qubots import BaseOptimizer, OptimizerMetadata
+
+class MyOptimizer(BaseOptimizer):
+    def __init__(self, **params):
+        metadata = OptimizerMetadata(
+            name="My Custom Optimizer",
+            description="Custom optimization algorithm",
+            author="Your Name",
+            version="1.0.0"
+        )
+        super().__init__(metadata, **params)
+```
+
+2. **Implement Optimization Logic**:
+```python
+def _optimize_implementation(self, problem, initial_solution=None):
+    # Your optimization algorithm here
+    best_solution = None
+    best_value = float('inf')
+    
+    for iteration in range(self.max_iterations):
+        # Generate or improve solution
+        solution = self.generate_solution(problem)
+        value = problem.evaluate_solution(solution)
+        
+        if value < best_value:
+            best_solution = solution
+            best_value = value
+    
+    return OptimizationResult(
+        best_solution=best_solution,
+        best_value=best_value,
+        iterations=iteration + 1,
+        runtime_seconds=time.time() - start_time
+    )
+```
+
+3. **Upload to Rastion**:
+```python
+url = rastion.upload_model(
+    model=MyOptimizer(),
+    name="my_optimizer",
+    description="My custom optimization algorithm"
+)
+```
+
+## 📊 Benchmarking and Testing
+
+Qubots includes comprehensive benchmarking tools:
+
+```python
+from qubots import BenchmarkSuite
+
+# Create benchmark suite
+suite = BenchmarkSuite()
+
+# Add optimizers to compare
+suite.add_optimizer("Random Search", RandomSearchOptimizer())
+suite.add_optimizer("Genetic Algorithm", GeneticOptimizer())
+suite.add_optimizer("My Optimizer", MyOptimizer())
+
+# Run benchmarks
+results = suite.run_benchmarks(problem, num_runs=10)
+
+# Generate report
+suite.generate_report(results, "benchmark_results.html")
+```
+
+## 📖 Documentation
+
+- **[Getting Started Guide](docs/guides/getting_started.md)**: Complete beginner tutorial
+- **[Domain Tutorials](docs/tutorials/)**: Step-by-step domain-specific examples
+- **[Rastion Integration](docs/guides/rastion_integration.md)**: Platform integration guide
+- **[API Reference](docs/api/)**: Complete API documentation
+- **[Fantasy Football Tutorial](docs/tutorials/fantasy_football.md)**: 3-file structure examples
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/Rastion/qubots.git
+cd qubots
+
+# Install in development mode
+pip install -e .[dev]
+
+# Run tests
+pytest tests/
+
+# Run benchmarks
+python -m pytest tests/benchmarks/
+```
+
+## 📄 License
 
 This project is licensed under the [Apache License 2.0](./LICENSE).
 
-By leveraging the flexible design of qubots and the collaborative power of Rastion, you can rapidly prototype, share, and improve optimization solutions—be it for classical problems, quantum algorithms, or hybrid systems.
+## 🔗 Links
 
+- **Homepage**: https://rastion.com
+- **Documentation**: https://rastion.com/docs
+- **Repository**: https://github.com/Rastion/qubots
+- **PyPI**: https://pypi.org/project/qubots/
+- **Issues**: https://github.com/Rastion/qubots/issues
+
+---
+
+By leveraging the flexible design of qubots and the collaborative power of Rastion, you can rapidly prototype, share, and improve optimization solutions—be it for classical problems, quantum algorithms, or hybrid systems.

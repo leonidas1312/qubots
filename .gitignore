@@ -1,5 +1,37 @@
 
-examples/
+# Qubots specific ignores
+# =======================
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Validation and development scripts in root
+validate_*.py
+setup_dev_*.py
+cleanup_*.py
+
+# Any loose .py files in root (except setup.py)
+/*.py
+!setup.py
+
+# Local development files
+local_*.py
+dev_*.py
+test_local_*.py
+scratch_*
+debug_*
+
+# Rastion authentication
+.rastion_token
+rastion_config.json
+
+# Local configuration
+config.local.yml
+config.local.yaml
+.env.local
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -174,4 +206,4 @@ cython_debug/
 .ruff_cache/
 
 # PyPI configuration file
-.pypirc".env" 
+.pypirc
