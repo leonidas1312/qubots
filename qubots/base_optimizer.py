@@ -1,4 +1,4 @@
-""" 
+"""
 Base class for optimization algorithms with comprehensive metadata,
 standardized interfaces, and advanced features for the Rastion ecosystem.
 """
@@ -194,7 +194,8 @@ class BaseOptimizer(ABC):
         pass
 
     def optimize(self, problem: BaseProblem, initial_solution: Optional[Any] = None,
-                 progress_callback: Optional[Callable] = None, **kwargs) -> OptimizationResult:
+                 progress_callback: Optional[Callable] = None,
+                 log_callback: Optional[Callable] = None, **kwargs) -> OptimizationResult:
         """
         Main optimization interface with comprehensive tracking and control.
 
@@ -202,6 +203,7 @@ class BaseOptimizer(ABC):
             problem: The optimization problem to solve
             initial_solution: Optional initial solution
             progress_callback: Optional callback for progress updates
+            log_callback: Optional callback for real-time logging (level, message, source)
             **kwargs: Additional parameters that override instance parameters
 
         Returns:
@@ -217,7 +219,15 @@ class BaseOptimizer(ABC):
             self._is_running = True
             self._should_stop = False
             self._progress_callback = progress_callback
+            self._log_callback = log_callback
             start_time = time.time()
+
+            # Log optimization start
+            if log_callback:
+                log_callback('info', f'Starting {self._metadata.name} optimization', 'optimizer')
+                log_callback('info', f'Problem: {problem.metadata.name}', 'optimizer')
+                if merged_params:
+                    log_callback('debug', f'Parameters: {merged_params}', 'optimizer')
 
             # Validate compatibility
             self._validate_problem_compatibility(problem)
@@ -237,6 +247,13 @@ class BaseOptimizer(ABC):
             self._total_runtime += result.runtime_seconds
             self._current_result = result
 
+            # Log completion
+            if log_callback:
+                log_callback('info', f'Optimization completed in {result.runtime_seconds:.3f}s', 'optimizer')
+                log_callback('info', f'Best value: {result.best_value:.6f}', 'optimizer')
+                if hasattr(result, 'iterations'):
+                    log_callback('info', f'Total iterations: {result.iterations}', 'optimizer')
+
             return result
 
         finally:
@@ -244,6 +261,7 @@ class BaseOptimizer(ABC):
             self._is_running = False
             self._should_stop = False
             self._progress_callback = None
+            self._log_callback = None
             self._parameters = original_params
 
     def optimize_legacy(self, problem: BaseProblem, initial_solution: Optional[Any] = None, **kwargs) -> Tuple[Any, float]:
@@ -283,6 +301,15 @@ class BaseOptimizer(ABC):
                 **metrics
             }
             self._progress_callback(progress_data)
+
+    def log_message(self, level: str, message: str, **context):
+        """Log a message during optimization if callback is available."""
+        if hasattr(self, '_log_callback') and self._log_callback:
+            self._log_callback(level, message, 'optimizer', **context)
+
+    def set_log_callback(self, log_callback):
+        """Set logging callback for real-time log streaming."""
+        self._log_callback = log_callback
 
     def _validate_parameters(self):
         """Validate optimizer parameters against metadata requirements."""

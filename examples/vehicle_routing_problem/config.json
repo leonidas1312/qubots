@@ -2,8 +2,6 @@
   "type": "problem",
   "entry_point": "qubot",
   "class_name": "VehicleRoutingProblem",
-  "framework": "qubots",
-  "platform_version": "1.0",
   "default_params": {
     "max_route_duration": 480,
     "penalty_unserved": 1000.0,
@@ -12,8 +10,6 @@
   "metadata": {
     "name": "Vehicle Routing Problem",
     "description": "Multi-vehicle delivery optimization with capacity constraints. Find optimal routes for a fleet of vehicles to serve customers while minimizing total travel distance and respecting vehicle capacity constraints.",
-    "author": "Qubots Community",
-    "version": "1.0.0",
     "domain": "routing",
     "tags": [
       "routing",
@@ -25,8 +21,7 @@
       "capacity"
     ],
     "difficulty": "intermediate",
-    "problem_type": "combinatorial",
-    "category": "optimization_problem"
+    "problem_type": "combinatorial"
   },
   "parameters": {
     "max_route_duration": {
@@ -53,19 +48,5 @@
   },
   "requirements": [
     "numpy>=1.20.0"
-  ],
-  "keywords": [
-    "vehicle routing",
-    "VRP",
-    "logistics",
-    "delivery optimization",
-    "capacity constraints"
-  ],
-  "rastion_config": {
-    "execution_type": "problem",
-    "compatible_optimizers": [
-      "genetic_vrp_optimizer"
-    ],
-    "expected_solution_format": "list_of_routes"
-  }
+  ]
 }

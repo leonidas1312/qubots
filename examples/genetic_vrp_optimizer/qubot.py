@@ -144,7 +144,7 @@ class GeneticVRPOptimizer(BaseOptimizer):
         start_time = time.time()
 
         # Initialize population
-        print(f"🧬 Initializing population of {self.population_size} individuals...")
+        self.log_message('info', f"Initializing population of {self.population_size} individuals...")
         population = self._initialize_population(problem)
 
         # Evaluate initial population
@@ -154,8 +154,8 @@ class GeneticVRPOptimizer(BaseOptimizer):
         best_individual = min(population, key=lambda x: x.fitness)
         self.best_fitness_history = [best_individual.fitness]
 
-        print(f"🚀 Starting evolution for {self.generations} generations...")
-        print(f"   Initial best fitness: {best_individual.fitness:.2f}")
+        self.log_message('info', f"Starting evolution for {self.generations} generations...")
+        self.log_message('info', f"Initial best fitness: {best_individual.fitness:.6f}")
 
         for generation in range(self.generations):
             self.generation_count = generation
@@ -164,9 +164,21 @@ class GeneticVRPOptimizer(BaseOptimizer):
             diversity = self._calculate_diversity(population)
             self.diversity_history.append(diversity)
 
+            # Log diversity information
+            if generation % 20 == 0:
+                self.log_message('debug', f"Population diversity: {diversity:.4f}")
+
             # Adaptive parameter adjustment
             if self.adaptive_parameters:
+                old_mutation_rate = self.mutation_rate
+                old_crossover_rate = self.crossover_rate
                 self._adapt_parameters(diversity, generation)
+
+                # Log parameter changes
+                if abs(old_mutation_rate - self.mutation_rate) > 0.01:
+                    self.log_message('debug', f"Mutation rate adapted: {old_mutation_rate:.3f} → {self.mutation_rate:.3f}")
+                if abs(old_crossover_rate - self.crossover_rate) > 0.01:
+                    self.log_message('debug', f"Crossover rate adapted: {old_crossover_rate:.3f} → {self.crossover_rate:.3f}")
 
             # Create new generation
             new_population = self._create_new_generation(population, problem)
@@ -177,30 +189,58 @@ class GeneticVRPOptimizer(BaseOptimizer):
             # Update best solution
             current_best = min(new_population, key=lambda x: x.fitness)
             if current_best.fitness < best_individual.fitness:
+                improvement = best_individual.fitness - current_best.fitness
                 best_individual = deepcopy(current_best)
-                print(f"   Generation {generation+1}: New best fitness {best_individual.fitness:.2f}")
+                self.log_message('info', f"Generation {generation+1}: New best fitness {best_individual.fitness:.6f} (improvement: {improvement:.6f})")
 
             self.best_fitness_history.append(best_individual.fitness)
             population = new_population
 
             # Progress reporting for playground
+            self.report_progress(
+                iteration=generation + 1,
+                best_value=best_individual.fitness,
+                diversity=diversity,
+                mutation_rate=self.mutation_rate,
+                crossover_rate=self.crossover_rate,
+                population_size=len(population)
+            )
+
+            # Detailed progress logging
             if (generation + 1) % 10 == 0:
                 progress = (generation + 1) / self.generations
-                print(f"   Progress: {progress:.1%} - Best: {best_individual.fitness:.2f}")
+                self.log_message('info', f"Progress: {progress:.1%} - Best: {best_individual.fitness:.6f} - Diversity: {diversity:.4f}")
+
+            # Early stopping check
+            if self.should_stop():
+                self.log_message('warning', f"Optimization stopped early at generation {generation + 1}")
+                break
 
         end_time = time.time()
         runtime = end_time - start_time
 
-        print(f"✅ Evolution completed in {runtime:.2f} seconds")
-        print(f"   Final best fitness: {best_individual.fitness:.2f}")
-        print(f"   Total generations: {self.generations}")
+        # Final logging
+        self.log_message('info', f"Evolution completed in {runtime:.3f} seconds")
+        self.log_message('info', f"Final best fitness: {best_individual.fitness:.6f}")
+        self.log_message('info', f"Total generations: {self.generation_count + 1}")
+
+        if self.diversity_history:
+            final_diversity = self.diversity_history[-1]
+            self.log_message('info', f"Final population diversity: {final_diversity:.4f}")
+
+        # Calculate improvement
+        if len(self.best_fitness_history) > 1:
+            initial_fitness = self.best_fitness_history[0]
+            final_fitness = best_individual.fitness
+            improvement = ((initial_fitness - final_fitness) / initial_fitness) * 100
+            self.log_message('info', f"Total improvement: {improvement:.2f}%")
 
         result = OptimizationResult(
             best_solution=best_individual.solution,
             best_value=best_individual.fitness,
-            iterations=self.generations,
+            iterations=self.generation_count + 1,
             runtime_seconds=runtime,
-            termination_reason="max_generations"
+            termination_reason="max_generations" if not self.should_stop() else "user_stop"
         )
 
         # Add additional metrics

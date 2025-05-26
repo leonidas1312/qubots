@@ -59,17 +59,21 @@ class ModelInfo:
 class PlaygroundExecutor:
     """
     Handles execution of qubots optimizations for the playground interface.
-    Provides standardized result formatting and error handling.
+    Provides standardized result formatting and error handling with real-time logging.
     """
 
-    def __init__(self, progress_callback: Optional[Callable[[str, float], None]] = None):
+    def __init__(self,
+                 progress_callback: Optional[Callable[[str, float], None]] = None,
+                 log_callback: Optional[Callable[[str, str, str], None]] = None):
         """
         Initialize the playground executor.
 
         Args:
             progress_callback: Optional callback for progress updates (message, progress_percent)
+            log_callback: Optional callback for real-time logs (level, message, source)
         """
         self.progress_callback = progress_callback
+        self.log_callback = log_callback
         self.client = get_global_client()
 
     def execute_optimization(self,
@@ -97,42 +101,63 @@ class PlaygroundExecutor:
         timestamp = datetime.now().isoformat()
 
         try:
-            # Report progress
+            # Report progress and log start
+            self._log('info', 'Starting optimization execution...', 'system')
             self._report_progress("Loading problem model...", 10)
 
             # Load problem
+            self._log('info', f'Loading problem: {problem_username}/{problem_name}', 'loader')
             problem = load_qubots_model(problem_name, problem_username)
             if not isinstance(problem, BaseProblem):
                 raise ValueError(f"Model {problem_name} is not a valid problem")
+            self._log('info', f'Problem loaded successfully: {type(problem).__name__}', 'loader')
 
             # Apply problem parameter overrides if provided
             if problem_params:
+                self._log('info', f'Applying problem parameters: {problem_params}', 'config')
                 for key, value in problem_params.items():
                     if hasattr(problem, key):
                         setattr(problem, key, value)
+                        self._log('debug', f'Set problem.{key} = {value}', 'config')
 
             self._report_progress("Loading optimizer model...", 30)
 
             # Load optimizer
+            self._log('info', f'Loading optimizer: {optimizer_username}/{optimizer_name}', 'loader')
             optimizer = load_qubots_model(optimizer_name, optimizer_username)
             if not isinstance(optimizer, BaseOptimizer):
                 raise ValueError(f"Model {optimizer_name} is not a valid optimizer")
+            self._log('info', f'Optimizer loaded successfully: {type(optimizer).__name__}', 'loader')
 
             # Apply optimizer parameter overrides if provided
             if optimizer_params:
+                self._log('info', f'Applying optimizer parameters: {optimizer_params}', 'config')
                 for key, value in optimizer_params.items():
                     if hasattr(optimizer, key):
                         setattr(optimizer, key, value)
+                        self._log('debug', f'Set optimizer.{key} = {value}', 'config')
 
             self._report_progress("Running optimization...", 50)
 
-            # Execute optimization
-            result = optimizer.optimize(problem)
+            # Execute optimization with progress callback
+            self._log('info', 'Starting optimization algorithm...', 'optimizer')
+
+            # Create progress callback for real-time logging
+            progress_callback = self._create_optimization_progress_callback()
+
+            result = optimizer.optimize(problem, progress_callback=progress_callback)
+
+            self._log('info', f'Optimization completed! Best value: {result.best_value:.6f}', 'optimizer')
+            if hasattr(result, 'iterations'):
+                self._log('info', f'Total iterations: {result.iterations}', 'optimizer')
+            if hasattr(result, 'runtime_seconds'):
+                self._log('info', f'Runtime: {result.runtime_seconds:.3f} seconds', 'optimizer')
 
             self._report_progress("Processing results...", 90)
 
             # Extract results in standardized format
             execution_time = time.time() - start_time
+            self._log('info', f'Total execution time: {execution_time:.3f} seconds', 'system')
 
             # Handle different result formats
             if hasattr(result, 'best_solution'):
@@ -151,9 +176,13 @@ class PlaygroundExecutor:
             if hasattr(result, 'history'):
                 history = result.history
                 iterations = len(history) if history else None
+                if iterations:
+                    self._log('info', f'Optimization history contains {iterations} entries', 'results')
             elif isinstance(result, dict) and 'history' in result:
                 history = result['history']
                 iterations = len(history) if history else None
+                if iterations:
+                    self._log('info', f'Optimization history contains {iterations} entries', 'results')
 
             # Collect metadata
             metadata = {
@@ -164,6 +193,7 @@ class PlaygroundExecutor:
                 'result_type': type(result).__name__
             }
 
+            self._log('info', 'Results processed successfully', 'system')
             self._report_progress("Complete!", 100)
 
             return PlaygroundResult(
@@ -186,8 +216,14 @@ class PlaygroundExecutor:
             error_message = str(e)
             error_type = type(e).__name__
 
+            # Log error details
+            self._log('error', f'Optimization failed: {error_message}', 'system')
+            self._log('error', f'Error type: {error_type}', 'system')
+
             # Log full traceback for debugging
-            print(f"Playground execution error: {traceback.format_exc()}")
+            traceback_str = traceback.format_exc()
+            print(f"Playground execution error: {traceback_str}")
+            self._log('debug', f'Full traceback: {traceback_str}', 'system')
 
             return PlaygroundResult(
                 success=False,
@@ -205,6 +241,37 @@ class PlaygroundExecutor:
         """Report progress if callback is available."""
         if self.progress_callback:
             self.progress_callback(message, progress)
+
+    def _log(self, level: str, message: str, source: str = "qubots"):
+        """Log a message if callback is available."""
+        if self.log_callback:
+            self.log_callback(level, message, source)
+        # Also print to console for debugging
+        print(f"[{level.upper()}] [{source}] {message}")
+
+    def _create_optimization_progress_callback(self):
+        """Create a progress callback for optimization that logs progress."""
+        def progress_callback(progress_data: Dict[str, Any]):
+            iteration = progress_data.get('iteration', 0)
+            best_value = progress_data.get('best_value', 0)
+
+            # Log iteration progress
+            self._log('info', f"Iteration {iteration}: Best value = {best_value:.6f}", "optimizer")
+
+            # Log additional metrics if available
+            for key, value in progress_data.items():
+                if key not in ['iteration', 'best_value', 'optimizer_id']:
+                    if isinstance(value, (int, float)):
+                        self._log('debug', f"{key}: {value:.6f}", "metrics")
+                    else:
+                        self._log('debug', f"{key}: {value}", "metrics")
+
+            # Report overall progress
+            if self.progress_callback:
+                progress_percent = min(100, (iteration / 1000) * 100)  # Estimate based on iteration
+                self._report_progress(f"Iteration {iteration}", progress_percent)
+
+        return progress_callback
 
 
 class ModelDiscovery:
@@ -365,6 +432,8 @@ def execute_playground_optimization(problem_name: str = None,
                                   # Directory-based execution parameters
                                   problem_dir: Optional[str] = None,
                                   optimizer_dir: Optional[str] = None,
+                                  # Logging callback for real-time output
+                                  log_callback: Optional[Callable[[str, str, str], None]] = None,
                                   **kwargs) -> Dict[str, Any]:
     """
     Convenience function to execute optimization and return dashboard result as dictionary.
@@ -375,9 +444,15 @@ def execute_playground_optimization(problem_name: str = None,
     2. Directory-based: Load models from local directories
     """
     try:
+        # Create executor with logging support
+        executor = PlaygroundExecutor(log_callback=log_callback)
+
         # Determine execution mode
         if problem_dir is not None and optimizer_dir is not None:
             # Directory-based execution mode
+            if log_callback:
+                log_callback('info', f'Loading models from directories: {problem_dir}, {optimizer_dir}', 'system')
+
             problem = _load_model_from_directory(problem_dir, "problem")
             optimizer = _load_model_from_directory(optimizer_dir, "optimizer")
 
@@ -390,29 +465,58 @@ def execute_playground_optimization(problem_name: str = None,
                 optimizer_name = Path(optimizer_dir).name
 
         elif problem_name is not None and optimizer_name is not None:
-            # Name-based execution mode
-            problem = load_qubots_model(problem_name, problem_username)
-            optimizer = load_qubots_model(optimizer_name, optimizer_username)
+            # Name-based execution mode - use the executor for consistent logging
+            result = executor.execute_optimization(
+                problem_name=problem_name,
+                optimizer_name=optimizer_name,
+                problem_username=problem_username,
+                optimizer_username=optimizer_username,
+                problem_params=kwargs.get('problem_params', {}),
+                optimizer_params=kwargs.get('optimizer_params', {})
+            )
+
+            # Convert PlaygroundResult to dashboard format
+            dashboard_dict = result.to_dict()
+            if result.success:
+                dashboard_dict.update({
+                    'dashboard': {
+                        'plots': [],
+                        'metrics': {
+                            'best_value': result.best_value,
+                            'iterations': result.iterations,
+                            'execution_time': result.execution_time
+                        }
+                    }
+                })
+
+            return dashboard_dict
 
         else:
             raise ValueError("Either provide (problem_name, optimizer_name) or (problem_dir, optimizer_dir)")
 
-        # Apply parameters if provided
+        # Apply parameters if provided (for directory-based mode)
         problem_params = kwargs.get('problem_params', {})
         optimizer_params = kwargs.get('optimizer_params', {})
 
         # Configure problem and optimizer with parameters
         if problem_params:
+            if log_callback:
+                log_callback('info', f'Applying problem parameters: {problem_params}', 'config')
             for key, value in problem_params.items():
                 if hasattr(problem, key):
                     setattr(problem, key, value)
 
         if optimizer_params:
+            if log_callback:
+                log_callback('info', f'Applying optimizer parameters: {optimizer_params}', 'config')
             for key, value in optimizer_params.items():
                 if hasattr(optimizer, key):
                     setattr(optimizer, key, value)
 
         # Run optimization with automatic dashboard generation
+        if log_callback:
+            log_callback('info', 'Running optimization with dashboard generation...', 'system')
+
         dashboard_result = QubotsAutoDashboard.auto_optimize_with_dashboard(
             problem=problem,
             optimizer=optimizer,

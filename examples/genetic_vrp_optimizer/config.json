@@ -2,8 +2,6 @@
   "type": "optimizer",
   "entry_point": "qubot",
   "class_name": "GeneticVRPOptimizer",
-  "framework": "qubots",
-  "platform_version": "1.0",
   "default_params": {
     "population_size": 50,
     "generations": 100,
@@ -17,8 +15,6 @@
   "metadata": {
     "name": "Genetic Algorithm VRP Optimizer",
     "description": "Evolutionary algorithm optimizer specifically designed for Vehicle Routing Problems. Uses genetic operations including tournament selection, route-based crossover, and multiple mutation strategies with adaptive parameters.",
-    "author": "Qubots Community",
-    "version": "1.0.0",
     "domain": "routing",
     "tags": [
       "genetic_algorithm",
@@ -30,8 +26,7 @@
     ],
     "difficulty": "intermediate",
     "optimizer_type": "metaheuristic",
-    "optimizer_family": "evolutionary",
-    "category": "optimization_algorithm"
+    "optimizer_family": "evolutionary"
   },
   "parameters": {
     "population_size": {
@@ -94,18 +89,5 @@
   },
   "requirements": [
     "numpy>=1.20.0"
-  ],
-  "compatible_problems": [
-    "vehicle_routing_problem",
-    "capacitated_vrp",
-    "vrp_with_time_windows"
-  ],
-
-  "rastion_config": {
-    "execution_type": "optimizer",
-    "compatible_problems": [
-      "vehicle_routing_problem"
-    ],
-    "optimization_method": "evolutionary"
-  }
+  ]
 }
