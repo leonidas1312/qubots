@@ -79,6 +79,14 @@ from .playground_integration import (
     get_available_models
 )
 
+# Dashboard and visualization
+from .dashboard import (
+    DashboardResult,
+    VisualizationData,
+    QubotsVisualizer,
+    QubotsAutoDashboard
+)
+
 __version__ = "1.0.0"
 
 __all__ = [
@@ -139,4 +147,10 @@ __all__ = [
     "ModelInfo",
     "execute_playground_optimization",
     "get_available_models",
+
+    # Dashboard and visualization
+    "DashboardResult",
+    "VisualizationData",
+    "QubotsVisualizer",
+    "QubotsAutoDashboard",
 ]

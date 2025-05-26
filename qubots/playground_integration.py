@@ -8,6 +8,7 @@ Handles result formatting, progress reporting, and error management for web-base
 import json
 import time
 import traceback
+import inspect
 from typing import Dict, Any, Optional, Union, List, Callable
 from datetime import datetime
 from dataclasses import dataclass, asdict
@@ -16,6 +17,7 @@ from .base_problem import BaseProblem
 from .base_optimizer import BaseOptimizer
 from .rastion_client import get_global_client
 from .rastion import load_qubots_model
+from .dashboard import QubotsAutoDashboard, DashboardResult
 
 
 @dataclass
@@ -362,13 +364,49 @@ def execute_playground_optimization(problem_name: str,
                                   optimizer_username: Optional[str] = None,
                                   **kwargs) -> Dict[str, Any]:
     """
-    Convenience function to execute optimization and return result as dictionary.
+    Convenience function to execute optimization and return dashboard result as dictionary.
+    Uses qubots built-in dashboard and visualization capabilities.
     """
-    executor = PlaygroundExecutor()
-    result = executor.execute_optimization(
-        problem_name, optimizer_name, problem_username, optimizer_username, **kwargs
-    )
-    return result.to_dict()
+    try:
+        # Load problem and optimizer
+        problem = load_qubots_model(problem_name, problem_username)
+        optimizer = load_qubots_model(optimizer_name, optimizer_username)
+
+        # Apply parameters if provided
+        problem_params = kwargs.get('problem_params', {})
+        optimizer_params = kwargs.get('optimizer_params', {})
+
+        # Configure problem and optimizer with parameters
+        if problem_params:
+            for key, value in problem_params.items():
+                if hasattr(problem, key):
+                    setattr(problem, key, value)
+
+        if optimizer_params:
+            for key, value in optimizer_params.items():
+                if hasattr(optimizer, key):
+                    setattr(optimizer, key, value)
+
+        # Run optimization with automatic dashboard generation
+        dashboard_result = QubotsAutoDashboard.auto_optimize_with_dashboard(
+            problem=problem,
+            optimizer=optimizer,
+            problem_name=problem_name,
+            optimizer_name=optimizer_name
+        )
+
+        return dashboard_result.to_dict()
+
+    except Exception as e:
+        # Return error dashboard result
+        error_result = DashboardResult(
+            success=False,
+            problem_name=problem_name,
+            optimizer_name=optimizer_name,
+            execution_time=0.0,
+            error_message=str(e)
+        )
+        return error_result.to_dict()
 
 
 def get_available_models(username: Optional[str] = None) -> Dict[str, List[Dict[str, Any]]]:
@@ -383,3 +421,144 @@ def get_available_models(username: Optional[str] = None) -> Dict[str, List[Dict[
         'problems': [model.__dict__ for model in problems],
         'optimizers': [model.__dict__ for model in optimizers]
     }
+
+
+def extract_parameter_schema(model: Union[BaseProblem, BaseOptimizer]) -> Dict[str, Any]:
+    """
+    Extract parameter schema from a qubots model for dynamic UI generation.
+
+    Args:
+        model: BaseProblem or BaseOptimizer instance
+
+    Returns:
+        Dictionary containing parameter schema information
+    """
+    schema = {
+        "model_type": "problem" if isinstance(model, BaseProblem) else "optimizer",
+        "model_name": getattr(model.metadata, 'name', model.__class__.__name__),
+        "parameters": {}
+    }
+
+    if isinstance(model, BaseOptimizer):
+        # Extract from optimizer metadata
+        metadata = model._metadata
+        param_info = model.get_parameter_info()
+
+        # Process required parameters
+        for param in metadata.required_parameters:
+            param_schema = {
+                "required": True,
+                "type": "string",  # Default type
+                "description": f"Required parameter: {param}"
+            }
+
+            # Add range information if available
+            if param in metadata.parameter_ranges:
+                min_val, max_val = metadata.parameter_ranges[param]
+                param_schema.update({
+                    "type": "number",
+                    "minimum": min_val,
+                    "maximum": max_val
+                })
+
+            # Add current value if available
+            if param in param_info.get("current_values", {}):
+                param_schema["default"] = param_info["current_values"][param]
+
+            schema["parameters"][param] = param_schema
+
+        # Process optional parameters
+        for param in metadata.optional_parameters:
+            param_schema = {
+                "required": False,
+                "type": "string",  # Default type
+                "description": f"Optional parameter: {param}"
+            }
+
+            # Add range information if available
+            if param in metadata.parameter_ranges:
+                min_val, max_val = metadata.parameter_ranges[param]
+                param_schema.update({
+                    "type": "number",
+                    "minimum": min_val,
+                    "maximum": max_val
+                })
+
+            # Add current value if available
+            if param in param_info.get("current_values", {}):
+                param_schema["default"] = param_info["current_values"][param]
+
+            schema["parameters"][param] = param_schema
+
+    elif isinstance(model, BaseProblem):
+        # Extract from problem metadata and constructor
+        metadata = model._metadata
+
+        # Try to extract parameters from constructor signature
+        try:
+            sig = inspect.signature(model.__class__.__init__)
+            for param_name, param in sig.parameters.items():
+                if param_name == 'self':
+                    continue
+
+                param_schema = {
+                    "required": param.default == inspect.Parameter.empty,
+                    "type": "string",  # Default type
+                    "description": f"Problem parameter: {param_name}"
+                }
+
+                # Try to infer type from default value
+                if param.default != inspect.Parameter.empty:
+                    param_schema["default"] = param.default
+                    if isinstance(param.default, (int, float)):
+                        param_schema["type"] = "number"
+                    elif isinstance(param.default, bool):
+                        param_schema["type"] = "boolean"
+                    elif isinstance(param.default, list):
+                        param_schema["type"] = "array"
+
+                # Add bounds information if available in metadata
+                if metadata.variable_bounds and param_name in metadata.variable_bounds:
+                    min_val, max_val = metadata.variable_bounds[param_name]
+                    param_schema.update({
+                        "type": "number",
+                        "minimum": min_val,
+                        "maximum": max_val
+                    })
+
+                schema["parameters"][param_name] = param_schema
+
+        except Exception as e:
+            # Fallback: add common problem parameters
+            schema["parameters"]["dimension"] = {
+                "required": False,
+                "type": "number",
+                "description": "Problem dimension",
+                "minimum": 1,
+                "default": metadata.dimension or 10
+            }
+
+    return schema
+
+
+def get_model_parameter_schema(model_name: str,
+                              username: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Load a model and extract its parameter schema.
+
+    Args:
+        model_name: Name of the model repository
+        username: Repository owner (auto-detected if None)
+
+    Returns:
+        Parameter schema dictionary
+    """
+    try:
+        model = load_qubots_model(model_name, username)
+        return extract_parameter_schema(model)
+    except Exception as e:
+        return {
+            "error": str(e),
+            "model_name": model_name,
+            "parameters": {}
+        }
