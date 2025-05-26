@@ -8,6 +8,8 @@
 .DS_Store
 Thumbs.db
 
+
+
 # Validation and development scripts in root
 validate_*.py
 setup_dev_*.py
@@ -23,6 +25,7 @@ dev_*.py
 test_local_*.py
 scratch_*
 debug_*
+docs
 
 # Rastion authentication
 .rastion_token

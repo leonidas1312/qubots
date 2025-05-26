@@ -1,0 +1,71 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "VehicleRoutingProblem",
+  "framework": "qubots",
+  "platform_version": "1.0",
+  "default_params": {
+    "max_route_duration": 480,
+    "penalty_unserved": 1000.0,
+    "penalty_capacity": 500.0
+  },
+  "metadata": {
+    "name": "Vehicle Routing Problem",
+    "description": "Multi-vehicle delivery optimization with capacity constraints. Find optimal routes for a fleet of vehicles to serve customers while minimizing total travel distance and respecting vehicle capacity constraints.",
+    "author": "Qubots Community",
+    "version": "1.0.0",
+    "domain": "routing",
+    "tags": [
+      "routing",
+      "logistics",
+      "vrp",
+      "optimization",
+      "delivery",
+      "vehicles",
+      "capacity"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "combinatorial",
+    "category": "optimization_problem"
+  },
+  "parameters": {
+    "max_route_duration": {
+      "type": "number",
+      "default": 480,
+      "min": 60,
+      "max": 1440,
+      "description": "Maximum route duration in minutes"
+    },
+    "penalty_unserved": {
+      "type": "number",
+      "default": 1000.0,
+      "min": 0,
+      "max": 10000,
+      "description": "Penalty cost for each unserved customer"
+    },
+    "penalty_capacity": {
+      "type": "number",
+      "default": 500.0,
+      "min": 0,
+      "max": 5000,
+      "description": "Penalty cost per unit of capacity violation"
+    }
+  },
+  "requirements": [
+    "numpy>=1.20.0"
+  ],
+  "keywords": [
+    "vehicle routing",
+    "VRP",
+    "logistics",
+    "delivery optimization",
+    "capacity constraints"
+  ],
+  "rastion_config": {
+    "execution_type": "problem",
+    "compatible_optimizers": [
+      "genetic_vrp_optimizer"
+    ],
+    "expected_solution_format": "list_of_routes"
+  }
+}

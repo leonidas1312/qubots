@@ -358,19 +358,44 @@ class ModelDiscovery:
 
 
 # Convenience functions for direct use
-def execute_playground_optimization(problem_name: str,
-                                  optimizer_name: str,
+def execute_playground_optimization(problem_name: str = None,
+                                  optimizer_name: str = None,
                                   problem_username: Optional[str] = None,
                                   optimizer_username: Optional[str] = None,
+                                  # Directory-based execution parameters
+                                  problem_dir: Optional[str] = None,
+                                  optimizer_dir: Optional[str] = None,
                                   **kwargs) -> Dict[str, Any]:
     """
     Convenience function to execute optimization and return dashboard result as dictionary.
     Uses qubots built-in dashboard and visualization capabilities.
+
+    Supports two modes:
+    1. Name-based: Load models by name from Rastion platform
+    2. Directory-based: Load models from local directories
     """
     try:
-        # Load problem and optimizer
-        problem = load_qubots_model(problem_name, problem_username)
-        optimizer = load_qubots_model(optimizer_name, optimizer_username)
+        # Determine execution mode
+        if problem_dir is not None and optimizer_dir is not None:
+            # Directory-based execution mode
+            problem = _load_model_from_directory(problem_dir, "problem")
+            optimizer = _load_model_from_directory(optimizer_dir, "optimizer")
+
+            # Use directory names as display names if not provided
+            if problem_name is None:
+                from pathlib import Path
+                problem_name = Path(problem_dir).name
+            if optimizer_name is None:
+                from pathlib import Path
+                optimizer_name = Path(optimizer_dir).name
+
+        elif problem_name is not None and optimizer_name is not None:
+            # Name-based execution mode
+            problem = load_qubots_model(problem_name, problem_username)
+            optimizer = load_qubots_model(optimizer_name, optimizer_username)
+
+        else:
+            raise ValueError("Either provide (problem_name, optimizer_name) or (problem_dir, optimizer_dir)")
 
         # Apply parameters if provided
         problem_params = kwargs.get('problem_params', {})
@@ -399,14 +424,85 @@ def execute_playground_optimization(problem_name: str,
 
     except Exception as e:
         # Return error dashboard result
+        import traceback
         error_result = DashboardResult(
             success=False,
-            problem_name=problem_name,
-            optimizer_name=optimizer_name,
+            problem_name=problem_name or "unknown",
+            optimizer_name=optimizer_name or "unknown",
             execution_time=0.0,
             error_message=str(e)
         )
-        return error_result.to_dict()
+        result_dict = error_result.to_dict()
+        result_dict["traceback"] = traceback.format_exc()
+        return result_dict
+
+
+def _load_model_from_directory(directory: str, expected_type: str):
+    """
+    Load a qubots model from a directory containing qubot.py and config.json.
+
+    Args:
+        directory: Path to the directory
+        expected_type: Expected model type ("problem" or "optimizer")
+
+    Returns:
+        Loaded model instance
+    """
+    import sys
+    import json
+    import importlib.util
+    from pathlib import Path
+
+    directory = Path(directory)
+    if not directory.exists():
+        raise ValueError(f"Directory does not exist: {directory}")
+
+    # Load config.json
+    config_path = directory / "config.json"
+    if not config_path.exists():
+        raise ValueError(f"config.json not found in {directory}")
+
+    with open(config_path, 'r', encoding='utf-8') as f:
+        config = json.load(f)
+
+    # Validate type
+    model_type = config.get("type")
+    if model_type != expected_type:
+        raise ValueError(f"Expected type='{expected_type}' in config.json, got '{model_type}'")
+
+    # Load the module
+    qubot_path = directory / "qubot.py"
+    if not qubot_path.exists():
+        raise ValueError(f"qubot.py not found in {directory}")
+
+    # Add directory to Python path temporarily
+    sys.path.insert(0, str(directory))
+    try:
+        # Import the module
+        spec = importlib.util.spec_from_file_location("qubot", qubot_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+
+        # Get the class
+        class_name = config.get("class_name")
+        if not class_name:
+            raise ValueError("class_name not found in config.json")
+
+        if not hasattr(module, class_name):
+            raise ValueError(f"Class '{class_name}' not found in qubot.py")
+
+        model_class = getattr(module, class_name)
+
+        # Create instance with default parameters
+        default_params = config.get("default_params", {})
+        model_instance = model_class(**default_params)
+
+        return model_instance
+
+    finally:
+        # Remove directory from Python path
+        if str(directory) in sys.path:
+            sys.path.remove(str(directory))
 
 
 def get_available_models(username: Optional[str] = None) -> Dict[str, List[Dict[str, Any]]]:

@@ -1,0 +1,111 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "GeneticVRPOptimizer",
+  "framework": "qubots",
+  "platform_version": "1.0",
+  "default_params": {
+    "population_size": 50,
+    "generations": 100,
+    "crossover_rate": 0.8,
+    "mutation_rate": 0.1,
+    "elite_size": 5,
+    "tournament_size": 3,
+    "diversity_threshold": 0.1,
+    "adaptive_parameters": true
+  },
+  "metadata": {
+    "name": "Genetic Algorithm VRP Optimizer",
+    "description": "Evolutionary algorithm optimizer specifically designed for Vehicle Routing Problems. Uses genetic operations including tournament selection, route-based crossover, and multiple mutation strategies with adaptive parameters.",
+    "author": "Qubots Community",
+    "version": "1.0.0",
+    "domain": "routing",
+    "tags": [
+      "genetic_algorithm",
+      "evolutionary",
+      "vrp",
+      "routing",
+      "metaheuristic",
+      "population_based"
+    ],
+    "difficulty": "intermediate",
+    "optimizer_type": "metaheuristic",
+    "optimizer_family": "evolutionary",
+    "category": "optimization_algorithm"
+  },
+  "parameters": {
+    "population_size": {
+      "type": "integer",
+      "default": 50,
+      "min": 10,
+      "max": 200,
+      "description": "Number of individuals in the population"
+    },
+    "generations": {
+      "type": "integer",
+      "default": 100,
+      "min": 10,
+      "max": 1000,
+      "description": "Maximum number of generations to evolve"
+    },
+    "crossover_rate": {
+      "type": "number",
+      "default": 0.8,
+      "min": 0.0,
+      "max": 1.0,
+      "step": 0.1,
+      "description": "Probability of crossover operation between parents"
+    },
+    "mutation_rate": {
+      "type": "number",
+      "default": 0.1,
+      "min": 0.0,
+      "max": 0.5,
+      "step": 0.05,
+      "description": "Probability of mutation operation on offspring"
+    },
+    "elite_size": {
+      "type": "integer",
+      "default": 5,
+      "min": 1,
+      "max": 20,
+      "description": "Number of best individuals preserved each generation"
+    },
+    "tournament_size": {
+      "type": "integer",
+      "default": 3,
+      "min": 2,
+      "max": 10,
+      "description": "Size of tournament for parent selection"
+    },
+    "diversity_threshold": {
+      "type": "number",
+      "default": 0.1,
+      "min": 0.01,
+      "max": 0.5,
+      "step": 0.01,
+      "description": "Threshold for triggering adaptive parameter adjustment"
+    },
+    "adaptive_parameters": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable adaptive adjustment of mutation and crossover rates"
+    }
+  },
+  "requirements": [
+    "numpy>=1.20.0"
+  ],
+  "compatible_problems": [
+    "vehicle_routing_problem",
+    "capacitated_vrp",
+    "vrp_with_time_windows"
+  ],
+
+  "rastion_config": {
+    "execution_type": "optimizer",
+    "compatible_problems": [
+      "vehicle_routing_problem"
+    ],
+    "optimization_method": "evolutionary"
+  }
+}

@@ -51,7 +51,9 @@ class AutoOptimizer:
         cfg = json.loads(cfg_file.read_text())
 
         if cfg.get("type") != "optimizer":
-            raise ValueError(f"Expected type='optimizer' in config.json, got {cfg.get('type')}")
+            raise ValueError(f"Failed to load model '{repo_id}': Expected type='optimizer' in config.json, got '{cfg.get('type')}'. "
+                           f"This model appears to be a '{cfg.get('type')}', not an optimizer. "
+                           f"Please check that you're loading the correct model type.")
 
         entry_mod = cfg["entry_point"]        # e.g. "my_optimizer_module"
         class_name = cfg["class_name"]        # e.g. "MyOptimizer"
@@ -60,8 +62,15 @@ class AutoOptimizer:
         if override_params:
             params.update(override_params)
 
-        # 3) Dynamic import
+        # 3) Dynamic import with module cache handling
         sys.path.insert(0, str(path))
+
+        # Handle module name conflicts by clearing cache if module already exists
+        # This prevents conflicts when both problems and optimizers use the same module name (e.g., "qubot")
+        if entry_mod in sys.modules:
+            # Remove from cache to force fresh import from the correct path
+            del sys.modules[entry_mod]
+
         module = importlib.import_module(entry_mod)
         OptimizerCls = getattr(module, class_name)
 

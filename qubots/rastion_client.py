@@ -147,14 +147,25 @@ class RastionClient:
         headers = self._get_headers()
         headers["Content-Type"] = "application/json"
 
+        url = f"{self.api_base}/repos/{owner}/{repo}/contents/{file_path}"
+
+        # First, try to get the existing file to check if it exists
+        get_response = requests.get(url, headers=headers)
+
         payload = {
             "content": base64.b64encode(content.encode()).decode(),
             "message": message,
             "branch": "main"
         }
 
-        url = f"{self.api_base}/repos/{owner}/{repo}/contents/{file_path}"
-        response = requests.post(url, headers=headers, json=payload)
+        if get_response.status_code == 200:
+            # File exists, use PUT to update it
+            existing_file = get_response.json()
+            payload["sha"] = existing_file["sha"]  # Required for updates
+            response = requests.put(url, headers=headers, json=payload)
+        else:
+            # File doesn't exist, use POST to create it
+            response = requests.post(url, headers=headers, json=payload)
 
         if response.status_code >= 300:
             raise RuntimeError(f"Failed to upload file: {response.text}")
@@ -236,9 +247,36 @@ class QubotPackager:
         module_name = model_class.__module__
         class_name = model_class.__name__
 
-        # Get source code
+        # Get complete source code with all dependencies
         try:
-            source_code = inspect.getsource(model_class)
+            class_source = inspect.getsource(model_class)
+
+            # Get the module source to extract complete dependencies
+            module = inspect.getmodule(model_class)
+            if module and hasattr(module, '__file__') and module.__file__:
+                try:
+                    module_source = inspect.getsource(module)
+
+                    # Use comprehensive dependency extraction for rich, heuristic problems
+                    dependencies = QubotPackager._extract_complete_module_dependencies(module_source)
+
+                    # Combine dependencies with the main class
+                    if dependencies.strip():
+                        source_code = dependencies + "\n\n" + class_source
+                    else:
+                        # Fallback to basic imports if no dependencies found
+                        basic_imports = QubotPackager._get_basic_qubots_imports(model_type)
+                        source_code = basic_imports + "\n\n" + class_source
+
+                except (OSError, TypeError):
+                    # Fallback: add basic qubots imports
+                    basic_imports = QubotPackager._get_basic_qubots_imports(model_type)
+                    source_code = basic_imports + "\n\n" + class_source
+            else:
+                # Fallback: add basic qubots imports
+                basic_imports = QubotPackager._get_basic_qubots_imports(model_type)
+                source_code = basic_imports + "\n\n" + class_source
+
         except OSError:
             raise ValueError(f"Cannot extract source code for {class_name}")
 
@@ -247,6 +285,7 @@ class QubotPackager:
             "type": model_type,
             "entry_point": "qubot",
             "class_name": class_name,
+            "framework": "qubots",
             "default_params": {},
             "metadata": {
                 "name": name,
@@ -260,13 +299,405 @@ class QubotPackager:
         # Create requirements.txt
         requirements_txt = "\n".join(requirements)
 
-        
-
         return {
             "qubot.py": source_code,
             "config.json": json.dumps(config, indent=2),
             "requirements.txt": requirements_txt,
         }
+
+    @staticmethod
+    def package_model_from_path(model_path: str, name: str, description: str,
+                               requirements: Optional[List[str]] = None) -> Dict[str, str]:
+        """
+        Package a qubots model from a directory path for upload.
+
+        This method reads existing files from the directory and packages them,
+        preserving the existing config.json structure while updating metadata.
+
+        Args:
+            model_path: Path to the model directory
+            name: Name for the packaged model
+            description: Description of the model
+            requirements: Python requirements
+
+        Returns:
+            Dictionary containing packaged files
+        """
+        from pathlib import Path
+        import json
+
+        if requirements is None:
+            requirements = ["qubots"]
+
+        model_path = Path(model_path)
+        if not model_path.exists():
+            raise ValueError(f"Model path does not exist: {model_path}")
+
+        # Read existing config.json
+        config_path = model_path / "config.json"
+        if not config_path.exists():
+            raise ValueError(f"config.json not found in {model_path}")
+
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = json.load(f)
+
+        # Validate required fields
+        required_fields = ["type", "entry_point", "class_name"]
+        missing_fields = [field for field in required_fields if field not in config]
+        if missing_fields:
+            raise ValueError(f"Missing required config fields: {missing_fields}")
+
+        # Update metadata while preserving existing config structure
+        if "metadata" not in config:
+            config["metadata"] = {}
+
+        config["metadata"]["name"] = name
+        config["metadata"]["description"] = description
+
+        # Ensure framework field is set
+        if "framework" not in config:
+            config["framework"] = "qubots"
+
+        # Read qubot.py
+        qubot_path = model_path / "qubot.py"
+        if not qubot_path.exists():
+            raise ValueError(f"qubot.py not found in {model_path}")
+
+        # Try different encodings to handle various file formats
+        encodings_to_try = ['utf-8', 'utf-8-sig', 'latin1', 'cp1252']
+        source_code = None
+
+        for encoding in encodings_to_try:
+            try:
+                with open(qubot_path, 'r', encoding=encoding) as f:
+                    source_code = f.read()
+                break
+            except UnicodeDecodeError:
+                continue
+
+        if source_code is None:
+            # Last resort: read as binary and decode with error handling
+            with open(qubot_path, 'rb') as f:
+                raw_content = f.read()
+            source_code = raw_content.decode('utf-8', errors='replace')
+
+        # Read or create requirements.txt
+        requirements_path = model_path / "requirements.txt"
+        if requirements_path.exists():
+            with open(requirements_path, 'r', encoding='utf-8') as f:
+                existing_requirements = [line.strip() for line in f.readlines() if line.strip()]
+            # Merge with provided requirements, avoiding duplicates
+            all_requirements = list(set(existing_requirements + requirements))
+        else:
+            all_requirements = requirements
+
+        requirements_txt = "\n".join(all_requirements)
+
+        # Create or read README.md
+        readme_path = model_path / "README.md"
+        if readme_path.exists():
+            with open(readme_path, 'r', encoding='utf-8') as f:
+                readme_content = f.read()
+        else:
+            # Generate basic README
+            model_type = config.get("type", "model")
+            readme_content = f"""# {name}
+
+{description}
+
+## Model Information
+- **Type**: {model_type}
+- **Class**: {config.get("class_name", "Unknown")}
+- **Framework**: qubots
+
+## Usage
+
+```python
+import qubots.rastion as rastion
+
+# Load the model
+model = rastion.load_qubots_model("{name}")
+
+# Use the model
+# ... your code here ...
+```
+
+## Requirements
+{chr(10).join(f"- {req}" for req in all_requirements)}
+"""
+
+        return {
+            "qubot.py": source_code,
+            "config.json": json.dumps(config, indent=2),
+            "requirements.txt": requirements_txt,
+            "README.md": readme_content
+        }
+
+    @staticmethod
+    def _extract_complete_module_dependencies(module_source: str) -> str:
+        """
+        Extract complete module dependencies including custom classes, imports, and helper functions.
+        This approach ensures maximum compatibility with rich, heuristic problems and optimizers.
+
+        Args:
+            module_source: Source code of the module
+
+        Returns:
+            String containing all necessary dependencies for standalone execution
+        """
+        lines = module_source.split('\n')
+
+        # Strategy: Extract everything except the main problem/optimizer class
+        # This ensures all dependencies, custom classes, and helper functions are included
+
+        result_lines = []
+        main_class_found = False
+        main_class_name = None
+        main_class_indent = 0
+        in_main_class = False
+
+        # First pass: identify the main class (inherits from BaseProblem or BaseOptimizer)
+        for line in lines:
+            stripped = line.strip()
+            if (stripped.startswith('class ') and
+                ('BaseProblem' in stripped or 'BaseOptimizer' in stripped or
+                 'ContinuousProblem' in stripped or 'CombinatorialProblem' in stripped or
+                 'PopulationBasedOptimizer' in stripped or 'LocalSearchOptimizer' in stripped)):
+                main_class_name = stripped.split('(')[0].replace('class ', '').strip()
+                break
+
+        # Second pass: extract everything except the main class
+        i = 0
+        while i < len(lines):
+            line = lines[i]
+            stripped = line.strip()
+
+            # Check if this is the main class definition
+            if (stripped.startswith('class ') and main_class_name and
+                main_class_name in stripped and
+                ('BaseProblem' in stripped or 'BaseOptimizer' in stripped or
+                 'ContinuousProblem' in stripped or 'CombinatorialProblem' in stripped or
+                 'PopulationBasedOptimizer' in stripped or 'LocalSearchOptimizer' in stripped)):
+                # Skip the main class - it will be added separately
+                main_class_indent = len(line) - len(line.lstrip())
+                i += 1
+
+                # Skip all lines that belong to the main class
+                while i < len(lines):
+                    next_line = lines[i]
+                    if not next_line.strip():
+                        i += 1
+                        continue
+
+                    next_indent = len(next_line) - len(next_line.lstrip())
+                    if next_indent <= main_class_indent and next_line.strip():
+                        # End of main class
+                        break
+                    i += 1
+                continue
+
+            # Include everything else (imports, helper classes, functions, constants)
+            result_lines.append(line)
+            i += 1
+
+        return '\n'.join(result_lines)
+
+    @staticmethod
+    def _extract_imports(module_source: str) -> str:
+        """
+        Extract import statements and supporting classes from module source code.
+
+        Args:
+            module_source: Source code of the module
+
+        Returns:
+            String containing all import statements and supporting classes
+        """
+        # Check if the module contains dataclasses or supporting classes
+        has_dataclass = '@dataclass' in module_source
+        has_supporting_classes = any(pattern in module_source for pattern in [
+            'class Customer', 'class Vehicle', 'class Node', 'class Edge',
+            'class Task', 'class Resource'
+        ])
+
+        # If the module has dataclasses or supporting classes, extract the entire relevant content
+        if has_dataclass or has_supporting_classes:
+            lines = module_source.split('\n')
+            result_lines = []
+
+            # Add basic imports that we know work
+            basic_imports = [
+                'import numpy as np',
+                'import random',
+                'import json',
+                'from typing import List, Tuple, Dict, Any, Optional',
+                'from dataclasses import dataclass, asdict',
+                'from datetime import datetime'
+            ]
+
+            # Check if qubots imports exist in the original module
+            has_qubots_import = any('from qubots import' in line or 'import qubots' in line for line in lines)
+            if has_qubots_import:
+                # Determine the model type from the module content
+                if 'BaseProblem' in module_source:
+                    basic_imports.extend([
+                        'from qubots import (',
+                        '    BaseProblem, ProblemMetadata, ProblemType,',
+                        '    ObjectiveType, DifficultyLevel',
+                        ')'
+                    ])
+                elif 'BaseOptimizer' in module_source:
+                    basic_imports.extend([
+                        'from qubots import (',
+                        '    BaseOptimizer, OptimizerMetadata, OptimizerType,',
+                        '    OptimizerFamily, OptimizationResult, BaseProblem',
+                        ')'
+                    ])
+
+            result_lines.extend(basic_imports)
+            result_lines.append('')
+
+            # Extract all classes and their decorators
+            i = 0
+            while i < len(lines):
+                line = lines[i]
+                stripped = line.strip()
+
+                # Check for @dataclass decorator or relevant class
+                if (stripped.startswith('@dataclass') or
+                    (stripped.startswith('class ') and
+                     any(name in stripped for name in ['Customer', 'Vehicle', 'Node', 'Edge', 'Task', 'Resource',
+                                                      'Problem', 'Optimizer', 'Routing', 'Scheduling', 'Portfolio']))):
+
+                    # Start collecting the class (including decorators)
+                    class_lines = []
+                    class_indent = None
+
+                    # If this is a decorator, start from here
+                    if stripped.startswith('@'):
+                        class_lines.append(line)
+                        i += 1
+
+                        # Look for the class definition
+                        while i < len(lines):
+                            next_line = lines[i]
+                            next_stripped = next_line.strip()
+
+                            if next_stripped.startswith('class '):
+                                class_lines.append(next_line)
+                                class_indent = len(next_line) - len(next_line.lstrip())
+                                i += 1
+                                break
+                            elif next_stripped == '' or next_stripped.startswith('#') or next_stripped.startswith('@'):
+                                class_lines.append(next_line)
+                                i += 1
+                            else:
+                                break
+                    else:
+                        # This is a class definition
+                        class_lines.append(line)
+                        class_indent = len(line) - len(line.lstrip())
+                        i += 1
+
+                    # Now collect the class body
+                    if class_indent is not None:
+                        while i < len(lines):
+                            next_line = lines[i]
+                            next_stripped = next_line.strip()
+
+                            if not next_stripped:
+                                # Empty line
+                                class_lines.append(next_line)
+                                i += 1
+                            else:
+                                next_indent = len(next_line) - len(next_line.lstrip())
+                                if next_indent > class_indent:
+                                    # Part of the class
+                                    class_lines.append(next_line)
+                                    i += 1
+                                else:
+                                    # End of class
+                                    break
+
+                    # Add the collected class to results
+                    if class_lines:
+                        result_lines.extend(class_lines)
+                        result_lines.append('')  # Add separator
+                else:
+                    i += 1
+
+            return '\n'.join(result_lines)
+
+        else:
+            # Fallback: just extract imports
+            import_lines = []
+            for line in module_source.split('\n'):
+                stripped = line.strip()
+                if (stripped.startswith('import ') or stripped.startswith('from ')) and not stripped.startswith('#'):
+                    if any(keyword in line.lower() for keyword in [
+                        'qubots', 'numpy', 'random', 'typing', 'dataclass', 'datetime'
+                    ]):
+                        import_lines.append(line)
+
+            return '\n'.join(import_lines)
+
+    @staticmethod
+    def _get_basic_qubots_imports(model_type: str) -> str:
+        """
+        Get basic qubots imports based on model type.
+
+        Args:
+            model_type: Type of model ('problem' or 'optimizer')
+
+        Returns:
+            String containing basic import statements
+        """
+        common_imports = [
+            "import random",
+            "import numpy as np",
+            "from typing import Optional, List, Dict, Any, Tuple, Union"
+        ]
+
+        if model_type == "problem":
+            qubots_imports = [
+                "from qubots import (",
+                "    BaseProblem, ProblemMetadata, ProblemType,",
+                "    ObjectiveType, DifficultyLevel",
+                ")"
+            ]
+        else:  # optimizer
+            qubots_imports = [
+                "from qubots import (",
+                "    BaseOptimizer, OptimizerMetadata, OptimizerType,",
+                "    OptimizerFamily, OptimizationResult, BaseProblem",
+                ")"
+            ]
+
+        # Add fallback handling
+        fallback_section = [
+            "",
+            "# Qubots imports with fallback",
+            "try:",
+            "    " + "\n    ".join(qubots_imports),
+            "    QUBOTS_AVAILABLE = True",
+            "except ImportError:",
+            "    # Fallback for environments where qubots is not available",
+            "    QUBOTS_AVAILABLE = False",
+            "    print(\"Warning: qubots not available. Using fallback implementation.\")",
+            "",
+            "    # Minimal fallback classes",
+            "    class BaseProblem:" if model_type == "problem" else "    class BaseOptimizer:",
+            "        def __init__(self, metadata=None):",
+            "            self.metadata = metadata",
+            "",
+            "    class ProblemMetadata:" if model_type == "problem" else "    class OptimizerMetadata:",
+            "        def __init__(self, **kwargs):",
+            "            for k, v in kwargs.items():",
+            "                setattr(self, k, v)"
+        ]
+
+        all_imports = common_imports + fallback_section
+        return '\n'.join(all_imports)
 
 
 # Global client instance
@@ -281,21 +712,32 @@ def get_global_client() -> RastionClient:
     return _global_client
 
 
-def upload_qubots_model(model: Union[BaseProblem, BaseOptimizer],
-                       name: str, description: str,
+def upload_qubots_model(model: Union[BaseProblem, BaseOptimizer] = None,
+                       name: str = None, description: str = None,
                        requirements: Optional[List[str]] = None,
                        private: bool = False,
-                       client: Optional[RastionClient] = None) -> str:
+                       client: Optional[RastionClient] = None,
+                       # Path-based upload parameters
+                       path: Optional[str] = None,
+                       repository_name: Optional[str] = None,
+                       overwrite: bool = False) -> str:
     """
     Upload a qubots model to the Rastion platform.
 
+    Supports two modes:
+    1. Instance-based upload: Pass model, name, description
+    2. Path-based upload: Pass path, repository_name, description
+
     Args:
-        model: The model instance to upload
-        name: Name for the model repository
+        model: The model instance to upload (instance-based mode)
+        name: Name for the model repository (instance-based mode)
         description: Description of the model
         requirements: Python requirements
         private: Whether the repository should be private
         client: Rastion client instance (uses global if None)
+        path: Path to model directory (path-based mode)
+        repository_name: Repository name (path-based mode)
+        overwrite: Whether to overwrite existing repository (path-based mode)
 
     Returns:
         Repository URL
@@ -306,33 +748,71 @@ def upload_qubots_model(model: Union[BaseProblem, BaseOptimizer],
     if not client.is_authenticated():
         raise ValueError("Client not authenticated. Please authenticate first.")
 
-    # Package the model
-    packaged_files = QubotPackager.package_model(model, name, description, requirements)
+    # Determine upload mode
+    if path is not None:
+        # Path-based upload mode
+        if repository_name is None:
+            raise ValueError("repository_name is required for path-based upload")
+        if description is None:
+            description = f"Qubots model uploaded from {path}"
+
+        # Package from path
+        packaged_files = QubotPackager.package_model_from_path(
+            path, repository_name, description, requirements
+        )
+        repo_name = repository_name
+
+    elif model is not None:
+        # Instance-based upload mode
+        if name is None:
+            raise ValueError("name is required for instance-based upload")
+        if description is None:
+            raise ValueError("description is required for instance-based upload")
+
+        # Package from model instance
+        packaged_files = QubotPackager.package_model(model, name, description, requirements)
+        repo_name = name
+
+    else:
+        raise ValueError("Either 'model' or 'path' must be provided")
 
     # Create repository
     username = client.config["gitea_username"]
-    repo_info = client.create_repository(name, private=private)
+
+    # Handle overwrite for path-based uploads
+    if overwrite and path is not None:
+        try:
+            # Try to delete existing repository
+            delete_url = f"{client.api_base}/repos/{username}/{repo_name}"
+            headers = client._get_headers()
+            response = requests.delete(delete_url, headers=headers)
+            # Don't fail if repository doesn't exist
+        except Exception:
+            pass
+
+    repo_info = client.create_repository(repo_name, private=private)
 
     # Upload files
     for file_path, content in packaged_files.items():
-        client.upload_file_to_repo(username, name, file_path, content,
+        client.upload_file_to_repo(username, repo_name, file_path, content,
                                  f"Add {file_path}")
 
-    # Register in local registry
-    try:
-        registry = get_global_registry()
-        repository_info = {
-            "url": repo_info["clone_url"],
-            "path": f"{username}/{name}",
-            "commit": "main"
-        }
+    # Register in local registry (only for instance-based uploads)
+    if model is not None:
+        try:
+            registry = get_global_registry()
+            repository_info = {
+                "url": repo_info["clone_url"],
+                "path": f"{username}/{repo_name}",
+                "commit": "main"
+            }
 
-        if isinstance(model, BaseProblem):
-            registry.register_problem(model, repository_info)
-        else:
-            registry.register_optimizer(model, repository_info)
-    except Exception as e:
-        print(f"Warning: Failed to register in local registry: {e}")
+            if isinstance(model, BaseProblem):
+                registry.register_problem(model, repository_info)
+            else:
+                registry.register_optimizer(model, repository_info)
+        except Exception as e:
+            print(f"Warning: Failed to register in local registry: {e}")
 
     return repo_info["clone_url"]
 
