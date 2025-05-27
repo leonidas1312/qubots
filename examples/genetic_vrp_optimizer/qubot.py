@@ -146,9 +146,12 @@ class GeneticVRPOptimizer(BaseOptimizer):
         # Initialize population
         self.log_message('info', f"Initializing population of {self.population_size} individuals...")
         population = self._initialize_population(problem)
+        self.log_message('debug', f"Population initialized with {len(population)} individuals")
 
         # Evaluate initial population
+        self.log_message('info', "Evaluating initial population...")
         self._evaluate_population(population, problem)
+        self.log_message('debug', "Initial population evaluation completed")
 
         # Evolution loop
         best_individual = min(population, key=lambda x: x.fitness)
@@ -206,10 +209,14 @@ class GeneticVRPOptimizer(BaseOptimizer):
                 population_size=len(population)
             )
 
-            # Detailed progress logging
-            if (generation + 1) % 10 == 0:
+            # More frequent progress logging for real-time feedback
+            if (generation + 1) % 5 == 0:
                 progress = (generation + 1) / self.generations
                 self.log_message('info', f"Progress: {progress:.1%} - Best: {best_individual.fitness:.6f} - Diversity: {diversity:.4f}")
+            elif (generation + 1) % 1 == 0:  # Log every generation for first few and last few
+                if generation < 10 or generation >= self.generations - 10:
+                    progress = (generation + 1) / self.generations
+                    self.log_message('debug', f"Generation {generation + 1}/{self.generations}: Best = {best_individual.fitness:.6f}")
 
             # Early stopping check
             if self.should_stop():

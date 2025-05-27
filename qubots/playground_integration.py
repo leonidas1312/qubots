@@ -145,7 +145,8 @@ class PlaygroundExecutor:
             # Create progress callback for real-time logging
             progress_callback = self._create_optimization_progress_callback()
 
-            result = optimizer.optimize(problem, progress_callback=progress_callback)
+            # Pass both progress_callback and log_callback to optimizer
+            result = optimizer.optimize(problem, progress_callback=progress_callback, log_callback=self.log_callback)
 
             self._log('info', f'Optimization completed! Best value: {result.best_value:.6f}', 'optimizer')
             if hasattr(result, 'iterations'):
@@ -521,7 +522,8 @@ def execute_playground_optimization(problem_name: str = None,
             problem=problem,
             optimizer=optimizer,
             problem_name=problem_name,
-            optimizer_name=optimizer_name
+            optimizer_name=optimizer_name,
+            log_callback=log_callback
         )
 
         return dashboard_result.to_dict()
