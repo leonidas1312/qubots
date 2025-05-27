@@ -12,12 +12,35 @@ import inspect
 from typing import Dict, Any, Optional, Union, List, Callable
 from datetime import datetime
 from dataclasses import dataclass, asdict
+from enum import Enum
 
 from .base_problem import BaseProblem
 from .base_optimizer import BaseOptimizer
 from .rastion_client import get_global_client
 from .rastion import load_qubots_model
 from .dashboard import QubotsAutoDashboard, DashboardResult
+
+
+def _make_json_serializable(obj: Any) -> Any:
+    """
+    Convert objects to JSON-serializable format.
+    Handles enums, dataclasses, and other common non-serializable types.
+    """
+    if isinstance(obj, Enum):
+        return obj.value
+    elif hasattr(obj, 'to_dict') and callable(obj.to_dict):
+        return obj.to_dict()
+    elif hasattr(obj, '__dict__'):
+        return {k: _make_json_serializable(v) for k, v in obj.__dict__.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [_make_json_serializable(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {k: _make_json_serializable(v) for k, v in obj.items()}
+    elif isinstance(obj, (str, int, float, bool, type(None))):
+        return obj
+    else:
+        # For other types, try to convert to string
+        return str(obj)
 
 
 @dataclass
@@ -40,7 +63,8 @@ class PlaygroundResult:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
-        return asdict(self)
+        result_dict = asdict(self)
+        return _make_json_serializable(result_dict)
 
 
 @dataclass
@@ -185,12 +209,15 @@ class PlaygroundExecutor:
                 if iterations:
                     self._log('info', f'Optimization history contains {iterations} entries', 'results')
 
-            # Collect metadata
+            # Collect metadata with proper JSON serialization
+            problem_metadata = getattr(problem, 'metadata', {})
+            optimizer_metadata = getattr(optimizer, 'metadata', {})
+
             metadata = {
                 'problem_class': problem.__class__.__name__,
                 'optimizer_class': optimizer.__class__.__name__,
-                'problem_metadata': getattr(problem, 'metadata', {}),
-                'optimizer_metadata': getattr(optimizer, 'metadata', {}),
+                'problem_metadata': _make_json_serializable(problem_metadata),
+                'optimizer_metadata': _make_json_serializable(optimizer_metadata),
                 'result_type': type(result).__name__
             }
 
