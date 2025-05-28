@@ -1,0 +1,72 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "ORToolsMaxCutOptimizer",
+  "default_params": {
+    "time_limit": 300.0,
+    "num_search_workers": 0,
+    "log_search_progress": false,
+    "use_symmetry": true
+  },
+  "metadata": {
+    "name": "OR-Tools MaxCut Optimizer",
+    "description": "Constraint programming solver for Maximum Cut problems using Google OR-Tools CP-SAT. Formulates MaxCut using binary variables with linearization techniques to handle the quadratic objective.",
+    "domain": "graph_theory",
+    "tags": [
+      "ortools",
+      "cp-sat",
+      "constraint_programming",
+      "exact",
+      "maxcut",
+      "binary",
+      "optimization",
+      "open_source",
+      "linearization"
+    ],
+    "difficulty": "intermediate",
+    "optimizer_type": "exact"
+  },
+  "parameters": {
+    "time_limit": {
+      "type": "number",
+      "default": 300.0,
+      "min": 1.0,
+      "max": 3600.0,
+      "description": "Maximum solving time in seconds"
+    },
+    "num_search_workers": {
+      "type": "integer",
+      "default": 0,
+      "min": 0,
+      "max": 16,
+      "description": "Number of parallel search workers (0 = automatic)"
+    },
+    "max_time_in_seconds": {
+      "type": "number",
+      "default": 300.0,
+      "min": 1.0,
+      "max": 3600.0,
+      "description": "Alternative time limit parameter for CP-SAT"
+    },
+    "log_search_progress": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable detailed search progress logging"
+    },
+    "enumerate_all_solutions": {
+      "type": "boolean",
+      "default": false,
+      "description": "Find all optimal solutions if multiple exist"
+    },
+    "use_symmetry": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable symmetry breaking techniques"
+    },
+    "use_sat_preprocessing": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable SAT preprocessing for better performance"
+    }
+  }
+}

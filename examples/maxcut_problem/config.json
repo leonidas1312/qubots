@@ -1,0 +1,64 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "MaxCutProblem",
+  "default_params": {
+    "n_vertices": 10,
+    "graph_type": "random",
+    "density": 0.5,
+    "weight_range": [1.0, 10.0]
+  },
+  "metadata": {
+    "name": "Maximum Cut Problem",
+    "description": "Graph partitioning optimization to maximize the weight of edges crossing between two vertex sets. The MaxCut problem is a fundamental combinatorial optimization problem with applications in statistical physics, circuit design, and machine learning.",
+    "domain": "graph_theory",
+    "tags": [
+      "maxcut",
+      "graph",
+      "partitioning",
+      "optimization",
+      "combinatorial",
+      "np-hard",
+      "binary"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "combinatorial"
+  },
+  "parameters": {
+    "n_vertices": {
+      "type": "integer",
+      "default": 10,
+      "min": 3,
+      "max": 100,
+      "description": "Number of vertices in the graph"
+    },
+    "graph_type": {
+      "type": "string",
+      "default": "random",
+      "options": ["random", "complete", "cycle", "grid"],
+      "description": "Type of graph structure to generate"
+    },
+    "density": {
+      "type": "number",
+      "default": 0.5,
+      "min": 0.1,
+      "max": 1.0,
+      "description": "Edge density for random graphs (probability of edge existence)"
+    },
+    "weight_range": {
+      "type": "array",
+      "default": [1.0, 10.0],
+      "description": "Range for random edge weights [min, max]",
+      "items": {
+        "type": "number",
+        "min": 0.1,
+        "max": 100.0
+      },
+      "minItems": 2,
+      "maxItems": 2
+    }
+  },
+  "requirements": [
+    "numpy>=1.20.0"
+  ]
+}

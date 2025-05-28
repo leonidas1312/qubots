@@ -1,0 +1,3 @@
+ortools>=9.8.0
+numpy>=1.21.0
+qubots>=0.1.0

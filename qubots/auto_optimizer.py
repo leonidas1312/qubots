@@ -40,9 +40,20 @@ class AutoOptimizer:
         req = Path(path) / "requirements.txt"
         if req.is_file():
             subprocess.run(
-                [sys.executable, "-m", "pip", "install", "-r", str(req)],
+                [sys.executable, "-m", "pip", "install", "--user", "-r", str(req)],
                 check=True
             )
+
+            # Force refresh of Python path to ensure newly installed packages are available
+            import site
+            import importlib
+            site.main()  # Refresh site-packages
+            importlib.invalidate_caches()  # Clear import caches
+
+            # Ensure user site-packages is in Python path
+            user_site = site.getusersitepackages()
+            if user_site not in sys.path:
+                sys.path.insert(0, user_site)
 
         # 2) Load config.json
         cfg_file = Path(path) / "config.json"
@@ -67,10 +78,12 @@ class AutoOptimizer:
 
         # Handle module name conflicts by clearing cache if module already exists
         # This prevents conflicts when both problems and optimizers use the same module name (e.g., "qubot")
+        # Also force fresh import after requirements installation to ensure imports work correctly
         if entry_mod in sys.modules:
             # Remove from cache to force fresh import from the correct path
             del sys.modules[entry_mod]
 
+        # Force fresh import to ensure any newly installed packages are available
         module = importlib.import_module(entry_mod)
         OptimizerCls = getattr(module, class_name)
 

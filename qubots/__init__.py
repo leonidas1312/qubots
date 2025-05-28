@@ -87,22 +87,9 @@ from .dashboard import (
     QubotsAutoDashboard
 )
 
-# Testing and debugging framework
-from .testing import (
-    ModelTester,
-    UploadValidator,
-    LoadValidator,
-    ExecutionValidator,
-    DebuggingTools,
-    TestResult,
-    ValidationError,
-    run_comprehensive_test,
-    validate_model_upload,
-    validate_model_loading,
-    validate_model_execution
-)
 
-__version__ = "1.1.0"
+
+__version__ = "1.1.1"
 
 __all__ = [
     # Core classes
@@ -169,16 +156,5 @@ __all__ = [
     "QubotsVisualizer",
     "QubotsAutoDashboard",
 
-    # Testing and debugging framework
-    "ModelTester",
-    "UploadValidator",
-    "LoadValidator",
-    "ExecutionValidator",
-    "DebuggingTools",
-    "TestResult",
-    "ValidationError",
-    "run_comprehensive_test",
-    "validate_model_upload",
-    "validate_model_loading",
-    "validate_model_execution",
+    
 ]
