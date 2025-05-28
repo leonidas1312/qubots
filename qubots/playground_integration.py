@@ -129,37 +129,25 @@ class PlaygroundExecutor:
             self._log('info', 'Starting optimization execution...', 'system')
             self._report_progress("Loading problem model...", 10)
 
-            # Load problem
+            # Load problem with parameter overrides
             self._log('info', f'Loading problem: {problem_username}/{problem_name}', 'loader')
-            problem = load_qubots_model(problem_name, problem_username)
+            if problem_params:
+                self._log('info', f'Applying problem parameters: {problem_params}', 'config')
+            problem = load_qubots_model(problem_name, problem_username, override_params=problem_params)
             if not isinstance(problem, BaseProblem):
                 raise ValueError(f"Model {problem_name} is not a valid problem")
             self._log('info', f'Problem loaded successfully: {type(problem).__name__}', 'loader')
 
-            # Apply problem parameter overrides if provided
-            if problem_params:
-                self._log('info', f'Applying problem parameters: {problem_params}', 'config')
-                for key, value in problem_params.items():
-                    if hasattr(problem, key):
-                        setattr(problem, key, value)
-                        self._log('debug', f'Set problem.{key} = {value}', 'config')
-
             self._report_progress("Loading optimizer model...", 30)
 
-            # Load optimizer
+            # Load optimizer with parameter overrides
             self._log('info', f'Loading optimizer: {optimizer_username}/{optimizer_name}', 'loader')
-            optimizer = load_qubots_model(optimizer_name, optimizer_username)
+            if optimizer_params:
+                self._log('info', f'Applying optimizer parameters: {optimizer_params}', 'config')
+            optimizer = load_qubots_model(optimizer_name, optimizer_username, override_params=optimizer_params)
             if not isinstance(optimizer, BaseOptimizer):
                 raise ValueError(f"Model {optimizer_name} is not a valid optimizer")
             self._log('info', f'Optimizer loaded successfully: {type(optimizer).__name__}', 'loader')
-
-            # Apply optimizer parameter overrides if provided
-            if optimizer_params:
-                self._log('info', f'Applying optimizer parameters: {optimizer_params}', 'config')
-                for key, value in optimizer_params.items():
-                    if hasattr(optimizer, key):
-                        setattr(optimizer, key, value)
-                        self._log('debug', f'Set optimizer.{key} = {value}', 'config')
 
             self._report_progress("Running optimization...", 50)
 
@@ -481,8 +469,12 @@ def execute_playground_optimization(problem_name: str = None,
             if log_callback:
                 log_callback('info', f'Loading models from directories: {problem_dir}, {optimizer_dir}', 'system')
 
-            problem = _load_model_from_directory(problem_dir, "problem")
-            optimizer = _load_model_from_directory(optimizer_dir, "optimizer")
+            # Get parameters for directory-based loading
+            problem_params = kwargs.get('problem_params', {})
+            optimizer_params = kwargs.get('optimizer_params', {})
+
+            problem = _load_model_from_directory(problem_dir, "problem", override_params=problem_params)
+            optimizer = _load_model_from_directory(optimizer_dir, "optimizer", override_params=optimizer_params)
 
             # Use directory names as display names if not provided
             if problem_name is None:
@@ -522,25 +514,6 @@ def execute_playground_optimization(problem_name: str = None,
         else:
             raise ValueError("Either provide (problem_name, optimizer_name) or (problem_dir, optimizer_dir)")
 
-        # Apply parameters if provided (for directory-based mode)
-        problem_params = kwargs.get('problem_params', {})
-        optimizer_params = kwargs.get('optimizer_params', {})
-
-        # Configure problem and optimizer with parameters
-        if problem_params:
-            if log_callback:
-                log_callback('info', f'Applying problem parameters: {problem_params}', 'config')
-            for key, value in problem_params.items():
-                if hasattr(problem, key):
-                    setattr(problem, key, value)
-
-        if optimizer_params:
-            if log_callback:
-                log_callback('info', f'Applying optimizer parameters: {optimizer_params}', 'config')
-            for key, value in optimizer_params.items():
-                if hasattr(optimizer, key):
-                    setattr(optimizer, key, value)
-
         # Run optimization with automatic dashboard generation
         if log_callback:
             log_callback('info', 'Running optimization with dashboard generation...', 'system')
@@ -570,13 +543,14 @@ def execute_playground_optimization(problem_name: str = None,
         return result_dict
 
 
-def _load_model_from_directory(directory: str, expected_type: str):
+def _load_model_from_directory(directory: str, expected_type: str, override_params: Optional[Dict[str, Any]] = None):
     """
     Load a qubots model from a directory containing qubot.py and config.json.
 
     Args:
         directory: Path to the directory
         expected_type: Expected model type ("problem" or "optimizer")
+        override_params: Parameters to override during model instantiation
 
     Returns:
         Loaded model instance
@@ -626,8 +600,10 @@ def _load_model_from_directory(directory: str, expected_type: str):
 
         model_class = getattr(module, class_name)
 
-        # Create instance with default parameters
+        # Create instance with default parameters and overrides
         default_params = config.get("default_params", {})
+        if override_params:
+            default_params.update(override_params)
         model_instance = model_class(**default_params)
 
         return model_instance

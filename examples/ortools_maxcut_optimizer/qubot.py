@@ -13,9 +13,7 @@ Version: 1.0.0
 """
 
 import time
-import numpy as np
-from typing import List, Tuple, Dict, Any, Optional
-from dataclasses import dataclass
+from typing import List
 from qubots import (
     BaseOptimizer, OptimizerMetadata, OptimizerType,
     OptimizerFamily, OptimizationResult, BaseProblem
@@ -41,12 +39,12 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
     Mathematical Formulation:
         Variables: x_i ∈ {0,1} for each vertex i (partition assignment)
                   y_ij ∈ {0,1} for each edge (i,j) (cut indicator)
-        
+
         Constraints: y_ij >= x_i - x_j  (linearization)
                     y_ij >= x_j - x_i  (linearization)
                     y_ij <= x_i + x_j  (linearization)
                     y_ij <= 2 - x_i - x_j  (linearization)
-        
+
         Objective: maximize Σ w_ij * y_ij for all edges (i,j)
 
     The y_ij variables equal 1 when vertices i and j are in different partitions
@@ -60,7 +58,6 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
                  log_search_progress: bool = False,
                  enumerate_all_solutions: bool = False,
                  use_symmetry: bool = True,
-                 use_sat_preprocessing: bool = True,
                  **kwargs):
         """
         Initialize the OR-Tools MaxCut Optimizer.
@@ -72,7 +69,6 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
             log_search_progress: Enable detailed search progress logging
             enumerate_all_solutions: Find all optimal solutions (if multiple exist)
             use_symmetry: Enable symmetry breaking techniques
-            use_sat_preprocessing: Enable SAT preprocessing
             **kwargs: Additional optimizer parameters
         """
         # Check OR-Tools availability
@@ -89,7 +85,6 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
         self.log_search_progress = log_search_progress
         self.enumerate_all_solutions = enumerate_all_solutions
         self.use_symmetry = use_symmetry
-        self.use_sat_preprocessing = use_sat_preprocessing
 
         # Initialize parent class with all parameters
         super().__init__(
@@ -99,7 +94,6 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
             log_search_progress=log_search_progress,
             enumerate_all_solutions=enumerate_all_solutions,
             use_symmetry=use_symmetry,
-            use_sat_preprocessing=use_sat_preprocessing,
             **kwargs
         )
 
@@ -125,7 +119,7 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
             convergence_guaranteed=True,
             parallel_capable=True,
             required_parameters=["time_limit"],
-            optional_parameters=["num_search_workers", "log_search_progress", "use_symmetry", "use_sat_preprocessing"],
+            optional_parameters=["num_search_workers", "log_search_progress", "use_symmetry"],
             parameter_ranges={
                 "time_limit": (1.0, 86400.0),  # 1 second to 24 hours
                 "num_search_workers": (0, 32),  # 0 = auto, up to 32 workers
@@ -157,7 +151,6 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
             raise ValueError("Problem must be a MaxCut problem with adjacency_matrix and n_vertices attributes")
 
         n = problem.n_vertices
-        adj_matrix = problem.adjacency_matrix
         edges = problem.edges
 
         self.log_message('info', f"Setting up OR-Tools CP-SAT model for {n}-vertex MaxCut problem...")
@@ -264,11 +257,12 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
         # Enable/disable search progress logging
         solver.parameters.log_search_progress = self.log_search_progress
 
-        # Enable/disable SAT preprocessing
-        solver.parameters.use_sat_preprocessing = self.use_sat_preprocessing
+        # Note: use_sat_preprocessing parameter doesn't exist in current OR-Tools version
+        # SAT preprocessing is enabled by default and cannot be disabled
 
-        # Additional performance parameters
-        solver.parameters.enumerate_all_solutions = self.enumerate_all_solutions
+        # Note: enumerate_all_solutions is not a standard CP-SAT parameter
+        # For MaxCut, we typically want the best solution, not all solutions
+        # This parameter is kept for compatibility but may not have effect
 
     def _extract_solution(self, solver, status, x, n: int, problem, objective_terms) -> 'OptimizationResult':
         """Extract solution from solved OR-Tools model."""
@@ -279,7 +273,7 @@ class ORToolsMaxCutOptimizer(BaseOptimizer):
         if status in [cp_model.OPTIMAL, cp_model.FEASIBLE]:
             solution_values = [solver.Value(x[i]) for i in range(n)]
             binary_solution = [int(val) for val in solution_values]
-            
+
             # Calculate objective value (scaled back)
             if objective_terms:
                 objective_value = sum(solver.Value(term) for term in objective_terms) / 1000.0

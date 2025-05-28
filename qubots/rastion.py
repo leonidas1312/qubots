@@ -44,7 +44,8 @@ def is_authenticated() -> bool:
 
 
 def load_qubots_model(model_name: str,
-                     username: Optional[str] = None) -> Union[BaseProblem, BaseOptimizer]:
+                     username: Optional[str] = None,
+                     override_params: Optional[Dict[str, Any]] = None) -> Union[BaseProblem, BaseOptimizer]:
     """
     Load a qubots model with one line of code.
 
@@ -53,6 +54,7 @@ def load_qubots_model(model_name: str,
     Args:
         model_name: Name of the model repository
         username: Repository owner (auto-detected if None)
+        override_params: Parameters to override during model instantiation
 
     Returns:
         Loaded model instance (BaseProblem or BaseOptimizer)
@@ -62,8 +64,10 @@ def load_qubots_model(model_name: str,
         >>> model = rastion.load_qubots_model("traveling_salesman_problem")
         >>> # or with specific username
         >>> model = rastion.load_qubots_model("tsp_solver", username="Rastion")
+        >>> # or with parameter overrides
+        >>> model = rastion.load_qubots_model("maxcut_problem", override_params={"n_vertices": 80})
     """
-    return _load_qubots_model(model_name, username)
+    return _load_qubots_model(model_name, username, override_params=override_params)
 
 
 def upload_model(model: Union[BaseProblem, BaseOptimizer],

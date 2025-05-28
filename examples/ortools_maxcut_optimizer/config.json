@@ -62,11 +62,6 @@
       "type": "boolean",
       "default": true,
       "description": "Enable symmetry breaking techniques"
-    },
-    "use_sat_preprocessing": {
-      "type": "boolean",
-      "default": true,
-      "description": "Enable SAT preprocessing for better performance"
     }
   }
 }

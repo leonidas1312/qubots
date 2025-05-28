@@ -106,7 +106,7 @@ class PyomoMaxCutOptimizer(BaseOptimizer):
             name="Pyomo MaxCut Optimizer",
             description="Flexible solver for Maximum Cut using Pyomo modeling framework with multiple solver backends",
             optimizer_type=OptimizerType.EXACT,
-            optimizer_family=OptimizerFamily.MATHEMATICAL_PROGRAMMING,
+            optimizer_family=OptimizerFamily.CONSTRAINT_PROGRAMMING,
             author="Qubots Community",
             version="1.0.0",
             supports_constraints=True,

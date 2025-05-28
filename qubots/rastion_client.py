@@ -820,7 +820,8 @@ def upload_qubots_model(model: Union[BaseProblem, BaseOptimizer] = None,
 def load_qubots_model(model_name: str,
                      username: Optional[str] = None,
                      revision: str = "main",
-                     client: Optional[RastionClient] = None) -> Union[BaseProblem, BaseOptimizer]:
+                     client: Optional[RastionClient] = None,
+                     override_params: Optional[Dict[str, Any]] = None) -> Union[BaseProblem, BaseOptimizer]:
     """
     Load a qubots model from the Rastion platform with one line of code.
 
@@ -829,6 +830,7 @@ def load_qubots_model(model_name: str,
         username: Repository owner (auto-detected if None)
         revision: Git revision to load
         client: Rastion client instance (uses global if None)
+        override_params: Parameters to override during model instantiation
 
     Returns:
         Loaded model instance
@@ -854,11 +856,11 @@ def load_qubots_model(model_name: str,
     # Try to determine if it's a problem or optimizer by checking config
     try:
         # First, try to load as a problem
-        return AutoProblem.from_repo(repo_id, revision=revision)
+        return AutoProblem.from_repo(repo_id, revision=revision, override_params=override_params)
     except Exception:
         try:
             # If that fails, try as an optimizer
-            return AutoOptimizer.from_repo(repo_id, revision=revision)
+            return AutoOptimizer.from_repo(repo_id, revision=revision, override_params=override_params)
         except Exception as e:
             raise ValueError(f"Failed to load model '{repo_id}': {e}")
 
