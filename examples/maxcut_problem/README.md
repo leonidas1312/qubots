@@ -29,17 +29,26 @@ Example: `[0, 1, 0, 1]` means vertices 0,2 are in set S and vertices 1,3 are in 
 - **Real-time Evaluation**: Verbose evaluation with detailed cut analysis
 - **Solution Analysis**: Comprehensive solution summaries with metrics
 - **Neighbor Generation**: Local search support with vertex flipping
-- **Rastion Integration**: Full compatibility with the Rastion platform playground
+
+## Installation
+
+```bash
+pip install qubots
+```
 
 ## Usage
 
 ### Basic Usage
 
 ```python
-from qubots import MaxCutProblem
+from qubots import AutoProblem
 
-# Create a random graph with 10 vertices
-problem = MaxCutProblem(n_vertices=10, graph_type="random", density=0.5)
+# Load a MaxCut problem
+problem = AutoProblem.from_repo("ileo/demo-maxcut",override_params={
+    "n_vertices": 10,
+    "graph_type": "random",
+    "density": 0.5
+})
 
 # Generate and evaluate a random solution
 solution = problem.get_random_solution()
@@ -52,7 +61,7 @@ print(f"Solution summary: {problem.get_solution_summary(solution)}")
 ### Custom Graph
 
 ```python
-from qubots import MaxCutProblem
+from qubots import AutoProblem
 import numpy as np
 
 # Create custom adjacency matrix
@@ -63,7 +72,17 @@ adj_matrix = np.array([
     [0, 4, 2, 0]
 ])
 
-problem = MaxCutProblem(adjacency_matrix=adj_matrix)
+# Load a MaxCut problem
+problem = AutoProblem.from_repo("ileo/demo-maxcut",override_params={
+    "adjacency_matrix": adj_matrix
+})
+
+# Generate and evaluate a random solution
+solution = problem.get_random_solution()
+cut_weight = problem.evaluate_solution(solution, verbose=True)
+
+print(f"Cut weight: {cut_weight}")
+print(f"Solution summary: {problem.get_solution_summary(solution)}")
 ```
 
 ## Graph Types
@@ -81,31 +100,9 @@ problem = MaxCutProblem(adjacency_matrix=adj_matrix)
 - **Network Analysis**: Community detection
 - **Quantum Computing**: QAOA algorithm benchmarking
 
-## Complexity
-
-- **Problem Class**: NP-Hard
-- **Approximation**: 0.878-approximation algorithm exists (Goemans-Williamson)
-- **Exact Solutions**: Feasible for small graphs (< 20 vertices)
-- **Heuristics**: Various metaheuristics perform well in practice
-
 ## Configuration Parameters
 
 - `n_vertices`: Number of graph vertices (3-100)
 - `graph_type`: Graph structure type
 - `density`: Edge probability for random graphs (0.1-1.0)
 - `weight_range`: Range for random edge weights
-
-## Integration with Optimizers
-
-This problem is designed to work with various optimization algorithms:
-- CPLEX (exact solver)
-- Genetic algorithms
-- Simulated annealing
-- Tabu search
-- Quantum algorithms (QAOA)
-
-## References
-
-1. Goemans, M. X., & Williamson, D. P. (1995). Improved approximation algorithms for maximum cut and satisfiability problems.
-2. Karp, R. M. (1972). Reducibility among combinatorial problems.
-3. Barahona, F., et al. (1988). An application of combinatorial optimization to statistical physics and circuit layout design.

@@ -259,17 +259,15 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Test with default settings
-  python load_and_test_optimization.py vehicle_routing_problem genetic_vrp_optimizer
   
   # Test with specific user repositories
   python load_and_test_optimization.py user/my_problem user/my_optimizer
   
   # Run multiple iterations for statistical analysis
-  python load_and_test_optimization.py maxcut_problem cplex_maxcut_optimizer --iterations 5
+  python load_and_test_optimization.py user/my_problem user/my_optimizer --iterations 5
   
   # Quiet mode with minimal output
-  python load_and_test_optimization.py my_problem my_optimizer --quiet
+  python load_and_test_optimization.py  user/my_problem user/my_optimizer --quiet
         """
     )
     

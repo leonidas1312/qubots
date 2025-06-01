@@ -20,7 +20,6 @@ from .base_problem import BaseProblem
 from .base_optimizer import BaseOptimizer
 from .auto_problem import AutoProblem
 from .auto_optimizer import AutoOptimizer
-from .registry import get_global_registry, RegistryType
 
 
 @dataclass
@@ -409,17 +408,6 @@ class QubotPackager:
 - **Type**: {model_type}
 - **Class**: {config.get("class_name", "Unknown")}
 - **Framework**: qubots
-
-## Usage
-
-```python
-import qubots.rastion as rastion
-
-# Load the model
-model = rastion.load_qubots_model("{name}")
-
-# Use the model
-# ... your code here ...
 ```
 
 ## Requirements
@@ -797,23 +785,6 @@ def upload_qubots_model(model: Union[BaseProblem, BaseOptimizer] = None,
         client.upload_file_to_repo(username, repo_name, file_path, content,
                                  f"Add {file_path}")
 
-    # Register in local registry (only for instance-based uploads)
-    if model is not None:
-        try:
-            registry = get_global_registry()
-            repository_info = {
-                "url": repo_info["clone_url"],
-                "path": f"{username}/{repo_name}",
-                "commit": "main"
-            }
-
-            if isinstance(model, BaseProblem):
-                registry.register_problem(model, repository_info)
-            else:
-                registry.register_optimizer(model, repository_info)
-        except Exception as e:
-            print(f"Warning: Failed to register in local registry: {e}")
-
     return repo_info["clone_url"]
 
 
@@ -863,92 +834,3 @@ def load_qubots_model(model_name: str,
             return AutoOptimizer.from_repo(repo_id, revision=revision, override_params=override_params)
         except Exception as e:
             raise ValueError(f"Failed to load model '{repo_id}': {e}")
-
-
-def list_available_models(username: Optional[str] = None,
-                         model_type: Optional[str] = None,
-                         client: Optional[RastionClient] = None) -> List[Dict[str, Any]]:
-    """
-    List available qubots models on the Rastion platform.
-
-    Args:
-        username: Filter by username (None for all users)
-        model_type: Filter by model type ('problem' or 'optimizer')
-        client: Rastion client instance (uses global if None)
-
-    Returns:
-        List of available models with metadata
-    """
-    if client is None:
-        client = get_global_client()
-
-    if username:
-        repos = client.list_repositories(username)
-    else:
-        # Search for qubots repositories
-        repos = client.search_repositories("qubots", limit=100)
-
-    models = []
-    for repo in repos:
-        # Try to get config.json to determine if it's a qubots model
-        try:
-            # This is a simplified check - in a real implementation,
-            # you'd fetch the config.json file from the repository
-            model_info = {
-                "name": repo["name"],
-                "description": repo.get("description", ""),
-                "owner": repo["owner"]["login"],
-                "url": repo["clone_url"],
-                "updated_at": repo.get("updated_at"),
-                "stars": repo.get("stars_count", 0)
-            }
-
-            # Add type if filtering is requested
-            if model_type is None:
-                models.append(model_info)
-            # Note: In a real implementation, you'd fetch and parse config.json
-            # to determine the actual type
-
-        except Exception:
-            continue
-
-    return models
-
-
-def search_models(query: str,
-                 model_type: Optional[str] = None,
-                 limit: int = 10,
-                 client: Optional[RastionClient] = None) -> List[Dict[str, Any]]:
-    """
-    Search for qubots models on the Rastion platform.
-
-    Args:
-        query: Search query
-        model_type: Filter by model type ('problem' or 'optimizer')
-        limit: Maximum number of results
-        client: Rastion client instance (uses global if None)
-
-    Returns:
-        List of matching models
-    """
-    if client is None:
-        client = get_global_client()
-
-    # Enhance query to include qubots-specific terms
-    enhanced_query = f"{query} qubots"
-
-    repos = client.search_repositories(enhanced_query, limit=limit)
-
-    models = []
-    for repo in repos:
-        model_info = {
-            "name": repo["name"],
-            "description": repo.get("description", ""),
-            "owner": repo["owner"]["login"],
-            "url": repo["clone_url"],
-            "updated_at": repo.get("updated_at"),
-            "stars": repo.get("stars_count", 0)
-        }
-        models.append(model_info)
-
-    return models

@@ -13,11 +13,10 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from .base_problem import BaseProblem
-from .registry import get_global_registry, RegistryType
 
 class AutoProblem:
     """
-    Enhanced problem loader with registry integration, caching, and validation.
+    Enhanced problem loader with caching, and validation.
     Clones/pulls repos from hub.rastion.com and instantiates problem classes.
     """
 
@@ -29,7 +28,6 @@ class AutoProblem:
         cache_dir: str = "~/.cache/rastion_hub",
         override_params: Optional[dict] = None,
         validate_metadata: bool = True,
-        register_in_registry: bool = True
     ) -> BaseProblem:
         cache = os.path.expanduser(cache_dir)
         os.makedirs(cache, exist_ok=True)
@@ -94,85 +92,7 @@ class AutoProblem:
         if validate_metadata and hasattr(problem_instance, 'metadata'):
             cls._validate_problem_metadata(problem_instance)
 
-        if register_in_registry:
-            try:
-                registry = get_global_registry()
-                repository_info = {
-                    "url": f"https://hub.rastion.com/{repo_id}.git",
-                    "path": repo_id,
-                    "commit": cls._get_commit_hash(path)
-                }
-                registry.register_problem(problem_instance, repository_info)
-                registry.increment_download_count(
-                    cls._generate_registry_id(repo_id, cfg.get("version", "1.0.0"))
-                )
-            except Exception as e:
-                # Don't fail if registry operations fail
-                print(f"Warning: Registry operation failed: {e}")
-
         return problem_instance
-
-    @classmethod
-    def from_registry(cls, entry_id: str, override_params: Optional[dict] = None) -> BaseProblem:
-        """
-        Load a problem directly from the registry.
-
-        Args:
-            entry_id: Registry entry ID
-            override_params: Parameters to override
-
-        Returns:
-            Problem instance
-        """
-        registry = get_global_registry()
-        entry = registry.get_entry(entry_id)
-
-        if not entry:
-            raise ValueError(f"Entry {entry_id} not found in registry")
-
-        if entry.registry_type != RegistryType.PROBLEM:
-            raise ValueError(f"Entry {entry_id} is not a problem")
-
-        # Extract repo_id from repository_path
-        repo_id = entry.repository_path
-        if not repo_id:
-            raise ValueError(f"No repository path found for entry {entry_id}")
-
-        return cls.from_repo(repo_id, override_params=override_params, register_in_registry=False)
-
-    @classmethod
-    def search_problems(cls, query: str = "", tags: Optional[List[str]] = None,
-                       author: Optional[str] = None) -> List[Dict[str, Any]]:
-        """
-        Search for problems in the registry.
-
-        Args:
-            query: Text query
-            tags: Filter by tags
-            author: Filter by author
-
-        Returns:
-            List of matching problem entries
-        """
-        registry = get_global_registry()
-        entries = registry.search(query, RegistryType.PROBLEM, tags, author)
-        return [entry.to_dict() for entry in entries]
-
-    @classmethod
-    def get_recommendations(cls, problem_id: str, limit: int = 5) -> List[Dict[str, Any]]:
-        """
-        Get problem recommendations based on a problem.
-
-        Args:
-            problem_id: ID of the base problem
-            limit: Maximum number of recommendations
-
-        Returns:
-            List of recommended problem entries
-        """
-        registry = get_global_registry()
-        entries = registry.get_recommendations(problem_id, limit)
-        return [entry.to_dict() for entry in entries]
 
     @staticmethod
     def _validate_problem_metadata(problem: BaseProblem):
@@ -201,12 +121,6 @@ class AutoProblem:
             return result.stdout.strip()
         except subprocess.CalledProcessError:
             return ""
-
-    @staticmethod
-    def _generate_registry_id(repo_id: str, version: str) -> str:
-        """Generate registry ID for tracking."""
-        content = f"{repo_id}_{version}"
-        return hashlib.md5(content.encode()).hexdigest()[:16]
 
     @staticmethod
     def _clone_or_pull(repo_id: str, revision: str, cache_dir: str) -> str:

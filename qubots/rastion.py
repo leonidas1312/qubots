@@ -1,6 +1,5 @@
 """
 Simplified Rastion interface for seamless qubots model management.
-Provides the one-line interface: rastion.load_qubots_model("model_name")
 """
 
 from typing import Union, Optional, List, Dict, Any
@@ -10,9 +9,6 @@ from .rastion_client import (
     get_global_client,
     load_qubots_model as _load_qubots_model,
     upload_qubots_model as _upload_qubots_model,
-    list_available_models as _list_available_models,
-    search_models as _search_models,
-    RastionClient
 )
 
 
@@ -131,98 +127,10 @@ def upload_model_from_path(path: str, repository_name: str, description: str,
                                description=description, requirements=requirements,
                                private=private, overwrite=overwrite)
 
-
-def discover_models(query: Optional[str] = None,
-                   username: Optional[str] = None,
-                   limit: int = 10) -> List[Dict[str, Any]]:
-    """
-    Discover available qubots models on the platform.
-
-    Args:
-        query: Search query (None to list all)
-        username: Filter by username
-        limit: Maximum number of results
-
-    Returns:
-        List of available models with metadata
-
-    Example:
-        >>> import qubots.rastion as rastion
-        >>> models = rastion.discover_models("genetic algorithm")
-        >>> for model in models:
-        ...     print(f"{model['name']}: {model['description']}")
-    """
-    if query:
-        return _search_models(query, limit=limit)
-    else:
-        return _list_available_models(username)
-
-
-def search_models(query: str, limit: int = 10) -> List[Dict[str, Any]]:
-    """
-    Search for qubots models on the platform.
-
-    Args:
-        query: Search query
-        limit: Maximum number of results
-
-    Returns:
-        List of matching models
-    """
-    return _search_models(query, limit=limit)
-
-
-def list_my_models() -> List[Dict[str, Any]]:
-    """
-    List models uploaded by the authenticated user.
-
-    Returns:
-        List of user's models
-    """
-    if not is_authenticated():
-        raise ValueError("Not authenticated. Please call rastion.authenticate(token) first.")
-
-    client = get_global_client()
-    username = client.config.get("gitea_username")
-    return _list_available_models(username)
-
-
 # Convenience aliases for backward compatibility
 load_model = load_qubots_model
 upload = upload_model
 upload_from_path = upload_model_from_path
-search = search_models
-discover = discover_models
 
 # Support for legacy upload_qubots_model calls with path parameter
 upload_qubots_model = _upload_qubots_model
-
-
-# Example usage documentation
-__doc__ += """
-
-## Quick Start
-
-```python
-import qubots.rastion as rastion
-
-# Authenticate (one time setup)
-rastion.authenticate("your_gitea_token")
-
-# Load a model with one line
-model = rastion.load_qubots_model("traveling_salesman_problem")
-
-# Upload your own model
-url = rastion.upload_model(my_optimizer, "my_algorithm", "Description here")
-
-# Discover available models
-models = rastion.discover_models("genetic algorithm")
-```
-
-## Main Functions
-
-- `load_qubots_model(name)`: Load a model with one line
-- `upload_model(model, name, description)`: Upload your model
-- `discover_models(query)`: Find available models
-- `authenticate(token)`: One-time authentication setup
-"""

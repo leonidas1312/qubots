@@ -25,7 +25,6 @@ from typing import Optional, List
 # Import qubots modules
 try:
     import qubots.rastion as rastion
-    from qubots.rastion_client import RastionClient
 except ImportError as e:
     print(f"Error importing qubots: {e}")
     print("Please install qubots: pip install qubots")

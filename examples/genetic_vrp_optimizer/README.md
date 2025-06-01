@@ -1,6 +1,6 @@
 # Genetic Algorithm VRP Optimizer - Qubots Implementation
 
-A sophisticated Genetic Algorithm optimizer specifically designed for Vehicle Routing Problems (VRP) using the qubots framework, optimized for the Rastion platform playground.
+A Genetic Algorithm optimizer specifically designed for Vehicle Routing Problems (VRP) using the qubots framework.
 
 ## 🧬 Algorithm Overview
 
@@ -63,14 +63,13 @@ This optimizer uses evolutionary computation principles to solve Vehicle Routing
 ### Basic Usage
 
 ```python
-from qubot import GeneticVRPOptimizer
-import qubots.rastion as rastion
+from qubots import AutoProblem, AutoOptimizer
 
 # Load VRP problem
-problem = rastion.load_qubots_model("vehicle_routing_problem")
+problem = AutoProblem.from_repo("ileo/demo-vrp-problem")
 
 # Create optimizer with default settings
-optimizer = GeneticVRPOptimizer()
+optimizer = AutoOptimizer.from_repo("ileo/demo-genetic-vrp-optimizer")
 
 # Run optimization
 result = optimizer.optimize(problem)
@@ -83,6 +82,8 @@ print(f"Runtime: {result.runtime_seconds:.2f} seconds")
 ### Custom Configuration
 
 ```python
+from qubot import GeneticVRPOptimizer
+
 # Create optimizer with custom parameters
 optimizer = GeneticVRPOptimizer(
     population_size=100,        # Larger population for better diversity
@@ -123,22 +124,7 @@ large_optimizer = GeneticVRPOptimizer(
 )
 ```
 
-## 🎮 Rastion Playground Integration
 
-### Loading in Playground
-
-```python
-import qubots.rastion as rastion
-
-# Load the genetic VRP optimizer
-optimizer = rastion.load_qubots_model("genetic_vrp_optimizer")
-
-# Load a VRP problem
-problem = rastion.load_qubots_model("vehicle_routing_problem")
-
-# Run optimization with real-time progress
-result = optimizer.optimize(problem)
-```
 
 ### Real-Time Parameter Adjustment
 
@@ -198,35 +184,6 @@ print(f"  Final diversity: {diversity_history[-1]:.3f}")
 print(f"  Average diversity: {sum(diversity_history)/len(diversity_history):.3f}")
 ```
 
-## 🔍 Algorithm Insights
-
-### When to Use This Optimizer
-
-**Best For:**
-- Medium to large VRP instances (20+ customers)
-- Problems requiring good solution quality over speed
-- Scenarios where multiple good solutions are valuable
-- Complex VRP variants with additional constraints
-
-**Consider Alternatives For:**
-- Very small problems (< 10 customers) - use exact methods
-- Real-time applications requiring sub-second response
-- Problems with very tight time constraints
-
-### Parameter Guidelines
-
-**For Better Solution Quality:**
-- Increase `population_size` (50-100)
-- Increase `generations` (200-500)
-- Enable `adaptive_parameters`
-- Use moderate `mutation_rate` (0.05-0.15)
-
-**For Faster Convergence:**
-- Decrease `population_size` (20-40)
-- Increase `crossover_rate` (0.9-1.0)
-- Increase `elite_size` (10-20% of population)
-- Use higher `tournament_size` (5-7)
-
 ## 🚀 Advanced Features
 
 ### Custom Fitness Functions
@@ -238,39 +195,3 @@ The optimizer works with any VRP problem implementing the qubots interface:
 custom_vrp = CustomVRPWithTimeWindows()
 result = optimizer.optimize(custom_vrp)
 ```
-
-### Multi-Objective Optimization
-
-```python
-# Configure for multi-objective scenarios
-multi_obj_optimizer = GeneticVRPOptimizer(
-    population_size=100,
-    diversity_threshold=0.2,  # Maintain higher diversity
-    adaptive_parameters=True
-)
-```
-
-## 📈 Benchmarking Results
-
-Typical performance on standard VRP instances:
-
-| Problem Size | Population | Generations | Avg. Runtime | Solution Quality |
-|--------------|------------|-------------|--------------|------------------|
-| 20 customers | 30 | 50 | 5-10s | 95-98% of best known |
-| 50 customers | 50 | 100 | 30-60s | 90-95% of best known |
-| 100 customers | 100 | 200 | 2-5min | 85-92% of best known |
-
-## 🔗 Compatible Problems
-
-- **Vehicle Routing Problem (VRP)**
-- **Capacitated VRP (CVRP)**
-- **VRP with Time Windows (VRPTW)**
-- **Multi-Depot VRP (MDVRP)**
-- **VRP with Pickup and Delivery (VRPPD)**
-
----
-
-**Algorithm Type**: Metaheuristic (Evolutionary)
-**Complexity**: O(G × P × N²) where G=generations, P=population, N=customers
-**Memory Usage**: O(P × N) for population storage
-**Parallelizable**: Yes (population evaluation can be parallelized)

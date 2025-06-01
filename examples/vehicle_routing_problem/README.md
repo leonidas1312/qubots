@@ -1,6 +1,6 @@
 # Vehicle Routing Problem (VRP) - Qubots Implementation
 
-A comprehensive Vehicle Routing Problem implementation using the qubots framework, designed for the Rastion platform playground.
+A comprehensive Vehicle Routing Problem implementation using the qubots framework.
 
 ## 🚛 Problem Description
 
@@ -18,7 +18,6 @@ The Vehicle Routing Problem (VRP) is a classic optimization challenge in logisti
 - **Constraint Handling**: Capacity constraints with penalty-based violations
 - **Solution Validation**: Comprehensive format and feasibility checking
 - **Detailed Analytics**: Rich solution summaries and performance metrics
-- **Playground Compatible**: Optimized for Rastion platform integration
 
 ## 📊 Problem Instance
 
@@ -44,10 +43,15 @@ The Vehicle Routing Problem (VRP) is a classic optimization challenge in logisti
 ### Basic Usage
 
 ```python
-from qubot import VehicleRoutingProblem
+from qubots import load_problem
 
 # Create problem instance
-vrp = VehicleRoutingProblem()
+vrp = load_problem("demo-vrp-problem")
+
+# Access problem properties
+print(f"Customers: {vrp.n_customers}")
+print(f"Vehicles: {vrp.n_vehicles}")
+print(f"Total demand: {sum(c.demand for c in vrp.customers)}")
 
 # Generate random solution
 solution = vrp.get_random_solution()
@@ -91,47 +95,6 @@ vrp = VehicleRoutingProblem(
 )
 ```
 
-## 🎮 Rastion Playground Integration
-
-### Loading in Playground
-
-```python
-import qubots.rastion as rastion
-
-# Load the VRP problem
-problem = rastion.load_qubots_model("vehicle_routing_problem")
-
-# Access problem properties
-print(f"Customers: {problem.n_customers}")
-print(f"Vehicles: {problem.n_vehicles}")
-print(f"Total demand: {sum(c.demand for c in problem.customers)}")
-```
-
-### Real-Time Execution with Streaming
-
-The VRP problem supports real-time output streaming in the playground:
-
-```python
-# Enable verbose mode for real-time evaluation details
-solution = problem.get_random_solution()
-cost = problem.evaluate_solution(solution, verbose=True)
-
-# Output will show:
-# 🔍 Evaluating solution with 3 routes...
-#    Route 1: 5 customers, cost: 45.23, demand: 85/100 (85.0%)
-#    Route 2: 4 customers, cost: 38.67, demand: 70/100 (70.0%)
-#    ⚠️ Capacity violation: +25.00 penalty
-# ✅ Total cost: 108.90
-```
-
-### Parameter Configuration
-
-The playground supports real-time parameter adjustment:
-
-- **max_route_duration**: Maximum time per route (60-1440 minutes)
-- **penalty_unserved**: Cost penalty for unserved customers (0-10000)
-- **penalty_capacity**: Cost penalty per capacity violation (0-5000)
-
 ### Solution Format
 
 Solutions are represented as lists of routes:
@@ -172,24 +135,3 @@ for route_info in summary['route_details']:
     print(f"  Cost: {route_info['route_cost']:.2f}")
     print(f"  Feasible: {route_info['feasible']}")
 ```
-
-## 🚀 Next Steps
-
-1. **Load an optimizer** from the Rastion platform
-2. **Run optimization** to find better solutions
-3. **Compare algorithms** using different optimization approaches
-4. **Visualize results** using the built-in dashboard features
-5. **Share solutions** with the community
-
-## 📚 Related Problems
-
-- **Traveling Salesman Problem (TSP)**: Single vehicle routing
-- **Capacitated VRP**: Focus on capacity constraints
-- **VRP with Time Windows**: Additional temporal constraints
-- **Multi-Depot VRP**: Multiple starting locations
-
----
-
-**Compatible with**: Qubots Framework, Rastion Platform, OR-Tools optimizers
-**Difficulty**: Intermediate
-**Domain**: Routing & Logistics

@@ -13,11 +13,10 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from .base_optimizer import BaseOptimizer
-from .registry import get_global_registry, RegistryType
 
 class AutoOptimizer:
     """
-    Enhanced optimizer loader with registry integration, caching, and validation.
+    Enhanced optimizer loader with caching, and validation.
     Clones/pulls repos from hub.rastion.com and instantiates optimizer classes.
     """
 
@@ -94,100 +93,7 @@ class AutoOptimizer:
         if validate_metadata and hasattr(optimizer_instance, 'metadata'):
             cls._validate_optimizer_metadata(optimizer_instance)
 
-        if register_in_registry:
-            try:
-                registry = get_global_registry()
-                repository_info = {
-                    "url": f"https://hub.rastion.com/{repo_id}.git",
-                    "path": repo_id,
-                    "commit": cls._get_commit_hash(path)
-                }
-                registry.register_optimizer(optimizer_instance, repository_info)
-                registry.increment_download_count(
-                    cls._generate_registry_id(repo_id, cfg.get("version", "1.0.0"))
-                )
-            except Exception as e:
-                # Don't fail if registry operations fail
-                print(f"Warning: Registry operation failed: {e}")
-
         return optimizer_instance
-
-    @classmethod
-    def from_registry(cls, entry_id: str, override_params: Optional[dict] = None) -> BaseOptimizer:
-        """
-        Load an optimizer directly from the registry.
-
-        Args:
-            entry_id: Registry entry ID
-            override_params: Parameters to override
-
-        Returns:
-            Optimizer instance
-        """
-        registry = get_global_registry()
-        entry = registry.get_entry(entry_id)
-
-        if not entry:
-            raise ValueError(f"Entry {entry_id} not found in registry")
-
-        if entry.registry_type != RegistryType.OPTIMIZER:
-            raise ValueError(f"Entry {entry_id} is not an optimizer")
-
-        # Extract repo_id from repository_path
-        repo_id = entry.repository_path
-        if not repo_id:
-            raise ValueError(f"No repository path found for entry {entry_id}")
-
-        return cls.from_repo(repo_id, override_params=override_params, register_in_registry=False)
-
-    @classmethod
-    def search_optimizers(cls, query: str = "", tags: Optional[List[str]] = None,
-                         author: Optional[str] = None) -> List[Dict[str, Any]]:
-        """
-        Search for optimizers in the registry.
-
-        Args:
-            query: Text query
-            tags: Filter by tags
-            author: Filter by author
-
-        Returns:
-            List of matching optimizer entries
-        """
-        registry = get_global_registry()
-        entries = registry.search(query, RegistryType.OPTIMIZER, tags, author)
-        return [entry.to_dict() for entry in entries]
-
-    @classmethod
-    def get_compatible_optimizers(cls, problem_id: str) -> List[Dict[str, Any]]:
-        """
-        Get optimizers compatible with a specific problem.
-
-        Args:
-            problem_id: ID of the problem
-
-        Returns:
-            List of compatible optimizer entries
-        """
-        registry = get_global_registry()
-        entries = registry.get_compatible_optimizers(problem_id)
-        return [entry.to_dict() for entry in entries]
-
-    @classmethod
-    def get_recommendations(cls, optimizer_id: str, limit: int = 5) -> List[Dict[str, Any]]:
-        """
-        Get optimizer recommendations based on an optimizer.
-
-        Args:
-            optimizer_id: ID of the base optimizer
-            limit: Maximum number of recommendations
-
-        Returns:
-            List of recommended optimizer entries
-        """
-        registry = get_global_registry()
-        entries = registry.get_recommendations(optimizer_id, limit)
-        return [entry.to_dict() for entry in entries]
 
     @staticmethod
     def _validate_optimizer_metadata(optimizer: BaseOptimizer):
@@ -216,12 +122,6 @@ class AutoOptimizer:
             return result.stdout.strip()
         except subprocess.CalledProcessError:
             return ""
-
-    @staticmethod
-    def _generate_registry_id(repo_id: str, version: str) -> str:
-        """Generate registry ID for tracking."""
-        content = f"{repo_id}_{version}"
-        return hashlib.md5(content.encode()).hexdigest()[:16]
 
     @staticmethod
     def _clone_or_pull(repo_id: str, revision: str, cache_dir: str) -> str:
