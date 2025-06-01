@@ -1,4 +1,4 @@
-# Qubots: Enterprise Optimization Framework
+# Qubots: Collaborative Optimization Framework
 
 [![PyPI version](https://img.shields.io/pypi/v/qubots.svg)](https://pypi.org/project/qubots/)
 [![Build Status](https://github.com/leonidas1312/qubots/actions/workflows/publish.yml/badge.svg)](https://github.com/leonidas1312/qubots/actions)
@@ -463,7 +463,6 @@ class AutoOptimizer:
         cache_dir: str = "~/.cache/rastion_hub",
         override_params: Optional[dict] = None,
         validate_metadata: bool = True,
-        register_in_registry: bool = True
     ) -> BaseOptimizer
 ```
 
@@ -473,7 +472,6 @@ class AutoOptimizer:
 - `cache_dir`: Local cache directory for repositories
 - `override_params`: Dictionary of parameters to override default values
 - `validate_metadata`: Whether to validate optimizer metadata
-- `register_in_registry`: Whether to register in global registry
 
 #### BaseProblem
 

@@ -28,7 +28,6 @@ class AutoOptimizer:
         cache_dir: str = "~/.cache/rastion_hub",
         override_params: Optional[dict] = None,
         validate_metadata: bool = True,
-        register_in_registry: bool = True
     ) -> BaseOptimizer:
         cache = os.path.expanduser(cache_dir)
         os.makedirs(cache, exist_ok=True)
