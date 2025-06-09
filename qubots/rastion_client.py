@@ -171,6 +171,49 @@ class RastionClient:
 
         return response.json()
 
+    def upload_binary_file_to_repo(self, owner: str, repo: str, file_path: str,
+                                  base64_content: str, message: str = "Upload binary file") -> Dict[str, Any]:
+        """
+        Upload a binary file to a repository using pre-encoded base64 content.
+
+        Args:
+            owner: Repository owner
+            repo: Repository name
+            file_path: Path within the repository
+            base64_content: Pre-encoded base64 content
+            message: Commit message
+
+        Returns:
+            Upload response
+        """
+        headers = self._get_headers()
+        headers["Content-Type"] = "application/json"
+
+        url = f"{self.api_base}/repos/{owner}/{repo}/contents/{file_path}"
+
+        # First, try to get the existing file to check if it exists
+        get_response = requests.get(url, headers=headers)
+
+        payload = {
+            "content": base64_content,  # Already base64 encoded
+            "message": message,
+            "branch": "main"
+        }
+
+        if get_response.status_code == 200:
+            # File exists, use PUT to update it
+            existing_file = get_response.json()
+            payload["sha"] = existing_file["sha"]  # Required for updates
+            response = requests.put(url, headers=headers, json=payload)
+        else:
+            # File doesn't exist, use POST to create it
+            response = requests.post(url, headers=headers, json=payload)
+
+        if response.status_code >= 300:
+            raise RuntimeError(f"Failed to upload binary file: {response.text}")
+
+        return response.json()
+
     def list_repositories(self, username: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         List repositories for a user.
@@ -414,12 +457,68 @@ class QubotPackager:
 {chr(10).join(f"- {req}" for req in all_requirements)}
 """
 
-        return {
+        # Start with core files
+        packaged_files = {
             "qubot.py": source_code,
             "config.json": json.dumps(config, indent=2),
             "requirements.txt": requirements_txt,
             "README.md": readme_content
         }
+
+        # Include additional directories and files
+        additional_dirs = ["instances", "data", "datasets", "examples", "tests"]
+        additional_files = [".gitignore", "LICENSE", "CHANGELOG.md"]
+
+        # Add directories if they exist
+        for dir_name in additional_dirs:
+            dir_path = model_path / dir_name
+            if dir_path.exists() and dir_path.is_dir():
+                # Recursively add all files in the directory
+                for file_path in dir_path.rglob("*"):
+                    if file_path.is_file():
+                        # Create relative path for the packaged file
+                        relative_path = file_path.relative_to(model_path)
+
+                        # Read file content
+                        try:
+                            # Try different encodings for text files
+                            encodings_to_try = ['utf-8', 'utf-8-sig', 'latin1', 'cp1252']
+                            file_content = None
+
+                            for encoding in encodings_to_try:
+                                try:
+                                    with open(file_path, 'r', encoding=encoding) as f:
+                                        file_content = f.read()
+                                    break
+                                except UnicodeDecodeError:
+                                    continue
+
+                            if file_content is None:
+                                # If all text encodings fail, read as binary and encode as base64
+                                with open(file_path, 'rb') as f:
+                                    binary_content = f.read()
+                                # For binary files, we'll store them as base64 with a special prefix
+                                import base64
+                                file_content = f"__BINARY_BASE64__:{base64.b64encode(binary_content).decode('ascii')}"
+
+                            packaged_files[str(relative_path).replace('\\', '/')] = file_content
+
+                        except Exception as e:
+                            print(f"Warning: Could not read file {file_path}: {e}")
+                            continue
+
+        # Add individual additional files if they exist
+        for file_name in additional_files:
+            file_path = model_path / file_name
+            if file_path.exists() and file_path.is_file():
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        packaged_files[file_name] = f.read()
+                except Exception as e:
+                    print(f"Warning: Could not read file {file_path}: {e}")
+                    continue
+
+        return packaged_files
 
     @staticmethod
     def _extract_complete_module_dependencies(module_source: str) -> str:
@@ -782,8 +881,16 @@ def upload_qubots_model(model: Union[BaseProblem, BaseOptimizer] = None,
 
     # Upload files
     for file_path, content in packaged_files.items():
-        client.upload_file_to_repo(username, repo_name, file_path, content,
-                                 f"Add {file_path}")
+        # Handle binary files that were encoded with special prefix
+        if content.startswith("__BINARY_BASE64__:"):
+            # Extract the base64 content and upload as binary
+            base64_content = content[len("__BINARY_BASE64__:"):]
+            client.upload_binary_file_to_repo(username, repo_name, file_path, base64_content,
+                                            f"Add {file_path}")
+        else:
+            # Regular text file
+            client.upload_file_to_repo(username, repo_name, file_path, content,
+                                     f"Add {file_path}")
 
     return repo_info["clone_url"]
 

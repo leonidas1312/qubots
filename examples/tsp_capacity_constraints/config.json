@@ -1,0 +1,114 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "TSPCapacityProblem",
+  "default_params": {
+    "instance_file": "../tsp/instances/att48.tsp",
+    "vehicle_capacity": 100.0,
+    "capacity_penalty": 1000.0,
+    "allow_multi_trip": true
+  },
+  "metadata": {
+    "name": "TSP with Capacity Constraints",
+    "description": "Find the shortest tour visiting all cities while respecting vehicle capacity constraints. Each city has demand requirements and the vehicle has limited capacity.",
+    "domain": "routing",
+    "tags": [
+      "tsp_cc",
+      "tsp",
+      "capacity",
+      "routing",
+      "optimization",
+      "combinatorial",
+      "vrp",
+      "constraints"
+    ],
+    "difficulty": "advanced",
+    "problem_type": "combinatorial"
+  },
+  "parameters": {
+    "instance_file": {
+      "type": "string",
+      "default": "../tsp/instances/att48.tsp",
+      "description": "Path to TSPLIB format instance file",
+      "examples": [
+        "../tsp/instances/att48.tsp",
+        "../tsp/instances/berlin52.tsp",
+        "../tsp/instances/gr17.tsp",
+        "../tsp/instances/ulysses16.tsp"
+      ]
+    },
+    "vehicle_capacity": {
+      "type": "number",
+      "default": 100.0,
+      "minimum": 1.0,
+      "maximum": 10000.0,
+      "description": "Maximum vehicle capacity"
+    },
+    "demands": {
+      "type": "array",
+      "default": null,
+      "description": "Demand/pickup requirement for each city. If null, reasonable defaults are generated.",
+      "items": {
+        "type": "number",
+        "minimum": 0
+      }
+    },
+    "capacity_penalty": {
+      "type": "number",
+      "default": 1000.0,
+      "minimum": 0,
+      "description": "Penalty factor for violating capacity constraints (only used when allow_multi_trip=false)"
+    },
+    "allow_multi_trip": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to allow multiple trips to depot when capacity is exceeded"
+    }
+  },
+  "constraints": [
+    "Each city must be visited exactly once",
+    "Tour must return to starting city (depot)",
+    "Vehicle capacity must not be exceeded (hard constraint if multi-trip, soft with penalty otherwise)",
+    "Depot (city 0) has zero demand"
+  ],
+  "solution_format": {
+    "type": "permutation",
+    "description": "List of integers representing city visit order",
+    "example": "[0, 3, 1, 4, 2]",
+    "validation": [
+      "Each city must appear exactly once",
+      "Tour length must equal number of cities",
+      "All city indices must be valid (0 to n-1)"
+    ]
+  },
+  "objective": {
+    "type": "minimization",
+    "description": "Minimize total cost",
+    "multi_trip_formula": "sum(distances for all trips including returns to depot)",
+    "single_trip_formula": "total_distance + sum(max(0, total_load - capacity) * penalty)"
+  },
+  "features": [
+    "Vehicle capacity constraints",
+    "Configurable customer demands",
+    "Multi-trip capability with depot returns",
+    "Penalty-based soft constraints (single-trip mode)",
+    "Detailed capacity feasibility analysis",
+    "Support for all TSPLIB distance types",
+    "2-opt neighborhood generation"
+  ],
+  "modes": {
+    "multi_trip": {
+      "description": "Vehicle can return to depot multiple times when capacity is reached",
+      "evaluation": "Sum of distances for all trips including depot returns",
+      "feasibility": "Hard capacity constraints - trips are split automatically"
+    },
+    "single_trip": {
+      "description": "Single tour with capacity violations penalized",
+      "evaluation": "Distance + penalty for capacity violations",
+      "feasibility": "Soft capacity constraints with configurable penalties"
+    }
+  },
+  "requirements": [
+    "qubots"
+  ]
+}

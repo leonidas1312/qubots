@@ -61,6 +61,10 @@ class PlaygroundResult:
     error_message: Optional[str] = None
     error_type: Optional[str] = None
 
+    # Leaderboard submission support
+    leaderboard_eligible: bool = False
+    standardized_problem_id: Optional[int] = None
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         result_dict = asdict(self)
@@ -133,7 +137,14 @@ class PlaygroundExecutor:
             self._log('info', f'Loading problem: {problem_username}/{problem_name}', 'loader')
             if problem_params:
                 self._log('info', f'Applying problem parameters: {problem_params}', 'config')
-            problem = load_qubots_model(problem_name, problem_username, override_params=problem_params)
+
+            # Handle standardized problems
+            if problem_name.startswith("standardized_") and problem_username == "standardized":
+                self._log('info', f'Loading standardized benchmark problem: {problem_name}', 'loader')
+                problem = self._load_standardized_problem(problem_name, problem_params)
+            else:
+                problem = load_qubots_model(problem_name, problem_username, override_params=problem_params)
+
             if not isinstance(problem, BaseProblem):
                 raise ValueError(f"Model {problem_name} is not a valid problem")
             self._log('info', f'Problem loaded successfully: {type(problem).__name__}', 'loader')
@@ -288,6 +299,98 @@ class PlaygroundExecutor:
                 self._report_progress(f"Iteration {iteration}", progress_percent)
 
         return progress_callback
+
+    def _load_standardized_problem(self, problem_name: str, problem_params: Optional[Dict[str, Any]] = None):
+        """Load a standardized benchmark problem."""
+        try:
+            from .standardized_benchmarks import StandardizedBenchmarkRegistry
+
+            # Extract problem type and ID from name (format: standardized_{type}_{id})
+            parts = problem_name.split('_')
+            if len(parts) >= 3:
+                problem_type = parts[1]
+                problem_id = int(parts[2])
+
+                # Get benchmark specs and find the matching one
+                specs = StandardizedBenchmarkRegistry.get_benchmark_specs()
+
+                # Find spec by ID (1-based indexing)
+                if 1 <= problem_id <= len(specs):
+                    spec = specs[problem_id - 1]
+                    self._log('info', f'Creating standardized problem: {spec.name}', 'loader')
+
+                    # Create the problem instance
+                    problem = StandardizedBenchmarkRegistry.create_problem(spec)
+
+                    # Apply any parameter overrides if provided
+                    if problem_params:
+                        self._log('info', f'Applying parameter overrides to standardized problem', 'config')
+                        # Note: Standardized problems may have limited parameter override support
+
+                    return problem
+                else:
+                    raise ValueError(f"Standardized problem ID {problem_id} not found")
+            else:
+                raise ValueError(f"Invalid standardized problem name format: {problem_name}")
+
+        except Exception as e:
+            self._log('error', f'Failed to load standardized problem {problem_name}: {str(e)}', 'loader')
+            raise
+
+    def submit_to_leaderboard(self,
+                            result: PlaygroundResult,
+                            solver_repository: str,
+                            solver_config: Dict[str, Any],
+                            solver_version: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """
+        Submit a playground result to the leaderboard if eligible.
+
+        Args:
+            result: PlaygroundResult from optimization
+            solver_repository: Repository path for the solver
+            solver_config: Configuration used for the solver
+            solver_version: Version/commit hash of the solver
+
+        Returns:
+            Submission result or None if not eligible
+        """
+        if not result.success or not result.leaderboard_eligible or not result.standardized_problem_id:
+            return None
+
+        try:
+            # Import here to avoid circular imports
+            from .leaderboard import LeaderboardIntegration
+
+            # Create leaderboard integration
+            leaderboard = LeaderboardIntegration()
+
+            # Create optimization result object
+            from .base_optimizer import OptimizationResult
+            opt_result = OptimizationResult(
+                best_solution=result.best_solution,
+                best_value=result.best_value,
+                is_feasible=True,
+                runtime_seconds=result.execution_time,
+                iterations=result.iterations,
+                termination_reason="completed"
+            )
+
+            # Submit to leaderboard
+            submission_result = leaderboard.submit_optimization_result(
+                result=opt_result,
+                problem_id=result.standardized_problem_id,
+                solver_name=result.optimizer_name,
+                solver_repository=solver_repository,
+                solver_config=solver_config,
+                solver_version=solver_version
+            )
+
+            self._log('info', f'Successfully submitted to leaderboard: {submission_result.get("id", "unknown")}', 'leaderboard')
+            return submission_result
+
+        except Exception as e:
+            self._log('error', f'Failed to submit to leaderboard: {str(e)}', 'leaderboard')
+            return None
 
 
 # Convenience functions for direct use

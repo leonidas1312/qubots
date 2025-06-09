@@ -1,0 +1,68 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "TSPProblem",
+  "default_params": {
+    "instance_file": "instances/att48.tsp"
+  },
+  "metadata": {
+    "name": "Traveling Salesman Problem",
+    "description": "Find the shortest tour visiting all cities exactly once and returning to start. Supports TSPLIB format with explicit distance matrices and coordinate-based instances.",
+    "domain": "routing",
+    "tags": [
+      "tsp",
+      "traveling_salesman",
+      "routing",
+      "optimization",
+      "combinatorial",
+      "permutation",
+      "tsplib"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "combinatorial"
+  },
+  "parameters": {
+    "instance_file": {
+      "type": "string",
+      "default": "instances/att48.tsp",
+      "description": "Path to TSPLIB format instance file",
+      "examples": [
+        "instances/att48.tsp",
+        "instances/berlin52.tsp",
+        "instances/gr17.tsp",
+        "instances/ulysses16.tsp"
+      ]
+    }
+  },
+  "data_format": {
+    "instance_file": {
+      "format": "TSPLIB format",
+      "description": "Standard TSPLIB format supporting explicit distance matrices (EDGE_WEIGHT_SECTION) or coordinate-based instances (NODE_COORD_SECTION) with various distance types including EUC_2D, ATT, GEO, etc."
+    }
+  },
+  "solution_format": {
+    "type": "permutation",
+    "description": "List of integers representing city visit order",
+    "example": "[0, 3, 1, 4, 2]",
+    "constraints": [
+      "Each city must appear exactly once",
+      "Tour length must equal number of cities",
+      "All city indices must be valid (0 to n-1)"
+    ]
+  },
+  "objective": {
+    "type": "minimization",
+    "description": "Minimize total tour distance",
+    "formula": "sum(distance[tour[i]][tour[(i+1)%n]] for i in range(n))"
+  },
+  "features": [
+    "Multiple distance calculation methods",
+    "Support for coordinate and matrix-based instances",
+    "2-opt neighborhood generation",
+    "Comprehensive solution validation",
+    "Detailed solution analysis"
+  ],
+  "requirements": [
+    "qubots"
+  ]
+}

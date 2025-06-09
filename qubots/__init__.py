@@ -48,22 +48,13 @@ from .benchmarking import (
     BenchmarkType
 )
 
-# Registry and discovery
-from .registry import (
-    QubotRegistry,
-    RegistryEntry,
-    RegistryType,
-    get_global_registry
-)
+# Registry system has been removed - focusing on AutoProblem and AutoOptimizer
 
 # Rastion platform integration
 from .rastion_client import (
     RastionClient,
-    QubotPackager,
     load_qubots_model,
-    upload_qubots_model,
-    list_available_models,
-    search_models
+    upload_qubots_model
 )
 
 # Import rastion module for convenience
@@ -72,11 +63,28 @@ from . import rastion
 # Playground integration
 from .playground_integration import (
     PlaygroundExecutor,
-    ModelDiscovery,
     PlaygroundResult,
     ModelInfo,
     execute_playground_optimization,
-    get_available_models
+)
+
+# Leaderboard integration
+from .leaderboard import (
+    LeaderboardClient,
+    LeaderboardIntegration,
+    LeaderboardSubmission,
+    StandardizedProblem,
+    submit_to_leaderboard,
+    get_problem_leaderboard,
+    get_standardized_problems
+)
+
+# Standardized benchmarks
+from .standardized_benchmarks import (
+    StandardizedTSPProblem,
+    StandardizedMaxCutProblem,
+    StandardizedBenchmarkRegistry,
+    BenchmarkProblemSpec
 )
 
 # Dashboard and visualization
@@ -127,28 +135,32 @@ __all__ = [
     "BenchmarkMetrics",
     "BenchmarkType",
 
-    # Registry
-    "QubotRegistry",
-    "RegistryEntry",
-    "RegistryType",
-    "get_global_registry",
-
     # Rastion platform integration
     "RastionClient",
-    "QubotPackager",
     "load_qubots_model",
     "upload_qubots_model",
-    "list_available_models",
-    "search_models",
     "rastion",
 
     # Playground integration
     "PlaygroundExecutor",
-    "ModelDiscovery",
     "PlaygroundResult",
     "ModelInfo",
     "execute_playground_optimization",
-    "get_available_models",
+
+    # Leaderboard integration
+    "LeaderboardClient",
+    "LeaderboardIntegration",
+    "LeaderboardSubmission",
+    "StandardizedProblem",
+    "submit_to_leaderboard",
+    "get_problem_leaderboard",
+    "get_standardized_problems",
+
+    # Standardized benchmarks
+    "StandardizedTSPProblem",
+    "StandardizedMaxCutProblem",
+    "StandardizedBenchmarkRegistry",
+    "BenchmarkProblemSpec",
 
     # Dashboard and visualization
     "DashboardResult",

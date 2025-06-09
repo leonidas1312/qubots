@@ -1,0 +1,73 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "HiGHSTSPSolver",
+  "default_params": {
+    "time_limit": 60.0,
+    "mip_gap": 0.01,
+    "presolve": true,
+    "parallel": true,
+    "log_level": 1
+  },
+  "metadata": {
+    "name": "HiGHS TSP Solver",
+    "description": "Integer Linear Programming solver for Traveling Salesman Problem using HiGHS optimizer with Miller-Tucker-Zemlin subtour elimination constraints",
+    "domain": "routing",
+    "tags": [
+      "tsp",
+      "traveling_salesman",
+      "integer_programming",
+      "exact_solver",
+      "highs",
+      "mtz",
+      "optimization",
+      "combinatorial"
+    ],
+    "difficulty": "advanced",
+    "optimizer_type": "exact",
+    "optimizer_family": "mathematical_programming",
+    "problem_types": ["combinatorial"],
+    "supported_objectives": ["minimize"],
+    "deterministic": true,
+    "parallel_capable": true
+  },
+  "requirements": [
+    "qubots>=1.1.0",
+    "highspy>=1.0.0",
+    "numpy>=1.20.0"
+  ],
+  "parameters": {
+    "time_limit": {
+      "type": "number",
+      "default": 60.0,
+      "min": 1.0,
+      "max": 3600,
+      "description": "Maximum solving time in seconds"
+    },
+    "mip_gap": {
+      "type": "number",
+      "default": 0.01,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "MIP optimality gap tolerance"
+    },
+    "presolve": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable presolving techniques"
+    },
+    "parallel": {
+      "type": "boolean",
+      "default": true,
+      "description": "Enable parallel processing"
+    },
+    "log_level": {
+      "type": "integer",
+      "default": 1,
+      "min": 0,
+      "max": 2,
+      "step": 1,
+      "description": "Logging verbosity level: 0 = silent, 1 = basic progress info, 2 = detailed debug information. Use 0 for production, 1 for monitoring, 2 for debugging."
+    }
+  }
+}

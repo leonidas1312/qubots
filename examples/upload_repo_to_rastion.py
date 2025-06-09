@@ -194,6 +194,20 @@ def upload_repository(repo_path: str, repository_name: Optional[str] = None,
     print(f"🔒 Private: {private}")
     print(f"🔄 Overwrite: {overwrite}")
 
+    # Check for additional directories that will be included
+    additional_dirs = ["instances", "data", "datasets", "examples", "tests"]
+    found_dirs = []
+    for dir_name in additional_dirs:
+        dir_path = repo_path / dir_name
+        if dir_path.exists() and dir_path.is_dir():
+            file_count = len(list(dir_path.rglob("*")))
+            found_dirs.append(f"{dir_name} ({file_count} files)")
+
+    if found_dirs:
+        print(f"📁 Additional directories: {', '.join(found_dirs)}")
+    else:
+        print("📁 No additional directories found")
+
     try:
         # Upload using qubots rastion module
         url = rastion.upload_model_from_path(

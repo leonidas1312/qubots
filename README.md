@@ -6,7 +6,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/leonidas1312/qubots.svg)](https://github.com/leonidas1312/qubots/issues)
 [![GitHub forks](https://img.shields.io/github/forks/leonidas1312/qubots.svg)](https://github.com/leonidas1312/qubots/network)
 
-**Qubots** is a  Python optimization framework that enables developers to build, share, and deploy optimization solutions. With its innovative `AutoProblem` and `AutoOptimizer` components, qubots transforms complex optimization challenges into modular, reusable components that integrate seamlessly with the [Rastion platform](https://rastion.com) for collaborative development and deployment.
+**Qubots** is a Python optimization framework that enables developers to build, share, and deploy optimization solutions. With its innovative `AutoProblem` and `AutoOptimizer` components, qubots transforms complex optimization challenges into modular, reusable components that integrate seamlessly with the [Rastion platform](https://rastion.com) for collaborative development and deployment.
 
 ## 🎯 Framework Overview
 
@@ -15,18 +15,27 @@ Qubots is designed for environments where optimization problems need to be:
 - **Collaborative**: Teams can share and build upon each other's optimization components
 - **Production-Ready**: Robust error handling, logging, and monitoring capabilities
 
-The framework centers around two core concepts:
-- **AutoProblem**: Automatically loads and instantiates optimization problems from repositories
-- **AutoOptimizer**: Automatically loads and instantiates optimization algorithms from repositories
+The framework centers around six core components that work together to provide a comprehensive optimization ecosystem:
+
+### 🔧 Core Components
+
+1. **AutoProblem & AutoOptimizer**: Automatically load and instantiate optimization problems and algorithms from repositories with dynamic parameter customization
+2. **Autoloading Functions**: Dynamic discovery and execution of solvers with intelligent caching and dependency management
+3. **Benchmark System**: Standardized testing and performance evaluation across optimization problems with statistical analysis
+4. **Cloud Execution**: Scalable optimization runs with containerized environments and resource management
+5. **Rastion Integration**: Seamless playground interface for interactive optimization development and collaboration
+6. **Leaderboard System**: Performance tracking and comparison across solvers and problems with standardized benchmarks
 
 ## 🚀 Key Features
 
 - **🔧 Auto-Loading Architecture**: Seamlessly load problems and optimizers from repositories with `AutoProblem` and `AutoOptimizer`
 - **🌐 Repository Integration**: Direct integration with Git repositories for version-controlled optimization components
-- **🎯 Enterprise-Ready**: Built for production environments with comprehensive error handling and logging
-- **⚡ High Performance**: Integration with industry-standard optimization libraries (OR-Tools, CasADi, CPLEX, Gurobi)
-- **📊 Advanced Benchmarking**: Built-in performance testing, comparison tools, and dashboard generation
-- **🔍 Model Discovery**: Search and discover optimization models from the community and enterprise repositories
+- **📊 Comprehensive Benchmarking**: Built-in performance testing, statistical analysis, and standardized benchmark suites
+- **☁️ Cloud Execution**: Scalable optimization runs with containerized environments and resource management
+- **🎮 Rastion Playground**: Interactive development environment with real-time optimization testing
+- **🏆 Leaderboard System**: Performance tracking and comparison across solvers with standardized benchmarks
+- **⚡ High Performance**: Integration with industry-standard optimization libraries (OR-Tools, HiGHS, CasADi, CPLEX, Gurobi)
+- **🎯 HiGHS Integration**: Built-in support for HiGHS-based solvers for optimization problems like TSP
 - **📈 Real-time Monitoring**: Progress tracking, logging callbacks, and optimization result visualization
 - **🛠️ Utility Tools**: Comprehensive scripts for repository management and optimization testing
 
@@ -80,25 +89,35 @@ The qubots framework is built around a modular architecture with the following c
 
 ### Core Components
 
-1. **AutoProblem**: Dynamically loads optimization problems from repositories
-   - Handles Git repository cloning and caching
-   - Validates problem structure and metadata
-   - Instantiates problem classes with configurable parameters
+1. **AutoProblem & AutoOptimizer**: Dynamic loading system for optimization components
+   - Handles Git repository cloning and intelligent caching
+   - Validates component structure and metadata
+   - Instantiates classes with configurable parameters and dependency management
 
-2. **AutoOptimizer**: Dynamically loads optimization algorithms from repositories
-   - Supports parameter overrides and customization
-   - Validates optimizer compatibility with problems
-   - Provides comprehensive optimization result tracking
+2. **Autoloading Functions**: Intelligent discovery and execution system
+   - Automatic solver discovery from repositories
+   - Parameter customization and validation
+   - Dependency resolution and environment management
 
-3. **BaseProblem**: Abstract base class for all optimization problems
-   - Standardized evaluation interface
-   - Metadata management and validation
-   - Solution format validation and neighbor generation
+3. **Benchmark System**: Comprehensive testing and evaluation framework
+   - Standardized benchmark suites for fair comparison
+   - Statistical analysis and performance metrics
+   - Automated report generation and visualization
 
-4. **BaseOptimizer**: Abstract base class for all optimization algorithms
-   - Comprehensive optimization result tracking
-   - Progress monitoring and logging callbacks
-   - Parameter validation and management
+4. **Cloud Execution**: Scalable optimization infrastructure
+   - Containerized execution environments
+   - Resource management and scaling
+   - Integration with Rastion platform services
+
+5. **Rastion Integration**: Seamless platform connectivity
+   - Interactive playground interface
+   - Real-time optimization testing and development
+   - Collaborative features and sharing capabilities
+
+6. **Leaderboard System**: Performance tracking and comparison
+   - Standardized benchmarks for fair evaluation
+   - Performance metrics and ranking algorithms
+   - Community-driven solver comparison
 
 ### Repository Structure
 
@@ -204,6 +223,43 @@ problem = AutoProblem.from_repo(
     "username/problem-repo",
     cache_dir="./my_cache"
 )
+```
+
+## 📁 Examples and Demonstrations
+
+The qubots framework includes a comprehensive set of examples that demonstrate the core functionality and showcase different optimization problems and solvers. These examples are available in the `examples/` directory and have been uploaded to the Rastion platform for easy access and testing.
+
+### Available Examples
+
+- **MaxCut Problem** (`maxcut_problem/`): Graph partitioning optimization with configurable graph types
+- **OR-Tools MaxCut Optimizer** (`ortools_maxcut_optimizer/`): Integer programming solver using Google OR-Tools
+- **TSP Problem** (`tsp/`): Traveling Salesman Problem with TSPLIB format support
+- **HiGHS TSP Solver** (`highs_tsp_solver/`): Linear programming solver using HiGHS for TSP
+- **Vehicle Routing Problem** (`vehicle_routing_problem/`): Multi-vehicle routing with capacity constraints
+- **Genetic VRP Optimizer** (`genetic_vrp_optimizer/`): Evolutionary algorithm for VRP optimization
+- **TSP with Time Windows** (`tsp_time_windows/`): TSP variant with delivery time constraints
+- **TSP with Capacity Constraints** (`tsp_capacity_constraints/`): TSP with vehicle capacity limitations
+
+### Running Examples Locally
+
+All examples can be tested locally using the autoloading functions. See the [Examples README](examples/README.md) for detailed instructions on:
+- Prerequisites and setup requirements
+- Step-by-step execution instructions
+- How examples were uploaded to the Rastion platform
+- Local testing and validation procedures
+
+### Example Usage
+
+```python
+from qubots import AutoProblem, AutoOptimizer
+
+# Load any example from the local examples directory
+problem = AutoProblem.from_repo("examples/maxcut_problem")
+optimizer = AutoOptimizer.from_repo("examples/ortools_maxcut_optimizer")
+
+# Run optimization
+result = optimizer.optimize(problem)
+print(f"Best solution: {result.best_value}")
 ```
 
 ## 🛠️ Utility Scripts
@@ -534,6 +590,43 @@ class BenchmarkSuite:
     def add_optimizer(self, name: str, optimizer: BaseOptimizer)
     def run_benchmarks(self, problem: BaseProblem, num_runs: int = 10)
     def generate_report(self, results: BenchmarkResult, output_file: str)
+```
+
+### Leaderboard Integration
+
+#### Standardized Benchmarks and Performance Tracking
+
+The qubots framework includes a comprehensive leaderboard system for tracking solver performance across standardized benchmarks:
+
+```python
+from qubots import (
+    get_standardized_problems,
+    submit_to_leaderboard,
+    get_problem_leaderboard,
+    LeaderboardClient
+)
+
+# Get available standardized problems
+problems = get_standardized_problems()
+print(f"Available benchmark problems: {[p.name for p in problems]}")
+
+# Run optimization on a standardized problem
+problem = AutoProblem.from_repo("standardized/tsp-att48")
+optimizer = AutoOptimizer.from_repo("user/my-tsp-solver")
+result = optimizer.optimize(problem)
+
+# Submit results to leaderboard
+submission = submit_to_leaderboard(
+    problem_name="tsp-att48",
+    solver_name="my-tsp-solver",
+    result=result,
+    solver_config={"time_limit": 300, "algorithm": "genetic"}
+)
+
+# View leaderboard rankings
+rankings = get_problem_leaderboard("tsp-att48")
+for rank, entry in enumerate(rankings[:5], 1):
+    print(f"{rank}. {entry.solver_name}: {entry.best_value} ({entry.runtime:.2f}s)")
 ```
 
 ## 🧪 Testing and Validation
