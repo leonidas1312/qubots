@@ -618,6 +618,15 @@ class TSPCapacityProblem(CombinatorialProblem):
         tour = list(range(self.nb_cities))
         random.shuffle(tour)
         return tour
+    
+    def get_distance_matrix(self) -> List[List[float]]:
+        """
+        Get the distance matrix for this TSP instance.
+
+        Returns:
+            Distance matrix as list of lists
+        """
+        return self.dist_matrix
 
     def get_neighbor_solution(self, solution: List[int], step_size: float = 1.0) -> List[int]:
         """

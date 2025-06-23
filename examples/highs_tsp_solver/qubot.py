@@ -271,7 +271,7 @@ class HiGHSTSPSolver(BaseOptimizer):
         solution = model.getSolution()
         status = model.getModelStatus()
         
-        if status == highspy.HighsModelStatus.kOptimal:
+        if solution:
             tour = self._extract_tour_from_solution(solution.col_value, n_cities)
             objective = model.getInfo().objective_function_value
             return tour, objective, status

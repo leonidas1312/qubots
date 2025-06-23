@@ -3,7 +3,7 @@
   "entry_point": "qubot",
   "class_name": "TSPCapacityProblem",
   "default_params": {
-    "instance_file": "../tsp/instances/att48.tsp",
+    "instance_file": "instances/att48.tsp",
     "vehicle_capacity": 100.0,
     "capacity_penalty": 1000.0,
     "allow_multi_trip": true

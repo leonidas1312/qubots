@@ -3,7 +3,7 @@
   "entry_point": "qubot",
   "class_name": "TSPTimeWindowsProblem",
   "default_params": {
-    "instance_file": "../tsp/instances/att48.tsp",
+    "instance_file": "instances/att48.tsp",
     "travel_speed": 1.0,
     "time_penalty": 1000.0
   },

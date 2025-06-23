@@ -316,7 +316,7 @@ class TSPTimeWindowsProblem(CombinatorialProblem):
     - Penalty for violating time windows
     """
     
-    def __init__(self, instance_file: str = "../tsp/instances/att48.tsp", 
+    def __init__(self, instance_file: str = "instances/att48.tsp", 
                  time_windows: Optional[List[Tuple[float, float]]] = None,
                  service_times: Optional[List[float]] = None,
                  travel_speed: float = 1.0,
@@ -661,6 +661,15 @@ class TSPTimeWindowsProblem(CombinatorialProblem):
             "arrival_times": time_details.get("arrival_times", []),
             "violations_detail": time_details.get("violations", [])
         }
+
+    def get_distance_matrix(self) -> List[List[float]]:
+        """
+        Get the distance matrix for this TSP instance.
+
+        Returns:
+            Distance matrix as list of lists
+        """
+        return self.dist_matrix
 
     def get_time_windows(self) -> List[Tuple[float, float]]:
         """

@@ -1,0 +1,191 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "GeneticTSPOptimizer",
+  "default_params": {
+    "population_size": 100,
+    "generations": 500,
+    "crossover_rate": 0.8,
+    "mutation_rate": 0.1,
+    "tournament_size": 3,
+    "elitism_count": 2,
+    "adaptive_params": true,
+    "early_stopping": true,
+    "stagnation_limit": 50
+  },
+  "parameters": {
+    "population_size": {
+      "type": "integer",
+      "default": 100,
+      "min": 10,
+      "max": 1000,
+      "description": "Number of individuals in the population"
+    },
+    "generations": {
+      "type": "integer", 
+      "default": 500,
+      "min": 10,
+      "max": 10000,
+      "description": "Maximum number of generations to evolve"
+    },
+    "crossover_rate": {
+      "type": "float",
+      "default": 0.8,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "Probability of crossover between parents"
+    },
+    "mutation_rate": {
+      "type": "float",
+      "default": 0.1,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "Probability of mutation for offspring"
+    },
+    "tournament_size": {
+      "type": "integer",
+      "default": 3,
+      "min": 2,
+      "max": 10,
+      "description": "Number of individuals in tournament selection"
+    },
+    "elitism_count": {
+      "type": "integer",
+      "default": 2,
+      "min": 0,
+      "max": 20,
+      "description": "Number of best individuals to preserve each generation"
+    },
+    "adaptive_params": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to adapt parameters based on problem size"
+    },
+    "early_stopping": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to stop early if no improvement is found"
+    },
+    "stagnation_limit": {
+      "type": "integer",
+      "default": 50,
+      "min": 10,
+      "max": 500,
+      "description": "Number of generations without improvement before stopping"
+    }
+  },
+  "metadata": {
+    "name": "Genetic TSP Optimizer",
+    "description": "High-quality genetic algorithm specifically designed for the Traveling Salesman Problem. Uses order crossover (OX), inversion mutation, and tournament selection with adaptive parameters.",
+    "domain": "routing",
+    "tags": [
+      "genetic",
+      "evolutionary",
+      "tsp",
+      "permutation",
+      "metaheuristic",
+      "order_crossover",
+      "tournament_selection",
+      "adaptive",
+      "elitism"
+    ],
+    "algorithm_family": "evolutionary",
+    "algorithm_type": "metaheuristic",
+    "problem_types": [
+      "tsp",
+      "permutation",
+      "combinatorial"
+    ],
+    "features": [
+      "order_crossover",
+      "inversion_mutation", 
+      "tournament_selection",
+      "elitism",
+      "adaptive_parameters",
+      "early_stopping",
+      "stagnation_detection"
+    ],
+    "strengths": [
+      "Excellent for TSP problems",
+      "Maintains tour validity",
+      "Adaptive to problem size",
+      "Good exploration/exploitation balance",
+      "Robust convergence"
+    ],
+    "complexity": {
+      "time_per_generation": "O(population_size * n)",
+      "space": "O(population_size * n)",
+      "typical_convergence": "50-500 generations"
+    }
+  },
+  "requirements": [],
+  "examples": [
+    {
+      "name": "Small TSP (≤20 cities)",
+      "description": "Optimized settings for small TSP instances",
+      "params": {
+        "population_size": 50,
+        "generations": 200,
+        "crossover_rate": 0.9,
+        "mutation_rate": 0.15,
+        "tournament_size": 3,
+        "elitism_count": 2
+      }
+    },
+    {
+      "name": "Medium TSP (21-100 cities)",
+      "description": "Balanced settings for medium TSP instances",
+      "params": {
+        "population_size": 100,
+        "generations": 500,
+        "crossover_rate": 0.8,
+        "mutation_rate": 0.1,
+        "tournament_size": 4,
+        "elitism_count": 3
+      }
+    },
+    {
+      "name": "Large TSP (>100 cities)",
+      "description": "Intensive settings for large TSP instances",
+      "params": {
+        "population_size": 200,
+        "generations": 1000,
+        "crossover_rate": 0.7,
+        "mutation_rate": 0.05,
+        "tournament_size": 5,
+        "elitism_count": 5
+      }
+    },
+    {
+      "name": "Quick Solution",
+      "description": "Fast settings for rapid prototyping",
+      "params": {
+        "population_size": 30,
+        "generations": 100,
+        "crossover_rate": 0.8,
+        "mutation_rate": 0.2,
+        "early_stopping": true,
+        "stagnation_limit": 20
+      }
+    }
+  ],
+  "performance": {
+    "best_for": [
+      "TSP problems",
+      "Permutation problems",
+      "Medium to large instances"
+    ],
+    "typical_quality": "Near-optimal (1-5% gap)",
+    "convergence_speed": "Medium to fast",
+    "memory_usage": "Moderate",
+    "scalability": "Good up to 1000+ cities"
+  },
+  "validation": {
+    "solution_format": "permutation",
+    "solution_constraints": [
+      "valid_permutation",
+      "all_cities_visited",
+      "no_repeated_cities"
+    ]
+  }
+}

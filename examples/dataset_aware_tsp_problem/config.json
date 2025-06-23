@@ -1,0 +1,131 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "DatasetAwareTSPProblem",
+  "default_params": {
+    "dataset_source": "auto",
+    "n_cities": 20,
+    "seed": 42
+  },
+  "parameters": {
+    "dataset_id": {
+      "type": "string",
+      "default": null,
+      "description": "Rastion platform dataset ID for TSP instance",
+      "required": false
+    },
+    "instance_file": {
+      "type": "string",
+      "default": null,
+      "description": "Local TSPLIB file path (fallback)",
+      "required": false
+    },
+    "dataset_source": {
+      "type": "string",
+      "default": "auto",
+      "options": ["auto", "platform", "local", "none"],
+      "description": "Dataset source type"
+    },
+    "n_cities": {
+      "type": "integer",
+      "default": 20,
+      "min": 3,
+      "max": 1000,
+      "description": "Number of cities (for generated instances)"
+    },
+    "seed": {
+      "type": "integer",
+      "default": 42,
+      "description": "Random seed for generated instances"
+    }
+  },
+  "metadata": {
+    "name": "Dataset-Aware TSP Problem",
+    "description": "Traveling Salesman Problem with Rastion platform dataset integration. Supports TSPLIB format, multiple distance types, and both platform and local datasets.",
+    "domain": "routing",
+    "tags": [
+      "tsp",
+      "traveling_salesman",
+      "routing",
+      "optimization",
+      "combinatorial",
+      "permutation",
+      "tsplib",
+      "dataset_aware",
+      "rastion",
+      "workflow_automation"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "combinatorial",
+    "objective_type": "minimize",
+    "features": [
+      "dataset_integration",
+      "tsplib_support",
+      "multiple_distance_types",
+      "coordinate_based",
+      "distance_matrix",
+      "solution_validation",
+      "neighbor_generation"
+    ],
+    "supported_formats": [
+      "tsplib",
+      "coordinates",
+      "distance_matrix"
+    ],
+    "distance_types": [
+      "EUC_2D",
+      "MAN_2D", 
+      "MAX_2D",
+      "ATT",
+      "CEIL_2D"
+    ]
+  },
+  "requirements": [
+    "numpy"
+  ],
+  "examples": [
+    {
+      "name": "Platform Dataset",
+      "description": "Load TSP instance from Rastion platform",
+      "params": {
+        "dataset_id": "your-dataset-id-here",
+        "dataset_source": "platform"
+      }
+    },
+    {
+      "name": "Local File",
+      "description": "Load TSP instance from local TSPLIB file",
+      "params": {
+        "instance_file": "instances/berlin52.tsp",
+        "dataset_source": "local"
+      }
+    },
+    {
+      "name": "Generated Instance",
+      "description": "Generate random TSP instance",
+      "params": {
+        "n_cities": 30,
+        "seed": 123,
+        "dataset_source": "none"
+      }
+    }
+  ],
+  "validation": {
+    "solution_format": "permutation",
+    "solution_length": "n_cities",
+    "constraints": [
+      "valid_permutation",
+      "all_cities_visited",
+      "no_repeated_cities"
+    ]
+  },
+  "performance": {
+    "evaluation_complexity": "O(n)",
+    "memory_complexity": "O(n²)",
+    "typical_sizes": {
+      "small": "≤50 cities",
+      "medium": "51-200 cities", 
+      "large": "201-1000 cities"
+    }
+  }
+}

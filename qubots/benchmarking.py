@@ -154,7 +154,6 @@ class BenchmarkSuite:
             raise ValueError(f"Problem '{problem_name}' not found in benchmark suite")
         if optimizer_name not in self.optimizers:
             raise ValueError(f"Optimizer '{optimizer_name}' not found in benchmark suite")
-        
         problem = self.problems[problem_name]["problem"]
         optimizer = self.optimizers[optimizer_name]["optimizer"]
         
