@@ -28,6 +28,7 @@ class AutoProblem:
         cache_dir: str = "~/.cache/rastion_hub",
         override_params: Optional[dict] = None,
         validate_metadata: bool = True,
+        dataset: Optional[str] = None,
     ) -> BaseProblem:
         cache = os.path.expanduser(cache_dir)
         os.makedirs(cache, exist_ok=True)
@@ -70,6 +71,10 @@ class AutoProblem:
 
         if override_params:
             params.update(override_params)
+
+        # Add dataset to params if provided (modular flow support)
+        if dataset is not None:
+            params["dataset"] = dataset
 
         # 3) Dynamic import with module cache handling
         sys.path.insert(0, str(path))

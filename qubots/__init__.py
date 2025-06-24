@@ -31,18 +31,23 @@ from .auto_optimizer import AutoOptimizer
 
 # Registry system has been removed - focusing on AutoProblem and AutoOptimizer
 
-# Rastion platform integration
-from .rastion_client import (
+# Rastion platform integration (unified)
+from .rastion_unified import (
     RastionClient,
-    load_qubots_model,
-    upload_qubots_model
+    Dataset,
+    authenticate,
+    is_authenticated,
+    load_dataset_from_platform,
+    autoLoad,
+    get_global_client,
+    upload_qubots_model,
+    load_qubots_model
 )
 
-# Import rastion module for convenience
-from . import rastion
-from .rastion import autoLoad, Dataset
+# Import unified rastion module for convenience
+from . import rastion_unified as rastion
 
-__version__ = "1.1.5"
+__version__ = "1.1.6"
 
 __all__ = [
     # Core classes
@@ -65,10 +70,14 @@ __all__ = [
     # Dataset functionality
     "autoLoad",
     "Dataset",
+    "load_dataset_from_platform",
 
     # Rastion platform integration
     "RastionClient",
-    "load_qubots_model",
+    "authenticate",
+    "is_authenticated",
+    "get_global_client",
     "upload_qubots_model",
+    "load_qubots_model",
     "rastion",
 ]
