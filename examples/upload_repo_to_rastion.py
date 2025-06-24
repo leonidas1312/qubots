@@ -24,7 +24,7 @@ from typing import Optional, List
 
 # Import qubots modules
 try:
-    import qubots.rastion as rastion
+    import qubots.rastion_unified as rastion
 except ImportError as e:
     print(f"Error importing qubots: {e}")
     print("Please install qubots: pip install qubots")
@@ -210,7 +210,7 @@ def upload_repository(repo_path: str, repository_name: Optional[str] = None,
 
     try:
         # Upload using qubots rastion module
-        url = rastion.upload_model_from_path(
+        url = rastion.upload_qubots_model(
             path=str(repo_path),
             repository_name=final_name,
             description=final_description,
