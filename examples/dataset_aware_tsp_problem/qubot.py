@@ -1,9 +1,9 @@
 """
-Dataset-Aware TSP Problem for Qubots Framework
+Simplified TSP Problem for Qubots Framework
 
-This module implements a Traveling Salesman Problem (TSP) that can load datasets
-from multiple sources including the Rastion platform. It supports TSPLIB format
-and provides comprehensive TSP functionality for optimization workflows.
+This module implements a Traveling Salesman Problem (TSP) that takes a dataset
+as direct input, following the modular architecture: datasets -> problems -> optimizers -> results.
+Supports TSPLIB format and provides clean TSP functionality.
 
 Compatible with Rastion platform workflow automation and local development.
 """
@@ -13,112 +13,99 @@ import random
 import numpy as np
 from typing import List, Tuple, Optional, Dict, Any, Union
 from qubots import (
-    BaseProblem, ProblemMetadata, ProblemType, ObjectiveType, 
-    DifficultyLevel, EvaluationResult
+    BaseProblem, ProblemMetadata, ProblemType, ObjectiveType,
+    DifficultyLevel, EvaluationResult, Dataset
 )
 
 
-class DatasetAwareTSPProblem(BaseProblem):
+class TSPProblem(BaseProblem):
     """
-    TSP Problem with integrated dataset loading from Rastion platform.
-    
+    Simplified TSP Problem for modular qubots architecture.
+
+    Takes a dataset as direct input and formulates the TSP problem.
+    Supports TSPLIB format and provides clean TSP functionality.
+
     Features:
-    - Loads datasets from Rastion platform using dataset_id
-    - Supports TSPLIB format parsing
-    - Handles both coordinate-based and explicit distance matrix instances
-    - Provides comprehensive solution validation
-    - Compatible with workflow automation
+    - Direct dataset input (string or Dataset object)
+    - TSPLIB format parsing
+    - Coordinate-based and explicit distance matrix support
+    - Clean modular design: datasets -> problems -> optimizers -> results
     """
-    
-    def __init__(self, 
-                 dataset_id: Optional[str] = None,
-                 instance_file: Optional[str] = None,
-                 dataset_source: str = "auto",
+
+    def __init__(self,
+                 dataset: Union[str, Dataset, None] = None,
                  n_cities: Optional[int] = None,
-                 seed: int = 42,
-                 **kwargs):
+                 seed: int = 42):
         """
-        Initialize TSP problem with dataset support.
-        
+        Initialize TSP problem with dataset input.
+
         Args:
-            dataset_id: Rastion platform dataset ID
-            instance_file: Local file path (fallback)
-            dataset_source: Source type ("auto", "platform", "local", "none")
-            n_cities: Number of cities (for generated instances)
+            dataset: Dataset content (string, Dataset object, or None for random instance)
+            n_cities: Number of cities (for generated instances when dataset is None)
             seed: Random seed for generated instances
-            **kwargs: Additional parameters
         """
         # Create metadata
         metadata = ProblemMetadata(
-            name="Dataset-Aware TSP Problem",
-            description="Traveling Salesman Problem with Rastion dataset integration",
+            name="TSP Problem",
+            description="Traveling Salesman Problem with dataset input",
             problem_type=ProblemType.COMBINATORIAL,
             objective_type=ObjectiveType.MINIMIZE,
             difficulty_level=DifficultyLevel.INTERMEDIATE,
             domain="routing",
-            tags={"tsp", "routing", "combinatorial", "dataset_aware", "rastion"},
+            tags={"tsp", "routing", "combinatorial"},
             author="Qubots Framework",
-            version="1.0.0"
+            version="2.0.0"
         )
-        
-        # Initialize with dataset support
-        super().__init__(
-            metadata=metadata,
-            dataset_id=dataset_id,
-            instance_file=instance_file,
-            dataset_source=dataset_source,
-            **kwargs
-        )
-        
-        # TSP-specific attributes
-        self.n_cities = n_cities
+
+        # Initialize base problem
+        super().__init__(metadata=metadata)
+
+        # Store dataset and parameters
+        self.dataset = dataset
+        self.n_cities = n_cities or 10
         self.seed = seed
-        self.cities = []
+
+        # TSP-specific attributes
         self.coordinates = []
         self.distance_matrix = None
         self.edge_weight_type = "EUC_2D"
         self.edge_weight_format = "FUNCTION"
-        
+
         # Initialize problem data
         self._initialize_problem_data()
     
     def _get_default_metadata(self) -> ProblemMetadata:
         """Return default metadata for TSP problem."""
         return ProblemMetadata(
-            name="Dataset-Aware TSP Problem",
-            description="Traveling Salesman Problem with dataset integration",
+            name="TSP Problem",
+            description="Traveling Salesman Problem with dataset input",
             problem_type=ProblemType.COMBINATORIAL,
             objective_type=ObjectiveType.MINIMIZE,
             domain="routing",
             tags={"tsp", "routing", "combinatorial"}
         )
-    
+
     def _initialize_problem_data(self):
         """Initialize problem data from dataset or generate random instance."""
         try:
-            if self.has_dataset():
-                # Load from dataset
-                self._parse_dataset()
-            elif self.n_cities:
+            if self.dataset is not None:
+                # Parse dataset content
+                dataset_content = str(self.dataset)  # Convert Dataset object to string if needed
+                self._parse_dataset(dataset_content)
+            else:
                 # Generate random instance
                 self._generate_random_instance()
-            else:
-                # Default small instance
-                self.n_cities = 10
-                self._generate_random_instance()
-                
+
         except Exception as e:
             print(f"Warning: Failed to initialize problem data: {e}")
             # Fallback to small random instance
-            self.n_cities = 10
             self._generate_random_instance()
     
-    def _parse_dataset(self):
+    def _parse_dataset(self, content: str):
         """Parse TSPLIB format dataset."""
-        content = self.get_dataset_content()
         if not content:
             raise ValueError("No dataset content available")
-        
+
         lines = content.strip().split('\n')
         
         # Parse header information
@@ -164,7 +151,7 @@ class DatasetAwareTSPProblem(BaseProblem):
         for line in data_lines:
             parts = line.split()
             if len(parts) >= 3:
-                city_id = int(parts[0])
+                # Skip city_id (parts[0]) as we only need coordinates
                 x = float(parts[1])
                 y = float(parts[2])
                 self.coordinates.append((x, y))
@@ -348,15 +335,8 @@ class DatasetAwareTSPProblem(BaseProblem):
             "edge_weight_format": self.edge_weight_format,
             "has_coordinates": bool(self.coordinates),
             "has_distance_matrix": bool(self.distance_matrix),
-            "dataset_source": self.dataset_source,
-            "has_dataset": self.has_dataset()
+            "has_dataset": self.dataset is not None
         }
-        
-        if self.has_dataset():
-            info.update(self.get_dataset_metadata())
-        
+
         return info
 
-
-# For backward compatibility and direct usage
-TSPProblem = DatasetAwareTSPProblem
