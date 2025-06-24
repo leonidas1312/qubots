@@ -126,8 +126,7 @@ class AutoOptimizer:
     def _clone_or_pull(repo_id: str, revision: str, cache_dir: str) -> str:
         import os
         owner, name = repo_id.split("/")
-        # Use environment variable for Gitea URL, fallback to hub.rastion.com
-        base = os.environ.get('GITEA_URL', 'https://hub.rastion.com')
+        base = "https://hub.rastion.com"
         url  = f"{base.rstrip('/')}/{owner}/{name}.git"
         dest = os.path.join(cache_dir, name)
 

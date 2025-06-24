@@ -11,7 +11,7 @@ import time
 import uuid
 from datetime import datetime
 import threading
-from .base_problem import BaseProblem, EvaluationResult
+from .base_problem import BaseProblem
 
 class OptimizerType(Enum):
     """Enumeration of optimizer categories."""
