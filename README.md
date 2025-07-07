@@ -10,34 +10,34 @@
 
 ```mermaid
 graph TB
-    subgraph "📊 Data Input"
-        D1["💼 Portfolio Dataset<br/>📄 stock_prices.csv<br/>📈 AAPL, GOOGL, MSFT<br/>💰 Returns & Risk Data"]
+    subgraph " Data Input"
+        D1[" Portfolio Dataset<br/> stock_prices.csv<br/> AAPL, GOOGL, MSFT<br/> Returns & Risk Data"]
     end
 
-    subgraph "🧩 Problem Repository"
-        subgraph PR1["📦 portfolio-optimization-problem"]
-            PR1_Q["🐍 qubot.py<br/>class PortfolioProblem(BaseProblem)<br/><br/>🔴 REQUIRED:<br/>• _get_default_metadata()<br/>• evaluate_solution()<br/><br/>🟡 OPTIONAL:<br/>• random_solution()<br/>• get_neighbor_solution()<br/>• is_feasible()"]
+    subgraph " Problem Repository"
+        subgraph PR1[" portfolio-optimization"]
+            PR1_Q[" qubot.py<br/>class PortfolioProblem(BaseProblem)<br/><br/>🔴 REQUIRED:<br/>• _get_default_metadata()<br/>• evaluate_solution()<br/><br/>🟡 OPTIONAL:<br/>• random_solution()<br/>• get_neighbor_solution()<br/>• is_feasible()"]
             PR1_C["⚙️ config.json<br/>{<br/>  'type': 'problem',<br/>  'class_name': 'PortfolioProblem'<br/>}"]
             PR1_R["📋 requirements.txt<br/>numpy>=1.20.0<br/>pandas>=1.3.0<br/>scipy>=1.7.0"]
         end
     end
 
-    subgraph "⚡ Optimizer Repository"
-        subgraph OR1["📦 genetic-algorithm-optimizer"]
-            OR1_Q["🐍 qubot.py<br/>class GeneticOptimizer(BaseOptimizer)<br/><br/>🔴 REQUIRED:<br/>• _get_default_metadata()<br/>• _optimize_implementation()<br/><br/>🟡 OPTIONAL:<br/>• report_progress()<br/>• log_message()<br/>• should_stop()"]
-            OR1_C["⚙️ config.json<br/>{<br/>  'type': 'optimizer',<br/>  'class_name': 'GeneticOptimizer'<br/>}"]
-            OR1_R["📋 requirements.txt<br/>numpy>=1.20.0<br/>matplotlib>=3.0.0<br/>deap>=1.3.0"]
+    subgraph " Optimizer Repository"
+        subgraph OR1[" genetic-algorithm"]
+            OR1_Q[" qubot.py<br/>class GeneticOptimizer(BaseOptimizer)<br/><br/>🔴 REQUIRED:<br/>• _get_default_metadata()<br/>• _optimize_implementation()<br/><br/>🟡 OPTIONAL:<br/>• report_progress()<br/>• log_message()<br/>• should_stop()"]
+            OR1_C[" config.json<br/>{<br/>  'type': 'optimizer',<br/>  'class_name': 'GeneticOptimizer'<br/>}"]
+            OR1_R[" requirements.txt<br/>numpy>=1.20.0<br/>matplotlib>=3.0.0<br/>deap>=1.3.0"]
         end
     end
 
-    subgraph "🎯 Decision Model Creation"
-        DM["🔧 Load Components + Dataset<br/><br/>dataset = load_dataset_from_platform(<br/>    token='YOUR_TOKEN',<br/>    dataset_id='portfolio_data_id'<br/>)<br/><br/>problem = AutoProblem.from_repo(<br/>    'user/portfolio-problem',<br/>    override_params={'dataset': dataset}<br/>)<br/><br/>optimizer = AutoOptimizer.from_repo(<br/>    'user/genetic-optimizer'<br/>)<br/><br/>result = optimizer.optimize(problem)"]
+    subgraph " Decision Model Creation"
+        DM[" Load Components + Dataset<br/><br/>dataset = load_dataset_from_platform(<br/>    token='YOUR_TOKEN',<br/>    dataset_id='portfolio_data_id'<br/>)<br/><br/>problem = AutoProblem.from_repo(<br/>    'user/portfolio-problem',<br/>    override_params={'dataset': dataset}<br/>)<br/><br/>optimizer = AutoOptimizer.from_repo(<br/>    'user/genetic-optimizer'<br/>)<br/><br/>result = optimizer.optimize(problem)"]
     end
 
-    subgraph "📈 Optimization Results"
-        R1["📊 Portfolio Allocation<br/>AAPL: 35% | GOOGL: 40% | MSFT: 25%"]
-        R2["📉 Risk Metrics<br/>Expected Return: 12.5%<br/>Volatility: 18.2%<br/>Sharpe Ratio: 0.68"]
-        R3["📈 Visualization<br/>Efficient Frontier Plot<br/>Asset Allocation Pie Chart"]
+    subgraph " Optimization Results"
+        R1[" Portfolio Allocation<br/>AAPL: 35% | GOOGL: 40% | MSFT: 25%"]
+        R2[" Risk Metrics<br/>Expected Return: 12.5%<br/>Volatility: 18.2%<br/>Sharpe Ratio: 0.68"]
+        R3[" Visualization<br/>Efficient Frontier Plot<br/>Asset Allocation Pie Chart"]
     end
 
     %% Connections with labels
@@ -67,11 +67,11 @@ graph TB
 
 This example shows how **Portfolio Optimization** works in qubots:
 
-1. **📊 Dataset**: Stock price data with returns and risk metrics
-2. **🧩 Problem Repository**: Defines the portfolio optimization problem with evaluation methods
-3. **⚡ Optimizer Repository**: Genetic algorithm that finds optimal asset allocations
-4. **🎯 Decision Model**: Combines data + problem + optimizer using qubots' AutoLoad system
-5. **📈 Results**: Generates allocation percentages, risk metrics, and visualizations
+1. **Dataset**: Stock price data with returns and risk metrics
+2. **Problem Repository**: Defines the portfolio optimization problem with evaluation methods
+3. **Optimizer Repository**: Genetic algorithm that finds optimal asset allocations
+4. **Decision Model**: Combines data + problem + optimizer using qubots' AutoLoad system
+5. **Results**: Generates allocation percentages, risk metrics, and visualizations
 
 ## Quick Start
 
