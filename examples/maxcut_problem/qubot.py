@@ -1,7 +1,7 @@
 """
 Maximum Cut Problem (MaxCut) Implementation for Qubots Framework
 
-This module implements the Maximum Cut Problem as a qubots CombinatorialProblem.
+This module implements the Maximum Cut Problem as a qubots BaseProblem.
 The MaxCut problem involves partitioning the vertices of a graph into two sets
 such that the number of edges between the two sets is maximized.
 
@@ -18,7 +18,7 @@ from typing import List, Tuple, Dict, Any, Optional, Set
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from qubots import (
-    CombinatorialProblem, ProblemMetadata, ProblemType,
+    BaseProblem, ProblemMetadata, ProblemType,
     ObjectiveType, DifficultyLevel
 )
 
@@ -31,7 +31,7 @@ class Edge:
     weight: float = 1.0  # Edge weight
 
 
-class MaxCutProblem(CombinatorialProblem):
+class MaxCutProblem(BaseProblem):
     """
     Maximum Cut Problem implementation using qubots framework.
 
