@@ -4,7 +4,7 @@
 [![Build Status](https://github.com/leonidas1312/qubots/actions/workflows/publish.yml/badge.svg)](https://github.com/leonidas1312/qubots/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
-**Qubots** is a Python framework for building modular optimization solutions. It combines QUBO (Quadratic Unconstrained Binary Optimization) problems with algorithms in a LEGO-like modular architecture, enabling developers to mix and match optimization problems and solvers seamlessly.
+**Qubots** is a Python framework for building modular optimization solutions. It enables developers to create, share, and combine optimization problems and solvers through a modular component system.
 
 ## Architecture Overview
 
