@@ -1,0 +1,60 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "PortfolioOptimizationProblem",
+  "default_params": {
+    "target_return": 0.10,
+    "risk_free_rate": 0.02,
+    "csv_data": null,
+    "csv_file_path": null,
+    "correlation_matrix": null
+  },
+  "metadata": {
+    "name": "Portfolio Optimization Problem",
+    "description": "Markowitz mean-variance portfolio optimization problem that reads stock data from CSV files. Minimizes portfolio risk while meeting return constraints and ensuring full investment.",
+    "domain": "finance",
+    "tags": [
+      "portfolio",
+      "markowitz",
+      "finance",
+      "optimization",
+      "risk",
+      "csv",
+      "continuous",
+      "constraints"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "continuous"
+  },
+  "parameters": {
+    "target_return": {
+      "type": "number",
+      "default": 0.10,
+      "min": 0.0,
+      "max": 0.5,
+      "description": "Minimum required portfolio return (as decimal, e.g., 0.10 for 10%)"
+    },
+    "risk_free_rate": {
+      "type": "number",
+      "default": 0.02,
+      "min": 0.0,
+      "max": 0.1,
+      "description": "Risk-free rate for Sharpe ratio calculations (as decimal)"
+    },
+    "csv_data": {
+      "type": "string",
+      "default": null,
+      "description": "CSV content as string with columns: symbol, expected_return, volatility"
+    },
+    "csv_file_path": {
+      "type": "string",
+      "default": null,
+      "description": "Path to CSV file with stock data (alternative to csv_data)"
+    },
+    "correlation_matrix": {
+      "type": "array",
+      "default": null,
+      "description": "Optional correlation matrix between stocks (n x n array)"
+    }
+  }
+}

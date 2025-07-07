@@ -1,0 +1,11 @@
+furniture_id,name,width_cm,depth_cm,height_cm,type,can_rotate,wall_required,clearance_front_cm,clearance_back_cm,clearance_sides_cm,aesthetic_weight,functional_weight,cost_usd,color,material
+sofa_small,Small Sofa,150,80,85,seating,true,false,100,30,50,0.8,0.9,600,gray,fabric
+coffee_table,Coffee Table,100,50,45,table,true,false,50,50,50,0.7,0.8,200,wood,wood
+tv_small,Small TV,80,6,50,electronics,false,true,150,0,20,0.8,0.9,400,black,plastic
+tv_stand,TV Stand,90,35,50,storage,false,true,120,20,30,0.7,0.8,150,black,wood
+armchair,Armchair,70,75,90,seating,true,false,80,30,40,0.7,0.8,300,blue,fabric
+side_table,Side Table,40,40,55,table,false,false,30,30,30,0.6,0.7,100,white,wood
+floor_lamp,Floor Lamp,35,35,160,lighting,false,false,25,25,25,0.6,0.7,120,brass,metal
+plant,Plant,30,30,80,decor,false,false,20,20,20,0.5,0.4,50,green,natural
+rug,Area Rug,180,120,1,decor,true,false,0,0,0,0.7,0.5,150,blue,textile
+bookshelf,Small Bookshelf,60,25,120,storage,false,true,60,20,25,0.6,0.7,200,white,wood

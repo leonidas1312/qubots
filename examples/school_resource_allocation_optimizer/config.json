@@ -1,0 +1,136 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "SchoolResourceAllocationOptimizer",
+  "default_params": {
+    "max_solve_time_seconds": 300.0,
+    "num_search_workers": 4,
+    "emphasis": "balanced",
+    "enable_logging": false
+  },
+  "metadata": {
+    "name": "School Resource Allocation Optimizer",
+    "description": "OR-Tools constraint programming optimizer for school scheduling problems with conflict resolution and cost optimization. Finds optimal teacher-subject-classroom-timeslot assignments while respecting all constraints.",
+    "version": "1.0.0",
+    "author": "Qubots Framework",
+    "tags": ["constraint_programming", "scheduling", "education", "ortools", "optimization", "resource_allocation"],
+    "optimizer_type": "exact",
+    "optimizer_family": "constraint_programming",
+    "is_deterministic": true,
+    "supports_constraints": true,
+    "supports_multi_objective": true,
+    "supports_continuous": false,
+    "supports_discrete": true,
+    "supports_mixed_integer": true,
+    "time_complexity": "O(exponential in worst case)",
+    "space_complexity": "O(n³)",
+    "convergence_guaranteed": true,
+    "parallel_capable": true
+  },
+  "parameters": {
+    "max_solve_time_seconds": {
+      "type": "number",
+      "description": "Maximum time to spend solving the optimization problem in seconds",
+      "default": 300.0,
+      "min": 1.0,
+      "max": 3600.0,
+      "optional": true
+    },
+    "num_search_workers": {
+      "type": "integer",
+      "description": "Number of parallel search workers for OR-Tools solver",
+      "default": 4,
+      "min": 1,
+      "max": 16,
+      "optional": true
+    },
+    "emphasis": {
+      "type": "string",
+      "description": "Search emphasis strategy: 'feasibility' (find any solution fast), 'optimality' (find best solution), or 'balanced' (compromise)",
+      "default": "balanced",
+      "choices": ["feasibility", "optimality", "balanced"],
+      "optional": true
+    },
+    "enable_logging": {
+      "type": "boolean",
+      "description": "Whether to enable detailed OR-Tools solver logging",
+      "default": false,
+      "optional": true
+    }
+  },
+  "requirements": [
+    "ortools>=9.0.0",
+    "matplotlib>=3.0.0",
+    "numpy>=1.18.0"
+  ],
+  "capabilities": {
+    "problem_types": ["school_resource_allocation", "scheduling", "timetabling"],
+    "constraint_types": [
+      "No teacher double-booking",
+      "No room double-booking", 
+      "Teacher qualification requirements",
+      "Room type requirements",
+      "Subject hour requirements",
+      "Teacher workload limits"
+    ],
+    "optimization_objectives": [
+      "Minimize total cost (teacher + classroom costs)",
+      "Maximize teacher-subject compatibility",
+      "Maximize resource utilization",
+      "Eliminate scheduling conflicts"
+    ],
+    "solution_guarantees": [
+      "Conflict-free schedules",
+      "Optimal or near-optimal solutions",
+      "Respect for all hard constraints",
+      "Feasibility verification"
+    ]
+  },
+  "performance": {
+    "typical_solve_time": "30-300 seconds",
+    "problem_size_limits": {
+      "teachers": "Up to 50",
+      "classrooms": "Up to 100", 
+      "subjects": "Up to 30",
+      "time_slots": "Up to 200"
+    },
+    "memory_usage": "Moderate (scales with problem size)",
+    "scalability": "Good for typical school sizes"
+  },
+  "output_features": {
+    "visualization": [
+      "Teacher workload distribution",
+      "Classroom utilization charts",
+      "Subject coverage analysis",
+      "Schedule heatmap overview"
+    ],
+    "analysis": [
+      "Constraint violation detection",
+      "Cost breakdown analysis",
+      "Resource utilization metrics",
+      "Solution feasibility verification"
+    ],
+    "reporting": [
+      "Detailed assignment lists",
+      "Summary statistics",
+      "Performance metrics",
+      "Optimization progress tracking"
+    ]
+  },
+  "use_cases": [
+    "High school timetable generation",
+    "University course scheduling",
+    "Teacher workload optimization",
+    "Classroom allocation planning",
+    "Resource conflict resolution",
+    "Educational quality improvement"
+  ],
+  "advantages": [
+    "Guaranteed optimal solutions (when found)",
+    "Handles complex constraints naturally",
+    "Fast conflict detection and resolution",
+    "Scalable to real-world problem sizes",
+    "Comprehensive visualization and analysis",
+    "Professional-grade OR-Tools solver"
+  ]
+}

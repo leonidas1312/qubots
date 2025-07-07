@@ -1,0 +1,79 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "AudioOptimizationProblem",
+  "default_params": {
+    "target_snr_db": 20.0,
+    "max_thd_percent": 1.0,
+    "quality_weight": 0.5,
+    "noise_weight": 0.3,
+    "distortion_weight": 0.2,
+    "csv_data": null,
+    "csv_file_path": null
+  },
+  "metadata": {
+    "name": "Audio Optimization Problem",
+    "description": "Audio signal enhancement optimization that reads audio signal data from CSV files. Optimizes signal processing parameters to maximize audio quality while minimizing noise and distortion.",
+    "domain": "audio_processing",
+    "tags": [
+      "audio",
+      "signal_processing",
+      "optimization",
+      "quality",
+      "noise_reduction",
+      "distortion",
+      "csv",
+      "continuous",
+      "constraints"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "continuous"
+  },
+  "parameters": {
+    "target_snr_db": {
+      "type": "number",
+      "default": 20.0,
+      "min": 0.0,
+      "max": 60.0,
+      "description": "Target signal-to-noise ratio in dB"
+    },
+    "max_thd_percent": {
+      "type": "number",
+      "default": 1.0,
+      "min": 0.0,
+      "max": 10.0,
+      "description": "Maximum allowed total harmonic distortion percentage"
+    },
+    "quality_weight": {
+      "type": "number",
+      "default": 0.5,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "Weight for quality objective in multi-objective optimization"
+    },
+    "noise_weight": {
+      "type": "number",
+      "default": 0.3,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "Weight for noise reduction objective in multi-objective optimization"
+    },
+    "distortion_weight": {
+      "type": "number",
+      "default": 0.2,
+      "min": 0.0,
+      "max": 1.0,
+      "description": "Weight for distortion minimization objective in multi-objective optimization"
+    },
+    "csv_data": {
+      "type": "string",
+      "default": null,
+      "description": "CSV content as string with columns: signal_id, frequency_hz, amplitude, phase_deg, noise_level, snr_db, thd_percent, bandwidth_hz, sample_rate_hz, duration_ms, target_quality"
+    },
+    "csv_file_path": {
+      "type": "string",
+      "default": null,
+      "description": "Path to CSV file with audio signal data (alternative to csv_data)"
+    }
+  }
+}

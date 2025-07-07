@@ -1,0 +1,110 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "FurnitureArrangementProblem",
+  "default_params": {
+    "room_config": "medium_rect",
+    "furniture_selection": null,
+    "furniture_data": null,
+    "room_data": null,
+    "space_weight": 0.4,
+    "accessibility_weight": 0.3,
+    "aesthetic_weight": 0.3,
+    "min_walkway_width": 80.0
+  },
+  "metadata": {
+    "name": "Furniture Arrangement Problem",
+    "description": "Optimize furniture placement in living rooms to maximize space utilization, accessibility, and aesthetic appeal while respecting physical and functional constraints.",
+    "domain": "interior_design",
+    "tags": [
+      "furniture",
+      "interior_design", 
+      "spatial_optimization",
+      "2d_packing",
+      "real_world",
+      "combinatorial",
+      "constraints",
+      "multi_objective"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "combinatorial",
+    "objective_type": "minimization",
+    "constraints": [
+      "No furniture overlap",
+      "Minimum clearance distances", 
+      "Wall placement requirements",
+      "Door and window accessibility",
+      "Traffic flow optimization"
+    ],
+    "applications": [
+      "Interior design optimization",
+      "Space planning for homes and offices",
+      "Furniture store layout planning",
+      "Real estate staging optimization",
+      "Accessibility compliance checking"
+    ]
+  },
+  "parameters": {
+    "room_config": {
+      "type": "string",
+      "description": "Room configuration ID from room dataset",
+      "default": "medium_rect",
+      "options": ["small_square", "medium_rect", "large_rect", "open_plan", "l_shaped", "narrow_long", "studio_apt", "loft_style", "family_room", "cozy_cottage"]
+    },
+    "furniture_selection": {
+      "type": "list",
+      "description": "List of furniture IDs to include (null for default selection)",
+      "default": null
+    },
+    "furniture_data": {
+      "type": "datafile",
+      "description": "CSV data containing furniture pieces with dimensions and properties",
+      "default": null,
+      "required_columns": ["furniture_id", "name", "width_cm", "depth_cm", "height_cm", "type", "can_rotate", "wall_required", "clearance_front_cm", "clearance_back_cm", "clearance_sides_cm", "aesthetic_weight", "functional_weight", "cost_usd", "color", "material"],
+      "file_format": "csv"
+    },
+    "room_data": {
+      "type": "datafile",
+      "description": "CSV data containing room configurations with dimensions and features",
+      "default": null,
+      "required_columns": ["room_id", "name", "width_cm", "depth_cm", "door_x_cm", "door_y_cm", "door_width_cm", "window_1_wall", "window_1_start_cm", "window_1_end_cm", "window_2_wall", "window_2_start_cm", "window_2_end_cm", "electrical_outlets", "room_type", "description"],
+      "file_format": "csv"
+    },
+    "space_weight": {
+      "type": "float",
+      "description": "Weight for space utilization in objective function",
+      "default": 0.4,
+      "range": [0.0, 1.0]
+    },
+    "accessibility_weight": {
+      "type": "float",
+      "description": "Weight for accessibility and traffic flow in objective function",
+      "default": 0.3,
+      "range": [0.0, 1.0]
+    },
+    "aesthetic_weight": {
+      "type": "float",
+      "description": "Weight for aesthetic appeal in objective function",
+      "default": 0.3,
+      "range": [0.0, 1.0]
+    },
+    "min_walkway_width": {
+      "type": "float",
+      "description": "Minimum required walkway width in centimeters",
+      "default": 80.0,
+      "range": [60.0, 120.0]
+    }
+  },
+  "datasets": {
+    "furniture": {
+      "description": "Living room furniture pieces with dimensions and properties",
+      "file": "datasets/living_room_furniture.csv",
+      "columns": ["furniture_id", "name", "width_cm", "depth_cm", "height_cm", "type", "can_rotate", "wall_required", "clearance_front_cm", "clearance_back_cm", "clearance_sides_cm", "aesthetic_weight", "functional_weight", "cost_usd", "color", "material"]
+    },
+    "rooms": {
+      "description": "Room configurations with dimensions and features",
+      "file": "datasets/room_configurations.csv", 
+      "columns": ["room_id", "name", "width_cm", "depth_cm", "door_x_cm", "door_y_cm", "door_width_cm", "window_1_wall", "window_1_start_cm", "window_1_end_cm", "window_2_wall", "window_2_start_cm", "window_2_end_cm", "electrical_outlets", "room_type", "description"]
+    }
+  }
+}

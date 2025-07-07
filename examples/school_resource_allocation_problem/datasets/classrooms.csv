@@ -1,0 +1,26 @@
+room_id,name,capacity,room_type,equipment,hourly_cost
+R101,Mathematics Classroom A,30,standard,"whiteboard,projector,calculator_sets",8
+R102,Mathematics Classroom B,28,standard,"whiteboard,projector,calculator_sets",8
+R103,Science Laboratory A,25,lab,"lab_benches,fume_hood,microscopes,safety_equipment",18
+R104,Science Laboratory B,24,lab,"lab_benches,chemical_storage,microscopes,safety_equipment",18
+R105,Computer Laboratory,32,computer,"computers,projector,network_access,software_licenses",25
+R106,English Classroom A,35,standard,"whiteboard,projector,library_corner",8
+R107,English Classroom B,33,standard,"whiteboard,projector,reading_materials",8
+R108,History Classroom,36,standard,"whiteboard,projector,maps,historical_artifacts",8
+R109,Geography Classroom,34,standard,"whiteboard,projector,maps,globes",8
+R110,Art Studio,20,art,"easels,art_supplies,kiln,storage_cabinets",15
+R111,Music Room,25,music,"piano,instruments,sound_system,recording_equipment",20
+R112,Drama Theater,40,theater,"stage,lighting,sound_system,costumes",30
+R113,Gymnasium,100,gym,"sports_equipment,basketball_hoops,volleyball_nets",12
+R114,Library,50,library,"books,computers,study_tables,quiet_zones",10
+R115,Auditorium,200,auditorium,"stage,sound_system,lighting,seating",35
+R116,Language Laboratory,28,language,"audio_equipment,headphones,language_software",22
+R117,Physics Laboratory,26,lab,"physics_equipment,measurement_tools,safety_equipment",20
+R118,Chemistry Laboratory,24,lab,"chemical_storage,fume_hoods,lab_benches,safety_showers",22
+R119,Biology Laboratory,26,lab,"microscopes,specimens,lab_benches,safety_equipment",20
+R120,Conference Room,15,meeting,"conference_table,projector,video_conferencing",12
+R121,Small Classroom A,18,standard,"whiteboard,projector",6
+R122,Small Classroom B,20,standard,"whiteboard,projector",6
+R123,Small Classroom C,22,standard,"whiteboard,projector",6
+R124,Cafeteria,150,cafeteria,"tables,chairs,serving_area",8
+R125,Study Hall,60,study,"tables,chairs,quiet_environment",5

@@ -1,0 +1,6 @@
+qubots
+ortools
+matplotlib
+seaborn
+networkx
+numpy

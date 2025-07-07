@@ -1,0 +1,55 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "SupplyChainNetworkProblem",
+  "default_params": {
+    "csv_data": null,
+    "dataset_content": null
+  },
+  "metadata": {
+    "name": "Supply Chain Network Optimization Problem",
+    "description": "Multi-echelon supply chain network optimization with suppliers, warehouses, and customers. Minimizes total cost while satisfying demand and capacity constraints.",
+    "version": "1.0.0",
+    "author": "Qubots Framework",
+    "tags": ["supply_chain", "network_optimization", "logistics", "multi_echelon", "cost_minimization"],
+    "problem_type": "mixed_integer",
+    "objective_type": "minimize",
+    "difficulty_level": "advanced",
+    "domain": "supply_chain"
+  },
+  "parameters": {
+    "csv_data": {
+      "type": "string",
+      "description": "CSV data containing supply chain network information",
+      "default": null,
+      "optional": true
+    },
+    "dataset_content": {
+      "type": "string", 
+      "description": "Pre-loaded dataset content from Rastion platform",
+      "default": null,
+      "optional": true
+    }
+  },
+  "solution_format": {
+    "type": "dict",
+    "description": "Dictionary with supplier_production, warehouse_flows, and warehouse_operations",
+    "structure": {
+      "supplier_production": "Dict[supplier_id, production_amount]",
+      "warehouse_flows": "Dict[(from_id, to_id), flow_amount]", 
+      "warehouse_operations": "Dict[warehouse_id, is_open (0/1)]"
+    }
+  },
+  "constraints": [
+    "Supplier capacity constraints",
+    "Warehouse capacity constraints", 
+    "Customer demand satisfaction",
+    "Flow balance at warehouses",
+    "Binary warehouse operation decisions"
+  ],
+  "objective": {
+    "type": "minimization",
+    "function": "Total Cost = Production Costs + Transportation Costs + Fixed Warehouse Costs",
+    "description": "Minimize total supply chain network cost including production, transportation, and facility costs"
+  }
+}

@@ -1,0 +1,23 @@
+meeting_id,meeting_name,duration_hours,priority,current_day,flexible,participants
+M1,Morning Standup,0.5,3,Monday,True,8
+M2,Client Strategy Session,2.5,5,Monday,False,6
+M3,Technical Deep Dive,2.0,4,Monday,True,5
+M4,Vendor Negotiation,1.5,4,Tuesday,True,4
+M5,Product Roadmap Review,2.0,5,Tuesday,False,12
+M6,User Research Findings,1.0,3,Tuesday,True,7
+M7,Security Audit Meeting,1.5,4,Tuesday,True,3
+M8,Executive Briefing,1.0,5,Wednesday,False,15
+M9,Design System Review,2.0,3,Wednesday,True,6
+M10,Performance Analysis,1.5,4,Wednesday,True,4
+M11,Customer Feedback Session,1.0,4,Wednesday,True,8
+M12,Budget Planning Workshop,2.5,4,Wednesday,True,5
+M13,Team Sync,0.5,3,Wednesday,True,8
+M14,Innovation Brainstorm,1.5,2,Wednesday,True,10
+M15,Quarterly Review Prep,2.0,4,Thursday,True,6
+M16,Partnership Discussion,1.5,4,Thursday,True,4
+M17,Technical Interview,1.0,3,Thursday,True,3
+M18,Marketing Campaign Review,1.0,3,Thursday,True,7
+M19,All Hands Meeting,1.0,3,Friday,False,50
+M20,Project Retrospective,1.5,3,Friday,True,8
+M21,Knowledge Sharing,1.0,2,Friday,True,12
+M22,Social Hour Planning,0.5,1,Friday,True,5

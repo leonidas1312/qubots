@@ -1,0 +1,17 @@
+meeting_id,meeting_name,duration_hours,priority,current_day,flexible,participants
+M1,Daily Standup,0.5,3,Monday,True,6
+M2,Project Kickoff,2.0,5,Monday,False,12
+M3,Client Presentation,1.5,5,Tuesday,False,8
+M4,Team Retrospective,1.0,3,Tuesday,True,6
+M5,Budget Review,2.0,4,Tuesday,True,4
+M6,Design Workshop,3.0,4,Wednesday,True,8
+M7,Code Review,1.0,3,Wednesday,True,4
+M8,Strategy Meeting,2.0,5,Wednesday,False,10
+M9,Training Session,1.5,2,Wednesday,True,15
+M10,One-on-One,0.5,3,Wednesday,True,2
+M11,Product Demo,1.0,4,Wednesday,True,6
+M12,Sprint Planning,2.0,4,Thursday,True,8
+M13,Architecture Review,1.5,4,Thursday,True,5
+M14,Customer Call,1.0,5,Thursday,False,3
+M15,Team Building,2.0,2,Friday,True,12
+M16,Weekly Report,0.5,3,Friday,True,1

@@ -295,7 +295,7 @@ Examples:
     if not token:
         print("❌ Authentication token required!")
         print("Provide token via --token argument or RASTION_TOKEN environment variable")
-        print("Get your token from: https://rastion.com/settings/tokens")
+        print("Get your token from the Rastion platform settings")
         sys.exit(1)
 
     # Authenticate
@@ -320,7 +320,6 @@ Examples:
 
         print(f"\n🎉 Upload completed successfully!")
         print(f"📍 You can view your repository at: {url}")
-        print(f"🎮 Test it in the playground: https://rastion.com/playground")
 
     except Exception as e:
         print(f"\n❌ Upload failed: {e}")

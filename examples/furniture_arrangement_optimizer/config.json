@@ -1,0 +1,126 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "FurnitureArrangementOptimizer",
+  "default_params": {
+    "initial_temperature": 1000.0,
+    "cooling_rate": 0.95,
+    "min_temperature": 1.0,
+    "max_iterations": 5000,
+    "moves_per_temperature": 50,
+    "position_step_size": 20.0,
+    "create_plots": true,
+    "save_plots": false,
+    "plot_interval": 500,
+    "random_seed": null
+  },
+  "metadata": {
+    "name": "Furniture Arrangement Optimizer",
+    "description": "Simulated annealing optimizer for furniture placement with comprehensive spatial visualizations and real-time optimization tracking.",
+    "optimizer_type": "metaheuristic",
+    "optimizer_family": "local_search",
+    "domain": "interior_design",
+    "tags": [
+      "simulated_annealing",
+      "spatial_optimization", 
+      "visualization",
+      "furniture",
+      "interior_design",
+      "real_time_plots",
+      "multi_objective"
+    ],
+    "applications": [
+      "Living room furniture arrangement",
+      "Office space planning",
+      "Retail store layout optimization",
+      "Interior design automation",
+      "Space utilization analysis"
+    ],
+    "features": [
+      "Real-time visualization of optimization progress",
+      "Detailed room layout plots with clearance zones",
+      "Multiple move types (translation, rotation, swapping)",
+      "Adaptive temperature scheduling",
+      "Solution quality metrics tracking",
+      "Before/after arrangement comparisons"
+    ]
+  },
+  "parameters": {
+    "initial_temperature": {
+      "type": "float",
+      "description": "Starting temperature for simulated annealing",
+      "default": 1000.0,
+      "range": [100.0, 5000.0]
+    },
+    "cooling_rate": {
+      "type": "float", 
+      "description": "Temperature reduction factor per iteration",
+      "default": 0.95,
+      "range": [0.8, 0.99]
+    },
+    "min_temperature": {
+      "type": "float",
+      "description": "Minimum temperature before termination",
+      "default": 1.0,
+      "range": [0.1, 10.0]
+    },
+    "max_iterations": {
+      "type": "integer",
+      "description": "Maximum number of optimization iterations",
+      "default": 5000,
+      "range": [1000, 20000]
+    },
+    "moves_per_temperature": {
+      "type": "integer",
+      "description": "Number of moves to try at each temperature level",
+      "default": 50,
+      "range": [10, 200]
+    },
+    "position_step_size": {
+      "type": "float",
+      "description": "Maximum position change per move (cm)",
+      "default": 20.0,
+      "range": [5.0, 100.0]
+    },
+    "create_plots": {
+      "type": "boolean",
+      "description": "Whether to create visualization plots during optimization",
+      "default": true
+    },
+    "save_plots": {
+      "type": "boolean",
+      "description": "Whether to save plots to files",
+      "default": false
+    },
+    "plot_interval": {
+      "type": "integer",
+      "description": "Iterations between progress plot updates",
+      "default": 500,
+      "range": [100, 2000]
+    },
+    "random_seed": {
+      "type": "integer",
+      "description": "Random seed for reproducible results (null for random)",
+      "default": null
+    }
+  },
+  "visualization_features": {
+    "room_layout": "2D floor plan with furniture placement",
+    "clearance_zones": "Visual representation of required clearance spaces",
+    "traffic_flow": "Walkway and accessibility visualization", 
+    "optimization_progress": "Real-time cost and temperature tracking",
+    "solution_metrics": "Space utilization and quality indicators",
+    "furniture_labels": "Named furniture pieces with orientation indicators",
+    "before_after": "Initial vs optimized arrangement comparison"
+  },
+  "algorithm_details": {
+    "move_types": [
+      "Translation: Small position adjustments",
+      "Rotation: 90-degree furniture rotations", 
+      "Swapping: Exchange positions of furniture pieces"
+    ],
+    "acceptance_criteria": "Metropolis criterion with temperature-based probability",
+    "cooling_schedule": "Geometric cooling with configurable rate",
+    "termination": "Temperature threshold or maximum iterations"
+  }
+}

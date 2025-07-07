@@ -1,0 +1,89 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "AudioOptimizationOptimizer",
+  "default_params": {
+    "algorithm": "auto",
+    "max_iterations": 1000,
+    "population_size": 50,
+    "tolerance": 1e-6,
+    "time_limit": 120.0,
+    "random_seed": 42,
+    "create_plots": true,
+    "convergence_window": 50
+  },
+  "metadata": {
+    "name": "Audio Optimization Optimizer",
+    "description": "Multi-algorithm optimizer for audio signal processing enhancement using genetic algorithms, particle swarm optimization, differential evolution, and SLSQP with automatic algorithm selection and real-time visualization.",
+    "domain": "audio_processing",
+    "tags": [
+      "audio",
+      "signal_processing",
+      "optimization",
+      "genetic_algorithm",
+      "particle_swarm",
+      "differential_evolution",
+      "slsqp",
+      "multi_objective",
+      "visualization",
+      "automatic_selection"
+    ],
+    "difficulty": "intermediate",
+    "optimizer_type": "metaheuristic"
+  },
+  "parameters": {
+    "algorithm": {
+      "type": "string",
+      "default": "auto",
+      "options": ["auto", "genetic", "pso", "differential_evolution", "slsqp"],
+      "description": "Optimization algorithm to use (auto for automatic selection)"
+    },
+    "max_iterations": {
+      "type": "integer",
+      "default": 1000,
+      "min": 10,
+      "max": 10000,
+      "description": "Maximum number of optimization iterations"
+    },
+    "population_size": {
+      "type": "integer",
+      "default": 50,
+      "min": 10,
+      "max": 200,
+      "description": "Population size for population-based algorithms"
+    },
+    "tolerance": {
+      "type": "number",
+      "default": 1e-6,
+      "min": 1e-12,
+      "max": 1e-2,
+      "description": "Convergence tolerance for optimization"
+    },
+    "time_limit": {
+      "type": "number",
+      "default": 120.0,
+      "min": 10.0,
+      "max": 3600.0,
+      "description": "Maximum optimization time in seconds"
+    },
+    "random_seed": {
+      "type": "integer",
+      "default": 42,
+      "min": 0,
+      "max": 2147483647,
+      "description": "Random seed for reproducible results"
+    },
+    "create_plots": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to create visualization plots during optimization"
+    },
+    "convergence_window": {
+      "type": "integer",
+      "default": 50,
+      "min": 10,
+      "max": 500,
+      "description": "Window size for convergence detection"
+    }
+  }
+}

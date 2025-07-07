@@ -1,0 +1,167 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "SchoolResourceAllocationProblem",
+  "default_params": {
+    "csv_data": null,
+    "dataset_content": null,
+    "teachers_data": null,
+    "classrooms_data": null,
+    "subjects_data": null,
+    "time_slots_data": null,
+    "conflict_penalty": 1000.0,
+    "cost_weight": 0.3,
+    "compatibility_weight": 0.4,
+    "utilization_weight": 0.3
+  },
+  "metadata": {
+    "name": "School Resource Allocation Problem",
+    "description": "Optimize teacher-subject-classroom-timeslot assignments to minimize conflicts and costs while maximizing educational quality and resource utilization. Perfect for schools to create efficient schedules.",
+    "version": "1.0.0",
+    "author": "Qubots Framework",
+    "tags": ["scheduling", "resource_allocation", "education", "optimization", "timetabling", "school_management"],
+    "problem_type": "combinatorial",
+    "objective_type": "minimize",
+    "difficulty_level": "advanced",
+    "domain": "education"
+  },
+  "parameters": {
+    "csv_data": {
+      "type": "string",
+      "description": "CSV data containing comprehensive school information (teachers, classrooms, subjects, time slots)",
+      "default": null,
+      "optional": true
+    },
+    "dataset_content": {
+      "type": "string", 
+      "description": "Pre-loaded dataset content from Rastion platform",
+      "default": null,
+      "optional": true
+    },
+    "teachers_data": {
+      "type": "string",
+      "description": "CSV data containing teacher information (teacher_id, name, subjects, max_hours_per_day, experience_level, hourly_cost)",
+      "default": null,
+      "optional": true
+    },
+    "classrooms_data": {
+      "type": "string",
+      "description": "CSV data containing classroom information (room_id, name, capacity, room_type, hourly_cost)",
+      "default": null,
+      "optional": true
+    },
+    "subjects_data": {
+      "type": "string",
+      "description": "CSV data containing subject information (subject_id, name, required_hours_per_week, max_class_size, required_room_type, priority)",
+      "default": null,
+      "optional": true
+    },
+    "time_slots_data": {
+      "type": "string",
+      "description": "CSV data containing time slot information (slot_id, day, start_time, end_time)",
+      "default": null,
+      "optional": true
+    },
+    "conflict_penalty": {
+      "type": "number",
+      "description": "Penalty cost for each scheduling conflict (teacher/room double-booking, unqualified assignments)",
+      "default": 1000.0,
+      "min": 0,
+      "max": 10000
+    },
+    "cost_weight": {
+      "type": "number",
+      "description": "Weight for cost minimization objective (teacher + classroom costs)",
+      "default": 0.3,
+      "min": 0,
+      "max": 1
+    },
+    "compatibility_weight": {
+      "type": "number",
+      "description": "Weight for teacher-subject compatibility maximization",
+      "default": 0.4,
+      "min": 0,
+      "max": 1
+    },
+    "utilization_weight": {
+      "type": "number",
+      "description": "Weight for resource utilization maximization",
+      "default": 0.3,
+      "min": 0,
+      "max": 1
+    }
+  },
+  "solution_format": {
+    "type": "list",
+    "description": "List of Assignment objects representing the complete school schedule",
+    "structure": {
+      "assignment": {
+        "teacher_id": "string - ID of assigned teacher",
+        "subject_id": "string - ID of subject being taught",
+        "room_id": "string - ID of assigned classroom",
+        "time_slot_id": "integer - ID of time slot",
+        "student_count": "integer - Number of students in class"
+      }
+    },
+    "example": [
+      {
+        "teacher_id": "T001",
+        "subject_id": "S001",
+        "room_id": "R101",
+        "time_slot_id": 0,
+        "student_count": 25
+      }
+    ]
+  },
+  "constraints": [
+    "No teacher double-booking (teacher can only be in one place at a time)",
+    "No room double-booking (room can only host one class at a time)",
+    "Teacher qualification requirements (teacher must be qualified for assigned subject)",
+    "Room type requirements (subject must be taught in appropriate room type)",
+    "Room capacity constraints (class size cannot exceed room capacity)",
+    "Subject hour requirements (each subject must receive required weekly hours)",
+    "Teacher workload limits (respect max hours per day/week)"
+  ],
+  "objectives": [
+    {
+      "name": "Minimize Conflicts",
+      "description": "Eliminate scheduling conflicts and constraint violations",
+      "type": "hard_constraint",
+      "weight": "penalty_based"
+    },
+    {
+      "name": "Minimize Costs",
+      "description": "Reduce total teacher and classroom costs",
+      "type": "minimize",
+      "weight": "cost_weight"
+    },
+    {
+      "name": "Maximize Compatibility",
+      "description": "Assign experienced teachers to subjects they're qualified for",
+      "type": "maximize",
+      "weight": "compatibility_weight"
+    },
+    {
+      "name": "Maximize Utilization",
+      "description": "Efficiently use available teachers and classrooms",
+      "type": "maximize",
+      "weight": "utilization_weight"
+    }
+  ],
+  "applications": [
+    "School timetable generation",
+    "Teacher workload optimization",
+    "Classroom allocation planning",
+    "Resource utilization analysis",
+    "Educational quality improvement",
+    "Cost-effective scheduling"
+  ],
+  "compatible_optimizers": [
+    "Genetic algorithms",
+    "Simulated annealing", 
+    "Constraint programming",
+    "Integer linear programming",
+    "Local search algorithms",
+    "Multi-objective optimizers"
+  ]
+}

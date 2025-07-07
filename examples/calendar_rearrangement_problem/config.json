@@ -1,0 +1,75 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "CalendarRearrangementProblem",
+  "default_params": {
+    "target_day_off": "Wednesday",
+    "available_days": ["Monday", "Tuesday", "Thursday", "Friday"],
+    "max_hours_per_day": 8.0,
+    "rescheduling_cost_weight": 1.0,
+    "priority_weight": 2.0,
+    "csv_data": null,
+    "csv_file_path": null
+  },
+  "metadata": {
+    "name": "Calendar Rearrangement Problem",
+    "description": "Optimize meeting rearrangement to free up a specific day while respecting constraints like meeting durations, participant availability, and priorities. Minimizes disruption cost while ensuring feasible scheduling.",
+    "domain": "scheduling",
+    "tags": [
+      "calendar",
+      "scheduling",
+      "meetings",
+      "optimization",
+      "rearrangement",
+      "csv",
+      "combinatorial",
+      "constraints"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "combinatorial"
+  },
+  "parameters": {
+    "target_day_off": {
+      "type": "string",
+      "default": "Wednesday",
+      "description": "Day of the week to free up from meetings",
+      "options": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+    },
+    "available_days": {
+      "type": "array",
+      "default": ["Monday", "Tuesday", "Thursday", "Friday"],
+      "description": "List of available days for rescheduling meetings"
+    },
+    "max_hours_per_day": {
+      "type": "number",
+      "default": 8.0,
+      "min": 1.0,
+      "max": 12.0,
+      "description": "Maximum meeting hours allowed per day"
+    },
+    "rescheduling_cost_weight": {
+      "type": "number",
+      "default": 1.0,
+      "min": 0.1,
+      "max": 10.0,
+      "description": "Weight for base rescheduling cost (higher = more penalty for moving meetings)"
+    },
+    "priority_weight": {
+      "type": "number",
+      "default": 2.0,
+      "min": 0.1,
+      "max": 10.0,
+      "description": "Weight for priority considerations (higher = more penalty for moving high-priority meetings)"
+    },
+    "csv_data": {
+      "type": "string",
+      "default": null,
+      "description": "CSV content as string with columns: meeting_id, meeting_name, duration_hours, priority, current_day, flexible, participants"
+    },
+    "csv_file_path": {
+      "type": "string",
+      "default": null,
+      "description": "Path to CSV file with meeting data (alternative to csv_data)"
+    }
+  }
+}

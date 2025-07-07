@@ -1,0 +1,53 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "ORToolsCalendarOptimizer",
+  "default_params": {
+    "solver_name": "SCIP",
+    "time_limit": 300.0
+  },
+  "metadata": {
+    "name": "OR-Tools Calendar Optimizer",
+    "description": "Integer programming optimizer for calendar rearrangement using Google OR-Tools. Provides optimal solutions for meeting scheduling with comprehensive visualization and analysis.",
+    "domain": "scheduling",
+    "tags": [
+      "calendar",
+      "scheduling",
+      "integer_programming",
+      "or-tools",
+      "optimization",
+      "meetings",
+      "exact",
+      "visualization"
+    ],
+    "difficulty": "intermediate",
+    "optimizer_type": "exact",
+    "optimizer_family": "linear_programming"
+  },
+  "parameters": {
+    "solver_name": {
+      "type": "string",
+      "default": "SCIP",
+      "description": "OR-Tools solver to use for optimization",
+      "options": ["SCIP", "CBC", "GUROBI", "CPLEX"]
+    },
+    "time_limit": {
+      "type": "number",
+      "default": 300.0,
+      "min": 1.0,
+      "max": 3600.0,
+      "description": "Maximum solving time in seconds"
+    }
+  },
+  "requirements": [
+    "ortools>=9.0.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "pandas>=1.3.0",
+    "numpy>=1.20.0"
+  ],
+  "compatible_problems": [
+    "calendar_rearrangement_problem",
+    "scheduling_problem"
+  ]
+}

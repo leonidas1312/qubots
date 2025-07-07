@@ -1,0 +1,101 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "RDKitMolecularOptimizer",
+  "default_params": {
+    "force_field": "MMFF94",
+    "num_conformers": 100,
+    "max_iterations": 1000,
+    "energy_tolerance": 1e-6,
+    "rmsd_threshold": 0.5,
+    "random_seed": 42,
+    "use_random_coords": true,
+    "optimize_conformers": true,
+    "prune_rms_thresh": 0.1,
+    "create_plots": true
+  },
+  "parameters": {
+    "force_field": {
+      "type": "string",
+      "default": "MMFF94",
+      "options": ["MMFF94", "UFF"],
+      "description": "Force field for energy calculations and optimization"
+    },
+    "num_conformers": {
+      "type": "integer",
+      "default": 100,
+      "min": 10,
+      "max": 1000,
+      "description": "Number of conformers to generate"
+    },
+    "max_iterations": {
+      "type": "integer",
+      "default": 1000,
+      "min": 100,
+      "max": 10000,
+      "description": "Maximum optimization iterations per conformer"
+    },
+    "energy_tolerance": {
+      "type": "number",
+      "default": 1e-6,
+      "min": 1e-12,
+      "max": 1e-3,
+      "description": "Energy convergence tolerance"
+    },
+    "rmsd_threshold": {
+      "type": "number",
+      "default": 0.5,
+      "min": 0.1,
+      "max": 2.0,
+      "description": "RMSD threshold for conformer clustering"
+    },
+    "random_seed": {
+      "type": "integer",
+      "default": 42,
+      "min": 1,
+      "max": 10000,
+      "description": "Random seed for reproducibility"
+    },
+    "use_random_coords": {
+      "type": "boolean",
+      "default": true,
+      "description": "Use random initial coordinates for conformer generation"
+    },
+    "optimize_conformers": {
+      "type": "boolean",
+      "default": true,
+      "description": "Optimize generated conformers with force field"
+    },
+    "prune_rms_thresh": {
+      "type": "number",
+      "default": 0.1,
+      "min": 0.01,
+      "max": 1.0,
+      "description": "RMSD threshold for pruning similar conformers"
+    },
+    "create_plots": {
+      "type": "boolean",
+      "default": true,
+      "description": "Create visualization plots after optimization"
+    }
+  },
+  "metadata": {
+    "name": "RDKit Molecular Optimizer",
+    "description": "RDKit-based molecular conformation optimizer using force fields (MMFF94/UFF) and conformational sampling with ETKDG algorithm",
+    "domain": "chemistry",
+    "tags": [
+      "rdkit",
+      "molecular_dynamics",
+      "force_field",
+      "conformational_sampling",
+      "MMFF94",
+      "UFF",
+      "ETKDG",
+      "chemistry",
+      "optimization"
+    ],
+    "difficulty": "intermediate",
+    "optimizer_type": "heuristic",
+    "dependencies": ["rdkit"]
+  }
+}

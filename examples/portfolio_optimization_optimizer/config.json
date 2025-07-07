@@ -1,0 +1,85 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "PortfolioOptimizationOptimizer",
+  "default_params": {
+    "algorithm": "auto",
+    "max_iterations": 1000,
+    "tolerance": 1e-8,
+    "time_limit": 60.0,
+    "random_seed": 42,
+    "use_bounds": true,
+    "use_constraints": true,
+    "create_plots": true
+  },
+  "metadata": {
+    "name": "Portfolio Optimization Optimizer",
+    "description": "Multi-algorithm portfolio optimizer using SLSQP, Differential Evolution, and Trust-Region methods for robust Markowitz portfolio optimization with automatic algorithm selection and visualization.",
+    "domain": "finance",
+    "tags": [
+      "portfolio",
+      "markowitz",
+      "finance",
+      "optimization",
+      "scipy",
+      "slsqp",
+      "differential_evolution",
+      "trust_region",
+      "visualization",
+      "matplotlib"
+    ],
+    "difficulty": "intermediate",
+    "optimizer_type": "hybrid"
+  },
+  "parameters": {
+    "algorithm": {
+      "type": "string",
+      "default": "auto",
+      "options": ["auto", "slsqp", "differential_evolution", "trust-constr"],
+      "description": "Optimization algorithm to use (auto selects best based on problem size)"
+    },
+    "max_iterations": {
+      "type": "integer",
+      "default": 1000,
+      "min": 10,
+      "max": 10000,
+      "description": "Maximum number of optimization iterations"
+    },
+    "tolerance": {
+      "type": "number",
+      "default": 1e-8,
+      "min": 1e-12,
+      "max": 1e-3,
+      "description": "Convergence tolerance for optimization"
+    },
+    "time_limit": {
+      "type": "number",
+      "default": 60.0,
+      "min": 1.0,
+      "max": 3600.0,
+      "description": "Maximum optimization time in seconds"
+    },
+    "random_seed": {
+      "type": "integer",
+      "default": 42,
+      "min": 0,
+      "max": 999999,
+      "description": "Random seed for reproducible results"
+    },
+    "use_bounds": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to enforce variable bounds (0 <= weight <= 1)"
+    },
+    "use_constraints": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to use explicit constraints (recommended)"
+    },
+    "create_plots": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to create helpful visualization plots after optimization"
+    }
+  }
+}

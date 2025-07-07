@@ -1,0 +1,11 @@
+meeting_id,meeting_name,duration_hours,priority,current_day,flexible,participants
+M1,Team Check-in,0.5,3,Monday,True,5
+M2,Project Update,1.0,4,Monday,True,3
+M3,Client Call,1.0,5,Tuesday,False,2
+M4,Design Review,1.5,3,Tuesday,True,4
+M5,Weekly Planning,1.0,3,Wednesday,True,6
+M6,Mentoring Session,0.5,2,Wednesday,True,2
+M7,Documentation Review,1.0,2,Wednesday,True,3
+M8,Stakeholder Update,0.5,4,Thursday,True,8
+M9,Technical Discussion,1.0,3,Thursday,True,4
+M10,Team Lunch,1.0,1,Friday,True,8

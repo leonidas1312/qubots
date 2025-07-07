@@ -1,0 +1,92 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "ORToolsSupplyChainOptimizer",
+  "default_params": {
+    "solver_name": "SCIP",
+    "time_limit": 300.0
+  },
+  "metadata": {
+    "name": "OR-Tools Supply Chain Optimizer",
+    "description": "Linear programming optimizer for supply chain networks using Google OR-Tools with comprehensive visualization",
+    "version": "1.0.0",
+    "author": "Qubots Framework",
+    "tags": ["linear_programming", "supply_chain", "ortools", "exact", "optimal", "visualization"],
+    "optimizer_type": "exact",
+    "optimizer_family": "linear_programming"
+  },
+  "parameters": {
+    "solver_name": {
+      "type": "string",
+      "description": "Solver to use for optimization",
+      "default": "SCIP",
+      "options": ["SCIP", "GLOP", "CBC", "GUROBI", "CPLEX"],
+      "optional": true
+    },
+    "time_limit": {
+      "type": "float",
+      "description": "Maximum solving time in seconds",
+      "default": 300.0,
+      "min": 1.0,
+      "max": 3600.0,
+      "optional": true
+    }
+  },
+  "requirements": {
+    "python_packages": [
+      "ortools>=9.0.0",
+      "matplotlib>=3.5.0",
+      "seaborn>=0.11.0",
+      "networkx>=2.6.0",
+      "numpy>=1.21.0"
+    ],
+    "system_requirements": [],
+    "optional_packages": []
+  },
+  "performance": {
+    "time_complexity": "Polynomial for LP, Exponential for MILP",
+    "space_complexity": "O(variables + constraints)",
+    "scalability": "Excellent for medium to large problems",
+    "deterministic": true,
+    "parallel_capable": true
+  },
+  "problem_compatibility": {
+    "problem_types": ["mixed_integer", "linear", "network_flow"],
+    "objective_types": ["minimize", "maximize"],
+    "constraint_types": ["linear", "capacity", "flow_balance", "binary"],
+    "variable_types": ["continuous", "binary", "integer"]
+  },
+  "solver_features": {
+    "guarantees_optimality": true,
+    "supports_warm_start": false,
+    "supports_callbacks": true,
+    "supports_cuts": true,
+    "supports_presolve": true,
+    "supports_parallel": true
+  },
+  "visualization": {
+    "network_flow_diagram": true,
+    "cost_breakdown_chart": true,
+    "capacity_utilization_chart": true,
+    "geographic_layout": true,
+    "flow_distribution_histogram": true,
+    "solution_summary": true
+  },
+  "examples": [
+    {
+      "name": "Basic Supply Chain Optimization",
+      "description": "Optimize a simple supply chain network with default parameters",
+      "code": "optimizer = ORToolsSupplyChainOptimizer()\nresult = optimizer.optimize(problem)"
+    },
+    {
+      "name": "Custom Solver Configuration",
+      "description": "Use GLOP solver with custom time limit",
+      "code": "optimizer = ORToolsSupplyChainOptimizer(solver_name='GLOP', time_limit=120.0)\nresult = optimizer.optimize(problem)"
+    },
+    {
+      "name": "High-Performance Solving",
+      "description": "Use SCIP solver for complex mixed-integer problems",
+      "code": "optimizer = ORToolsSupplyChainOptimizer(solver_name='SCIP', time_limit=600.0)\nresult = optimizer.optimize(problem)"
+    }
+  ]
+}

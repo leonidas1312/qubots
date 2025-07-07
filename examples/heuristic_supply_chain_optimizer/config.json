@@ -1,0 +1,87 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "HeuristicSupplyChainOptimizer",
+  "default_params": {
+    "max_iterations": 1000,
+    "local_search_iterations": 100,
+    "perturbation_strength": 0.2,
+    "improvement_threshold": 0.01,
+    "random_seed": null
+  },
+  "metadata": {
+    "name": "Heuristic Supply Chain Optimizer",
+    "description": "Greedy construction with local search for fast supply chain optimization",
+    "version": "1.0.0",
+    "author": "Qubots Framework",
+    "tags": ["heuristic", "supply_chain", "greedy", "local_search", "fast", "visualization"],
+    "optimizer_type": "heuristic",
+    "optimizer_family": "local_search"
+  },
+  "parameters": {
+    "max_iterations": {
+      "type": "integer",
+      "description": "Maximum number of main optimization iterations",
+      "default": 1000,
+      "min": 10,
+      "max": 10000,
+      "optional": true
+    },
+    "local_search_iterations": {
+      "type": "integer",
+      "description": "Number of local search iterations per main iteration",
+      "default": 100,
+      "min": 10,
+      "max": 1000,
+      "optional": true
+    },
+    "perturbation_strength": {
+      "type": "float",
+      "description": "Strength of perturbation to escape local optima (0.0 to 1.0)",
+      "default": 0.2,
+      "min": 0.0,
+      "max": 1.0,
+      "optional": true
+    },
+    "improvement_threshold": {
+      "type": "float",
+      "description": "Minimum improvement threshold to continue search",
+      "default": 0.01,
+      "min": 0.001,
+      "max": 0.1,
+      "optional": true
+    },
+    "random_seed": {
+      "type": "integer",
+      "description": "Random seed for reproducible results",
+      "default": null,
+      "optional": true
+    }
+  },
+  "requirements": {
+    "python_packages": ["matplotlib", "seaborn", "networkx", "numpy"],
+    "problem_types": ["mixed_integer", "combinatorial"],
+    "solution_format": "dict"
+  },
+  "features": [
+    "Fast execution for large-scale problems",
+    "High-quality solutions close to optimal",
+    "Adaptive parameter tuning during search",
+    "Multiple neighborhood operators",
+    "Perturbation for escaping local optima",
+    "Comprehensive search visualization",
+    "Convergence tracking and analysis"
+  ],
+  "performance": {
+    "complexity": "O(n * m * k) where n=iterations, m=local_search_iterations, k=problem_size",
+    "scalability": "Excellent for large-scale problems",
+    "memory_usage": "Low to moderate",
+    "typical_runtime": "Seconds to minutes depending on problem size and iterations"
+  },
+  "algorithm_phases": [
+    "Greedy Construction: Build initial solution using cost-based heuristics",
+    "Local Search: Improve solution through neighborhood exploration",
+    "Perturbation: Escape local optima through strategic modifications",
+    "Convergence Analysis: Track and visualize optimization progress"
+  ]
+}

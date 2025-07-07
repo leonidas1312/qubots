@@ -3,27 +3,13 @@
   "entry_point": "qubot",
   "class_name": "DatasetAwareTSPProblem",
   "default_params": {
-    "dataset_content": null,
-    "dataset_id": "id123-123",
-    "auth_token": "xyzqwer"
+    "dataset_content": null
   },
   "parameters": {
     "dataset_content": {
       "type": "string",
       "default": null,
       "description": "Pre-loaded dataset content (preferred - avoids redundant API calls)",
-      "required": false
-    },
-    "dataset_id": {
-      "type": "string",
-      "default": null,
-      "description": "Rastion platform dataset ID for TSP instance (fallback when dataset_content not provided)",
-      "required": false
-    },
-    "auth_token": {
-      "type": "string",
-      "default": null,
-      "description": "Rastion platform authentication token (fallback when dataset_content not provided)",
       "required": false
     }
   },
@@ -38,24 +24,10 @@
       "optimization",
       "combinatorial",
       "permutation",
-      "tsplib",
-      "dataset_aware",
-      "rastion",
-      "workflow_automation",
-      "platform_only"
+      "tsplib"
     ],
-    "difficulty": "intermediate",
     "problem_type": "combinatorial",
     "objective_type": "minimize",
-    "features": [
-      "platform_dataset_integration",
-      "tsplib_support",
-      "multiple_distance_types",
-      "coordinate_based",
-      "distance_matrix",
-      "solution_validation",
-      "neighbor_generation"
-    ],
     "supported_formats": [
       "tsplib",
       "coordinates",
@@ -72,32 +44,6 @@
   "requirements": [
     "numpy"
   ],
-  "examples": [
-    {
-      "name": "Small TSP Instance",
-      "description": "Load small TSP instance from Rastion platform",
-      "params": {
-        "dataset_id": "tsp_berlin52",
-        "auth_token": "your_rastion_token_here"
-      }
-    },
-    {
-      "name": "Medium TSP Instance",
-      "description": "Load medium TSP instance from Rastion platform",
-      "params": {
-        "dataset_id": "tsp_pr76",
-        "auth_token": "your_rastion_token_here"
-      }
-    },
-    {
-      "name": "Large TSP Instance",
-      "description": "Load large TSP instance from Rastion platform",
-      "params": {
-        "dataset_id": "tsp_kroA100",
-        "auth_token": "your_rastion_token_here"
-      }
-    }
-  ],
   "validation": {
     "solution_format": "permutation",
     "solution_length": "n_cities",
@@ -105,21 +51,6 @@
       "valid_permutation",
       "all_cities_visited",
       "no_repeated_cities"
-    ],
-    "dataset_requirements": [
-      "dataset_content_or_platform_params_required",
-      "tsplib_format_supported",
-      "coordinate_or_matrix_data"
     ]
-  },
-  "performance": {
-    "evaluation_complexity": "O(n)",
-    "memory_complexity": "O(n²)",
-    "typical_sizes": {
-      "small": "≤50 cities",
-      "medium": "51-200 cities",
-      "large": "201-1000 cities"
-    },
-    "dataset_loading": "lazy_loading_supported"
   }
 }

@@ -1,0 +1,47 @@
+furniture_id,name,width_cm,depth_cm,height_cm,type,can_rotate,wall_required,clearance_front_cm,clearance_back_cm,clearance_sides_cm,aesthetic_weight,functional_weight,cost_usd,color,material
+sofa_3seat,3-Seat Sofa,210,90,85,seating,true,false,120,30,60,0.9,0.95,1200,gray,fabric
+sofa_2seat,2-Seat Loveseat,150,90,85,seating,true,false,120,30,60,0.85,0.9,800,beige,fabric
+armchair_1,Accent Armchair,80,85,95,seating,true,false,100,30,50,0.8,0.8,450,navy,fabric
+armchair_2,Recliner Chair,90,95,105,seating,true,false,120,40,50,0.75,0.85,650,brown,leather
+coffee_table_rect,Rectangular Coffee Table,120,60,45,table,true,false,60,60,60,0.7,0.9,350,walnut,wood
+coffee_table_round,Round Coffee Table,90,90,45,table,false,false,60,60,60,0.75,0.85,400,oak,wood
+side_table_1,Side Table Small,40,40,55,table,false,false,30,30,30,0.6,0.7,150,white,wood
+side_table_2,Side Table Large,50,50,60,table,false,false,30,30,30,0.65,0.75,200,black,metal
+tv_stand_small,TV Stand Small,120,40,50,storage,false,true,150,20,40,0.8,0.95,300,black,wood
+tv_stand_large,TV Stand Large,180,45,55,storage,false,true,200,20,40,0.85,0.95,500,walnut,wood
+bookshelf_tall,Tall Bookshelf,80,30,180,storage,false,true,80,20,30,0.7,0.8,400,white,wood
+bookshelf_wide,Wide Bookshelf,150,35,90,storage,false,true,80,20,30,0.75,0.8,350,oak,wood
+console_table,Console Table,140,35,80,storage,false,true,60,20,30,0.7,0.75,280,gray,wood
+floor_lamp_1,Arc Floor Lamp,40,40,180,lighting,false,false,30,30,30,0.6,0.7,180,brass,metal
+floor_lamp_2,Tripod Floor Lamp,50,50,160,lighting,false,false,30,30,30,0.65,0.7,220,black,wood
+table_lamp_1,Table Lamp Small,25,25,45,lighting,false,false,0,0,0,0.5,0.6,80,white,ceramic
+table_lamp_2,Table Lamp Large,30,30,55,lighting,false,false,0,0,0,0.55,0.65,120,blue,ceramic
+plant_large,Large Plant,50,50,120,decor,false,false,40,40,40,0.6,0.5,100,green,natural
+plant_medium,Medium Plant,35,35,80,decor,false,false,30,30,30,0.55,0.45,60,green,natural
+plant_small,Small Plant,25,25,50,decor,false,false,20,20,20,0.5,0.4,35,green,natural
+ottoman_square,Square Ottoman,60,60,45,seating,false,false,40,40,40,0.6,0.7,200,gray,fabric
+ottoman_round,Round Ottoman,70,70,40,seating,false,false,40,40,40,0.65,0.7,250,beige,fabric
+rug_large,Large Area Rug,240,180,1,decor,true,false,0,0,0,0.8,0.6,400,multicolor,textile
+rug_medium,Medium Area Rug,180,120,1,decor,true,false,0,0,0,0.75,0.55,250,blue,textile
+rug_small,Small Accent Rug,120,90,1,decor,true,false,0,0,0,0.7,0.5,150,red,textile
+tv_65inch,65-inch TV,145,8,84,electronics,false,true,250,0,30,0.9,1.0,1200,black,plastic
+tv_55inch,55-inch TV,123,7,71,electronics,false,true,220,0,30,0.85,0.95,800,black,plastic
+tv_43inch,43-inch TV,97,6,56,electronics,false,true,180,0,30,0.8,0.9,500,black,plastic
+gaming_console,Gaming Console,40,25,10,electronics,false,false,30,30,20,0.6,0.8,400,black,plastic
+sound_system,Sound System,60,30,15,electronics,false,false,40,30,20,0.7,0.85,350,black,plastic
+decorative_bowl,Decorative Bowl,30,30,12,decor,false,false,0,0,0,0.4,0.2,45,gold,ceramic
+picture_frame_large,Large Picture Frame,80,5,60,decor,false,true,0,0,0,0.6,0.3,120,black,wood
+picture_frame_medium,Medium Picture Frame,50,5,40,decor,false,true,0,0,0,0.55,0.25,80,white,wood
+mirror_large,Large Wall Mirror,90,5,120,decor,false,true,0,0,0,0.7,0.4,200,silver,glass
+mirror_medium,Medium Wall Mirror,60,5,80,decor,false,true,0,0,0,0.65,0.35,130,gold,glass
+throw_pillow_1,Throw Pillow Set,45,45,15,decor,false,false,0,0,0,0.5,0.3,60,blue,fabric
+throw_pillow_2,Accent Pillow Set,40,40,12,decor,false,false,0,0,0,0.45,0.25,45,yellow,fabric
+throw_blanket,Throw Blanket,150,100,5,decor,false,false,0,0,0,0.6,0.4,80,gray,wool
+storage_basket,Storage Basket,40,30,35,storage,false,false,20,20,20,0.5,0.6,55,brown,wicker
+magazine_rack,Magazine Rack,35,25,60,storage,false,false,30,30,20,0.4,0.5,75,black,metal
+coat_rack,Coat Rack,50,50,175,storage,false,false,40,40,40,0.5,0.6,90,wood,wood
+bar_cart,Bar Cart,70,40,85,storage,true,false,50,30,30,0.7,0.75,280,gold,metal
+desk_small,Small Desk,100,50,75,table,false,true,100,30,40,0.6,0.8,250,white,wood
+desk_chair,Desk Chair,60,60,95,seating,true,false,80,30,40,0.6,0.85,200,black,fabric
+filing_cabinet,Filing Cabinet,40,60,70,storage,false,false,40,30,30,0.5,0.7,180,gray,metal
+printer_stand,Printer Stand,60,45,65,storage,false,false,50,30,30,0.4,0.6,120,black,wood

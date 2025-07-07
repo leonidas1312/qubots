@@ -1,0 +1,26 @@
+subject_id,name,required_hours_per_week,min_class_size,max_class_size,required_room_type,required_equipment,priority
+S001,Mathematics,5,8,30,standard,"whiteboard,projector,calculator_sets",5
+S002,English,4,10,35,standard,"whiteboard,projector",5
+S003,Physics,3,8,26,lab,"physics_equipment,safety_equipment",4
+S004,Chemistry,3,8,24,lab,"chemical_storage,fume_hoods,safety_equipment",4
+S005,Biology,3,8,26,lab,"microscopes,specimens,safety_equipment",4
+S006,Computer Science,2,10,32,computer,"computers,software_licenses",4
+S007,History,3,12,36,standard,"whiteboard,projector,maps",3
+S008,Geography,2,12,34,standard,"whiteboard,projector,maps,globes",3
+S009,Spanish,3,8,28,language,"audio_equipment,language_software",3
+S010,French,2,8,28,language,"audio_equipment,language_software",3
+S011,Art,2,6,20,art,"easels,art_supplies",2
+S012,Music,2,8,25,music,"piano,instruments,sound_system",2
+S013,Physical Education,3,15,100,gym,"sports_equipment",4
+S014,Drama,1,8,40,theater,"stage,lighting,sound_system",2
+S015,Advanced Mathematics,2,5,20,standard,"whiteboard,projector,advanced_calculators",4
+S016,Advanced Physics,2,5,20,lab,"advanced_physics_equipment,safety_equipment",4
+S017,Literature,2,8,30,standard,"whiteboard,projector,library_access",3
+S018,Writing,2,8,25,standard,"whiteboard,projector,computers",3
+S019,Economics,2,10,30,standard,"whiteboard,projector",3
+S020,Psychology,2,8,25,standard,"whiteboard,projector",3
+S021,Environmental Science,2,8,25,lab,"lab_equipment,outdoor_access",3
+S022,Statistics,2,8,25,computer,"computers,statistical_software",3
+S023,Business Studies,2,10,30,standard,"whiteboard,projector,computers",3
+S024,Health Education,1,15,35,standard,"whiteboard,projector,health_materials",3
+S025,Study Hall,5,1,60,study,"quiet_environment",1

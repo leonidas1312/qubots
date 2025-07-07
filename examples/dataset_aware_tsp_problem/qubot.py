@@ -34,8 +34,6 @@ class DatasetAwareTSPProblem(BaseProblem):
 
     def __init__(self,
                  dataset_content: str = None,
-                 dataset_id: str = None,
-                 auth_token: str = None,
                  **kwargs):
         """
         Initialize TSP problem with dataset input.
@@ -61,8 +59,6 @@ class DatasetAwareTSPProblem(BaseProblem):
 
         # Store dataset parameters
         self.dataset_content = dataset_content
-        self.dataset_id = dataset_id
-        self.auth_token = auth_token
 
         # Initialize base problem with dataset capabilities
         super().__init__(metadata=metadata, **kwargs)
@@ -86,21 +82,6 @@ class DatasetAwareTSPProblem(BaseProblem):
             if self.dataset_content:
                 print(f"✅ Using pre-loaded dataset content ({len(self.dataset_content)} characters)")
                 dataset_content = self.dataset_content
-
-            # Option 2: Fallback to loading from platform (less efficient)
-            elif self.dataset_id and self.auth_token:
-                print(f"📡 Loading TSP dataset '{self.dataset_id}' from Rastion platform...")
-                dataset_content = autoLoad(
-                    dataset_id=self.dataset_id,
-                    rastion_token=self.auth_token,
-                )
-
-                if not dataset_content:
-                    raise ValueError(f"Failed to load dataset content for dataset_id: {self.dataset_id}")
-
-                print(f"✅ Successfully loaded dataset '{self.dataset_id}' ({len(dataset_content)} characters)")
-
-            # Option 3: No dataset provided
             else:
                 raise ValueError(
                     "Dataset input required. Provide either:\n"
@@ -261,12 +242,12 @@ class DatasetAwareTSPProblem(BaseProblem):
         """Return default metadata for Dataset-Aware TSP."""
         return ProblemMetadata(
             name="Dataset-Aware TSP Problem",
-            description="Traveling Salesman Problem with Rastion platform dataset integration",
+            description="Traveling Salesman Problem with efficient dataset integration",
             problem_type=ProblemType.COMBINATORIAL,
             objective_type=ObjectiveType.MINIMIZE,
             difficulty_level=DifficultyLevel.INTERMEDIATE,
             domain="routing",
-            tags={"tsp", "routing", "combinatorial", "dataset_aware", "rastion"},
+            tags={"tsp", "routing", "combinatorial"},
             author="Qubots Framework",
             version="3.0.0",
             dimension=getattr(self, 'n_cities', 0),
@@ -352,9 +333,16 @@ class DatasetAwareTSPProblem(BaseProblem):
             "edge_weight_format": self.edge_weight_format,
             "has_coordinates": bool(self.coordinates),
             "has_distance_matrix": bool(self.distance_matrix),
-            "dataset_id": self.dataset_id,
             "dataset_loaded": bool(self.distance_matrix or self.coordinates)
         }
 
         return info
 
+    def get_distance_matrix(self) -> List[List[float]]:
+        """
+        Get the distance matrix for this TSP instance.
+
+        Returns:
+            Distance matrix as list of lists
+        """
+        return self.distance_matrix

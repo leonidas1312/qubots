@@ -232,9 +232,9 @@ class RastionClient:
             print(f"   Uploading {file_path}...")
             self._upload_file_to_repo(username, repository_name, file_path, content)
 
-        repo_url = f"{self.gitea_api_base.replace('/api/v1', '')}/{username}/{repository_name}"
+        repo_url = f"https://rastion.com/{username}/{repository_name}"
         print(f"✅ Model uploaded successfully to {repo_url}")
-
+        
         return repo_url
 
     def _repository_exists(self, owner: str, repo_name: str) -> bool:

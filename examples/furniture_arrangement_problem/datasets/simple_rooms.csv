@@ -1,0 +1,4 @@
+room_id,name,width_cm,depth_cm,door_x_cm,door_y_cm,door_width_cm,window_1_wall,window_1_start_cm,window_1_end_cm,window_2_wall,window_2_start_cm,window_2_end_cm,electrical_outlets,room_type,description
+tiny_room,Tiny Room,300,250,0,100,70,north,100,200,,,,"[(50,50),(250,50),(50,200),(250,200)]",living_room,Very small room for testing
+small_room,Small Room,350,300,0,120,80,north,120,250,east,50,150,"[(50,50),(300,50),(50,250),(300,250)]",living_room,Small room for basic testing
+medium_room,Medium Room,400,350,0,150,80,north,150,300,south,100,200,"[(50,50),(350,50),(50,300),(350,300)]",living_room,Medium room for standard testing

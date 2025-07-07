@@ -1,0 +1,69 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "MolecularConformationProblem",
+  "default_params": {
+    "energy_tolerance": 0.1,
+    "angle_precision": 1.0,
+    "csv_data": null,
+    "csv_file_path": null
+  },
+  "metadata": {
+    "name": "Molecular Conformation Optimization Problem",
+    "description": "Find the lowest energy molecular conformation by optimizing dihedral angles. Reads molecular data from CSV files containing conformational energies, bond lengths, and energy components. Suitable for drug design, protein folding, and chemical structure optimization.",
+    "domain": "chemistry",
+    "tags": [
+      "molecular_dynamics",
+      "conformation",
+      "energy_minimization",
+      "chemistry",
+      "optimization",
+      "dihedral_angles",
+      "drug_design",
+      "protein_folding",
+      "csv",
+      "continuous"
+    ],
+    "difficulty": "intermediate",
+    "problem_type": "continuous"
+  },
+  "parameters": {
+    "energy_tolerance": {
+      "type": "number",
+      "default": 0.1,
+      "min": 0.001,
+      "max": 1.0,
+      "description": "Energy tolerance for convergence criteria (kcal/mol)"
+    },
+    "angle_precision": {
+      "type": "number",
+      "default": 1.0,
+      "min": 0.1,
+      "max": 10.0,
+      "description": "Precision for dihedral angle optimization (degrees)"
+    },
+    "csv_data": {
+      "type": "string",
+      "default": null,
+      "description": "CSV content as string with columns: dihedral_1, dihedral_2, dihedral_3, energy, bond_length_*, van_der_waals_energy, electrostatic_energy"
+    },
+    "csv_file_path": {
+      "type": "string",
+      "default": null,
+      "description": "Path to CSV file with molecular conformation data (alternative to csv_data)"
+    }
+  },
+  "data_format": {
+    "csv_data": {
+      "format": "CSV with molecular conformation data",
+      "description": "CSV file containing molecular conformations with columns for dihedral angles (dihedral_1, dihedral_2, etc.), total energy, bond lengths, and energy components (van_der_waals_energy, electrostatic_energy). Dihedral angles should be in degrees, energies in kcal/mol, and bond lengths in Angstroms.",
+      "required_columns": ["dihedral_1", "energy"],
+      "optional_columns": ["dihedral_2", "dihedral_3", "bond_length_*", "van_der_waals_energy", "electrostatic_energy"],
+      "example": "dihedral_1,dihedral_2,dihedral_3,energy,bond_length_C1_C2,van_der_waals_energy,electrostatic_energy\n90.0,90.0,0.0,0.4,1.54,-3.9,-1.4\n60.0,60.0,0.0,1.7,1.54,-3.4,-0.9"
+    }
+  },
+  "requirements": [
+    "numpy>=1.20.0",
+    "pandas>=1.3.0"
+  ]
+}

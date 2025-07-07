@@ -1,0 +1,11 @@
+room_id,name,width_cm,depth_cm,door_x_cm,door_y_cm,door_width_cm,window_1_wall,window_1_start_cm,window_1_end_cm,window_2_wall,window_2_start_cm,window_2_end_cm,electrical_outlets,room_type,description
+small_square,Small Square Living Room,350,350,0,150,80,north,100,250,east,50,200,"[(50,50),(300,50),(50,300),(300,300)]",living_room,Compact square living room ideal for apartments
+medium_rect,Medium Rectangular Living Room,450,350,0,150,80,north,150,350,south,100,250,"[(50,50),(400,50),(50,300),(400,300)]",living_room,Standard rectangular living room for small homes
+large_rect,Large Rectangular Living Room,550,400,0,180,90,north,200,450,south,150,350,"[(75,75),(475,75),(75,325),(475,325)]",living_room,Spacious rectangular living room for larger homes
+open_plan,Open Plan Living Area,600,500,550,200,100,north,250,500,east,100,300,"[(100,100),(500,100),(100,400),(500,400)]",living_room,Open concept living area with kitchen connection
+l_shaped,L-Shaped Living Room,500,400,0,150,80,north,200,400,west,100,250,"[(75,75),(425,75),(75,325),(425,325)]",living_room,L-shaped living room with dining nook
+narrow_long,Narrow Long Living Room,300,600,0,250,80,north,100,200,south,400,500,"[(50,50),(250,50),(50,550),(250,550)]",living_room,Long narrow living room typical in older homes
+studio_apt,Studio Apartment,400,300,0,120,70,north,150,300,east,50,150,"[(50,50),(350,50),(50,250),(350,250)]",studio,Studio apartment living area
+loft_style,Loft Style Living Room,700,500,650,200,120,north,300,600,south,200,450,"[(100,100),(600,100),(100,400),(600,400)]",loft,Industrial loft style living space
+family_room,Large Family Room,600,450,0,200,90,north,250,500,west,150,350,"[(100,100),(500,100),(100,350),(500,350)]",family_room,Large family room for entertaining
+cozy_cottage,Cozy Cottage Living Room,380,320,0,140,75,north,120,280,south,80,200,"[(60,60),(320,60),(60,260),(320,260)]",living_room,Charming cottage style living room

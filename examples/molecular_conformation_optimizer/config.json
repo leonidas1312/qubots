@@ -1,0 +1,115 @@
+{
+  "type": "optimizer",
+  "entry_point": "qubot",
+  "class_name": "MolecularConformationOptimizer",
+  "default_params": {
+    "initial_temperature": 100.0,
+    "final_temperature": 0.1,
+    "cooling_rate": 0.95,
+    "max_iterations": 10000,
+    "moves_per_temperature": 100,
+    "step_size": 15.0,
+    "adaptive_step_size": true,
+    "convergence_window": 500,
+    "energy_tolerance": 0.01
+  },
+  "metadata": {
+    "name": "Molecular Conformation Optimizer",
+    "description": "Simulated annealing optimizer specialized for molecular conformation problems. Uses chemistry-aware dihedral angle moves, adaptive temperature scheduling, and multiple move types for efficient exploration of conformational energy landscapes.",
+    "domain": "chemistry",
+    "tags": [
+      "simulated_annealing",
+      "molecular_dynamics",
+      "conformation",
+      "chemistry",
+      "dihedral_angles",
+      "energy_minimization",
+      "metaheuristic",
+      "optimization",
+      "drug_design",
+      "protein_folding"
+    ],
+    "difficulty": "intermediate",
+    "optimizer_type": "metaheuristic"
+  },
+  "parameters": {
+    "initial_temperature": {
+      "type": "number",
+      "default": 100.0,
+      "min": 1.0,
+      "max": 1000.0,
+      "description": "Starting temperature for simulated annealing (higher values allow more exploration)"
+    },
+    "final_temperature": {
+      "type": "number",
+      "default": 0.1,
+      "min": 0.001,
+      "max": 10.0,
+      "description": "Final temperature (stopping criterion for annealing)"
+    },
+    "cooling_rate": {
+      "type": "number",
+      "default": 0.95,
+      "min": 0.8,
+      "max": 0.999,
+      "description": "Temperature reduction factor per cooling step (0 < rate < 1)"
+    },
+    "max_iterations": {
+      "type": "integer",
+      "default": 10000,
+      "min": 100,
+      "max": 100000,
+      "description": "Maximum number of optimization iterations"
+    },
+    "moves_per_temperature": {
+      "type": "integer",
+      "default": 100,
+      "min": 10,
+      "max": 1000,
+      "description": "Number of moves attempted at each temperature level"
+    },
+    "step_size": {
+      "type": "number",
+      "default": 15.0,
+      "min": 1.0,
+      "max": 90.0,
+      "description": "Initial step size for dihedral angle perturbations (degrees)"
+    },
+    "adaptive_step_size": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to adapt step size based on acceptance rate"
+    },
+    "convergence_window": {
+      "type": "integer",
+      "default": 500,
+      "min": 50,
+      "max": 2000,
+      "description": "Window size for convergence detection (number of iterations)"
+    },
+    "energy_tolerance": {
+      "type": "number",
+      "default": 0.01,
+      "min": 0.001,
+      "max": 1.0,
+      "description": "Energy standard deviation tolerance for convergence (kcal/mol)"
+    }
+  },
+  "move_types": {
+    "single_angle": {
+      "description": "Modify a single dihedral angle",
+      "default_probability": 0.6
+    },
+    "coupled_angles": {
+      "description": "Modify two adjacent dihedral angles simultaneously",
+      "default_probability": 0.3
+    },
+    "random_walk": {
+      "description": "Small perturbations to all dihedral angles",
+      "default_probability": 0.1
+    }
+  },
+  "requirements": [
+    "numpy>=1.20.0"
+  ]
+}
