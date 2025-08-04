@@ -13,11 +13,12 @@ from pathlib import Path
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from .base_problem import BaseProblem
+from .config_manager import get_config
 
 class AutoProblem:
     """
     Enhanced problem loader with caching, and validation.
-    Clones/pulls repos from hub.rastion.com and instantiates problem classes.
+    Clones/pulls repos from configurable git hosting and instantiates problem classes.
     """
 
     @classmethod
@@ -25,15 +26,31 @@ class AutoProblem:
         cls,
         repo_id: str,
         revision: str = "main",
-        cache_dir: str = "~/.cache/rastion_hub",
+        cache_dir: Optional[str] = None,
         override_params: Optional[dict] = None,
         validate_metadata: bool = True,
         dataset: Optional[str] = None,
     ) -> BaseProblem:
-        cache = os.path.expanduser(cache_dir)
-        os.makedirs(cache, exist_ok=True)
+        # Use configured cache directory if not specified
+        if cache_dir is None:
+            cache_dir = get_config().get_cache_dir()
+        else:
+            cache_dir = os.path.expanduser(cache_dir)
 
-        path = cls._clone_or_pull(repo_id, revision, cache)
+        os.makedirs(cache_dir, exist_ok=True)
+
+        try:
+            path = cls._clone_or_pull(repo_id, revision, cache_dir)
+        except subprocess.CalledProcessError:
+            # If git clone fails and we're in local mode, try loading from local file path
+            if get_config().get_active_profile() == "local":
+                local_path = Path(repo_id)
+                if local_path.exists() and local_path.is_dir():
+                    path = str(local_path.resolve())
+                else:
+                    raise FileNotFoundError(f"Repository '{repo_id}' not found in Git and no local directory exists at '{local_path}'")
+            else:
+                raise
 
         # 1) Install requirements if any
         req = Path(path) / "requirements.txt"
@@ -129,10 +146,23 @@ class AutoProblem:
 
     @staticmethod
     def _clone_or_pull(repo_id: str, revision: str, cache_dir: str) -> str:
+        """
+        Clone or pull repository using configured git hosting.
+
+        Args:
+            repo_id: Repository ID in format "owner/repo"
+            revision: Git revision to checkout
+            cache_dir: Cache directory path
+
+        Returns:
+            Path to cloned repository
+        """
         import os
         owner, name = repo_id.split("/")
-        base = "https://hub.rastion.com"
-        url  = f"{base.rstrip('/')}/{owner}/{name}.git"
+
+        # Get git configuration from active profile
+        git_config = get_config().get_git_config()
+        url = git_config.get_clone_url(owner, name)
         dest = os.path.join(cache_dir, name)
 
         if not os.path.isdir(dest):

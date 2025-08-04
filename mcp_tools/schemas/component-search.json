@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Qubots Component Search",
+  "description": "Schema for searching optimization components",
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Search query string",
+      "maxLength": 200
+    },
+    "type": {
+      "type": "string",
+      "description": "Component type filter",
+      "enum": ["problem", "optimizer", "data"]
+    },
+    "domain": {
+      "type": "string",
+      "description": "Problem domain filter",
+      "enum": [
+        "finance", "routing", "scheduling", "logistics", 
+        "energy", "manufacturing", "healthcare", "research",
+        "general"
+      ]
+    },
+    "difficulty": {
+      "type": "string",
+      "description": "Difficulty level filter",
+      "enum": ["beginner", "intermediate", "advanced", "expert"]
+    },
+    "tags": {
+      "type": "array",
+      "description": "Tags to filter by",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10
+    },
+    "limit": {
+      "type": "integer",
+      "description": "Maximum number of results",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 10
+    },
+    "sort": {
+      "type": "string",
+      "description": "Sort order",
+      "enum": ["name", "rating", "downloads", "updated"],
+      "default": "rating"
+    },
+    "order": {
+      "type": "string",
+      "description": "Sort direction",
+      "enum": ["asc", "desc"],
+      "default": "desc"
+    }
+  },
+  "additionalProperties": false
+}

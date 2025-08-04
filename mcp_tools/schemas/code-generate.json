@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Qubots Code Generate",
+  "description": "Schema for generating code from workflow",
+  "type": "object",
+  "properties": {
+    "file": {
+      "type": "string",
+      "description": "Path to the workflow file",
+      "pattern": "^.*\\.json$"
+    },
+    "output": {
+      "type": "string",
+      "description": "Output file path for generated code"
+    },
+    "format": {
+      "type": "string",
+      "description": "Output format",
+      "enum": ["python", "json", "mcp"],
+      "default": "python"
+    },
+    "template": {
+      "type": "string",
+      "description": "Code generation template",
+      "enum": ["basic", "advanced", "jupyter", "script"],
+      "default": "basic"
+    },
+    "include_tests": {
+      "type": "boolean",
+      "description": "Include test code generation",
+      "default": false
+    },
+    "include_docs": {
+      "type": "boolean",
+      "description": "Include documentation generation",
+      "default": true
+    },
+    "optimize": {
+      "type": "boolean",
+      "description": "Optimize generated code",
+      "default": false
+    },
+    "mcp_compatible": {
+      "type": "boolean",
+      "description": "Generate MCP-compatible output",
+      "default": true
+    }
+  },
+  "required": ["file"],
+  "additionalProperties": false
+}

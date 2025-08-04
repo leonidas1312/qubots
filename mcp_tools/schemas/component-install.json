@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Qubots Component Install",
+  "description": "Schema for installing an optimization component",
+  "type": "object",
+  "properties": {
+    "component_id": {
+      "type": "string",
+      "description": "ID of the component to install",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "version": {
+      "type": "string",
+      "description": "Specific version to install",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "force": {
+      "type": "boolean",
+      "description": "Force reinstallation if already installed",
+      "default": false
+    },
+    "dependencies": {
+      "type": "boolean",
+      "description": "Install dependencies automatically",
+      "default": true
+    },
+    "target": {
+      "type": "string",
+      "description": "Target installation directory",
+      "default": "./components"
+    }
+  },
+  "required": ["component_id"],
+  "additionalProperties": false
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Qubots Workflow Execute",
+  "description": "Schema for executing an optimization workflow",
+  "type": "object",
+  "properties": {
+    "file": {
+      "type": "string",
+      "description": "Path to the workflow file to execute",
+      "pattern": "^.*\\.json$"
+    },
+    "timeout": {
+      "type": "integer",
+      "description": "Execution timeout in seconds",
+      "minimum": 1,
+      "maximum": 3600,
+      "default": 300
+    },
+    "output": {
+      "type": "string",
+      "description": "Output file for execution results",
+      "pattern": "^.*\\.json$"
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Override parameters for the workflow",
+      "additionalProperties": true
+    },
+    "dry_run": {
+      "type": "boolean",
+      "description": "Perform a dry run without actual execution",
+      "default": false
+    },
+    "verbose": {
+      "type": "boolean",
+      "description": "Enable verbose output",
+      "default": false
+    }
+  },
+  "required": ["file"],
+  "additionalProperties": false
+}
