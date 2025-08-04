@@ -1,149 +1,298 @@
-# Qubots: Modular Optimization Framework
+# Qubots: Visual Optimization Workflow Platform
 
 [![PyPI version](https://img.shields.io/pypi/v/qubots.svg)](https://pypi.org/project/qubots/)
 [![Build Status](https://github.com/leonidas1312/qubots/actions/workflows/publish.yml/badge.svg)](https://github.com/leonidas1312/qubots/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](./LICENSE)
 
-**Qubots** is a Python framework for building modular optimization solutions. It enables developers to create, share, and combine optimization problems and solvers through a modular component system.
+**Qubots** is a comprehensive optimization platform that combines visual workflow design with powerful code generation and AI agent integration. Create, share, and execute optimization workflows through an intuitive drag-and-drop interface or programmatically via Python and CLI tools.
 
-## Architecture Overview
+## 🎯 Key Features
+
+- **🎨 Visual Workflow Designer** - Drag-and-drop interface for building optimization workflows
+- **🧩 Modular Components** - Reusable problems and optimizers with automatic discovery
+- **🤖 AI Agent Integration** - MCP-compatible tools for seamless AI agent interaction
+- **⚡ Code Generation** - Automatic Python script generation from visual workflows
+- **🐳 Local Development** - Complete Docker-based development environment
+- **📊 Testing Framework** - Comprehensive validation and quality assurance
+- **🔧 CLI Tools** - Command-line interface for workflow and component management
+
+## 🏗️ Platform Architecture
+
+Qubots provides multiple interfaces for different use cases:
 
 ```mermaid
 graph TB
-    subgraph " Data Input"
-        D1[" Portfolio Dataset<br/> stock_prices.csv<br/> AAPL, GOOGL, MSFT<br/> Returns & Risk Data"]
+    subgraph "🎨 Visual Interface"
+        WEB[Web Designer<br/>localhost:3001]
+        DRAG[Drag & Drop<br/>Components]
+        PARAMS[Parameter<br/>Configuration]
     end
 
-    subgraph " Problem Repository"
-        subgraph PR1[" portfolio-optimization"]
-            PR1_Q[" qubot.py<br/>class PortfolioProblem(BaseProblem)<br/><br/>🔴 REQUIRED:<br/>• _get_default_metadata()<br/>• evaluate_solution()<br/><br/>🟡 OPTIONAL:<br/>• random_solution()<br/>• get_neighbor_solution()<br/>• is_feasible()"]
-            PR1_C["⚙️ config.json<br/>{<br/>  'type': 'problem',<br/>  'class_name': 'PortfolioProblem'<br/>}"]
-            PR1_R["📋 requirements.txt<br/>numpy>=1.20.0<br/>pandas>=1.3.0<br/>scipy>=1.7.0"]
-        end
+    subgraph "🤖 AI Agent Interface"
+        MCP[MCP Protocol<br/>Tools]
+        NPX[NPX Commands<br/>No Installation]
+        CLI[CLI Tools<br/>qubots command]
     end
 
-    subgraph " Optimizer Repository"
-        subgraph OR1[" genetic-algorithm"]
-            OR1_Q[" qubot.py<br/>class GeneticOptimizer(BaseOptimizer)<br/><br/>🔴 REQUIRED:<br/>• _get_default_metadata()<br/>• _optimize_implementation()<br/><br/>🟡 OPTIONAL:<br/>• report_progress()<br/>• log_message()<br/>• should_stop()"]
-            OR1_C[" config.json<br/>{<br/>  'type': 'optimizer',<br/>  'class_name': 'GeneticOptimizer'<br/>}"]
-            OR1_R[" requirements.txt<br/>numpy>=1.20.0<br/>matplotlib>=3.0.0<br/>deap>=1.3.0"]
-        end
+    subgraph "🐍 Python Interface"
+        AUTO[AutoProblem<br/>AutoOptimizer]
+        CODE[Generated<br/>Python Code]
+        API[Python API<br/>Direct Usage]
     end
 
-    subgraph " Decision Model Creation"
-        DM[" Load Components + Dataset<br/><br/>dataset = load_dataset_from_platform(<br/>    token='YOUR_TOKEN',<br/>    dataset_id='portfolio_data_id'<br/>)<br/><br/>problem = AutoProblem.from_repo(<br/>    'user/portfolio-problem',<br/>    override_params={'dataset': dataset}<br/>)<br/><br/>optimizer = AutoOptimizer.from_repo(<br/>    'user/genetic-optimizer'<br/>)<br/><br/>result = optimizer.optimize(problem)"]
+    subgraph "🧩 Component System"
+        PROB[Problem<br/>Components]
+        OPT[Optimizer<br/>Components]
+        REPO[Git Repositories<br/>Local/Cloud]
     end
 
-    subgraph " Optimization Results"
-        R1[" Portfolio Allocation<br/>AAPL: 35% | GOOGL: 40% | MSFT: 25%"]
-        R2[" Risk Metrics<br/>Expected Return: 12.5%<br/>Volatility: 18.2%<br/>Sharpe Ratio: 0.68"]
-        R3[" Visualization<br/>Efficient Frontier Plot<br/>Asset Allocation Pie Chart"]
+    subgraph "⚡ Execution Engine"
+        VALID[Workflow<br/>Validation]
+        EXEC[Optimization<br/>Execution]
+        RESULT[Results &<br/>Visualization]
     end
 
-    %% Connections with labels
-    D1 -->|"loads via API"| DM
-    PR1 -->|"defines problem"| DM
-    OR1 -->|"provides algorithm"| DM
+    WEB --> EXEC
+    MCP --> EXEC
+    AUTO --> EXEC
 
-    DM -->|"generates"| R1
-    DM -->|"calculates"| R2
-    DM -->|"creates"| R3
+    DRAG --> PROB
+    DRAG --> OPT
 
-    %% Styling
-    classDef dataStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000
-    classDef problemStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
-    classDef optimizerStyle fill:#e8f5e8,stroke:#388e3c,stroke-width:3px,color:#000
-    classDef modelStyle fill:#fff8e1,stroke:#f57c00,stroke-width:3px,color:#000
-    classDef resultStyle fill:#fce4ec,stroke:#c2185b,stroke-width:3px,color:#000
-    classDef fileStyle fill:#f5f5f5,stroke:#616161,stroke-width:2px,color:#000
+    PROB --> REPO
+    OPT --> REPO
 
-    class D1 dataStyle
-    class PR1 problemStyle
-    class OR1 optimizerStyle
-    class DM modelStyle
-    class R1,R2,R3 resultStyle
-    class PR1_Q,PR1_C,PR1_R,OR1_Q,OR1_C,OR1_R fileStyle
+    EXEC --> VALID
+    VALID --> RESULT
+
+    classDef webStyle fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef aiStyle fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef pythonStyle fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef componentStyle fill:#fff8e1,stroke:#f57c00,stroke-width:2px
+    classDef engineStyle fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+
+    class WEB,DRAG,PARAMS webStyle
+    class MCP,NPX,CLI aiStyle
+    class AUTO,CODE,API pythonStyle
+    class PROB,OPT,REPO componentStyle
+    class VALID,EXEC,RESULT engineStyle
 ```
 
-This example shows how **Portfolio Optimization** works in qubots:
+## 🚀 Quick Start
 
-1. **Dataset**: Stock price data with returns and risk metrics
-2. **Problem Repository**: Defines the portfolio optimization problem with evaluation methods
-3. **Optimizer Repository**: Genetic algorithm that finds optimal asset allocations
-4. **Decision Model**: Combines data + problem + optimizer using qubots' AutoLoad system
-5. **Results**: Generates allocation percentages, risk metrics, and visualizations
+### Option 1: Visual Interface (Recommended)
 
-## Quick Start
-
-### Installation
-
-Clone the repository and install dependencies:
+Start the complete visual workflow designer:
 
 ```bash
-git clone https://github.com/Rastion/qubots.git
+# Clone and setup
+git clone https://github.com/leonidas1312/qubots.git
 cd qubots
+
+# Start full web interface (includes Gitea + API + Web UI)
+./start_web_interface.sh
+
+# Access the visual designer
+open http://localhost:3001
+```
+
+**Features:**
+- 🎨 Drag-and-drop workflow creation
+- 🔧 Real-time parameter configuration
+- 📊 Component library browser
+- ⚡ Instant code generation
+- 📤 Multiple export formats
+
+### Option 2: AI Agent Integration
+
+Use qubots directly with AI agents via NPX (no installation required):
+
+```bash
+# Create a new workflow
+npx -y @qubots/mcp-tools workflow-create --name "Portfolio Optimization" --interactive
+
+# Search for components
+npx -y @qubots/mcp-tools component-search --type optimizer --domain finance
+
+# Execute a workflow
+npx -y @qubots/mcp-tools workflow-execute portfolio.json
+
+# Generate Python code
+npx -y @qubots/mcp-tools code-generate portfolio.json --format python
+```
+
+### Option 3: Python API
+
+Use qubots programmatically in Python:
+
+```bash
+# Install qubots
 pip install -e .
+
+# Set up local environment
+python setup_local.py
 ```
 
-### Running Tests
+## 💡 Usage Examples
 
-Test the framework with examples from the `examples/` directory:
+### Visual Workflow Creation
 
-```bash
-# Test portfolio optimization
-python examples/test_portfolio_optimization.py
+1. **Start the web interface**: `./start_web_interface.sh`
+2. **Open browser**: Navigate to `http://localhost:3001`
+3. **Drag components**: Add problems and optimizers from the sidebar
+4. **Connect nodes**: Link components by dragging between connection points
+5. **Configure parameters**: Click nodes to adjust settings in the parameter panel
+6. **Generate code**: Export as Python script, JSON, or MCP format
 
-# Test supply chain optimization
-python examples/test_supply_chain_optimization.py
-
-# Test molecular optimization
-python examples/test_molecular_optimization.py
-
-# Test other examples
-python examples/test_*.py
-```
-
-### Uploading to Rastion Platform
-
-Upload your qubots repositories to the [Rastion platform](https://rastion.com) for sharing and collaboration:
-
-```bash
-# Upload a problem or optimizer repository
-python examples/upload_repo_to_rastion.py ./my_optimizer --token YOUR_RASTION_TOKEN
-
-# Upload with custom name and description
-python examples/upload_repo_to_rastion.py ./my_problem \
-    --name "custom_vrp_solver" \
-    --description "Advanced VRP solver with time windows" \
-    --token YOUR_RASTION_TOKEN
-
-# Upload as private repository
-python examples/upload_repo_to_rastion.py ./my_optimizer \
-    --private --token YOUR_RASTION_TOKEN
-```
-
-**Repository Requirements:**
-- `qubot.py`: Main implementation file
-- `config.json`: Configuration with type, entry_point, class_name, and metadata
-- `requirements.txt`: Python dependencies 
-
-Get your Rastion token from [rastion.com](https://rastion.com) after creating an account.
-
-## Basic Usage
-
-Load and run a maxcut demo optimization from the Rastion platform:
+### Python API Usage
 
 ```python
 from qubots import AutoProblem, AutoOptimizer
 
-# Load a problem and optimizer from repositories
-problem = AutoProblem.from_repo("Rastion/demo-maxcut")
-optimizer = AutoOptimizer.from_repo("Rastion/demo-ortools-maxcut-optimizer")
+# Load components from local repositories
+problem = AutoProblem.from_repo("examples/portfolio_optimization_problem")
+optimizer = AutoOptimizer.from_repo("examples/genetic_optimizer")
+
+# Configure parameters
+problem.set_parameters(target_return=0.12, num_assets=10)
+optimizer.set_parameters(population_size=100, max_generations=500)
 
 # Run optimization
 result = optimizer.optimize(problem)
+
+# Display results
 print(f"Best Value: {result.best_value}")
 print(f"Runtime: {result.runtime_seconds:.3f} seconds")
+print(f"Solution: {result.best_solution}")
+```
+
+### CLI Workflow Management
+
+```bash
+# Validate a workflow
+qubots workflow validate --file my_workflow.json
+
+# Generate Python code from workflow
+qubots workflow generate --file my_workflow.json --format python
+
+# Export complete package
+qubots workflow export --file my_workflow.json --package
+
+# Create new component
+qubots component create --name "My Problem" --type problem
+```
+
+### AI Agent Integration
+
+```bash
+# Check system status
+npx -y @qubots/mcp-tools status
+
+# Interactive workflow creation
+npx -y @qubots/mcp-tools workflow-create --interactive
+
+# Component management
+npx -y @qubots/mcp-tools component-install portfolio-optimizer
+```
+
+## 🧩 Creating Custom Components
+
+### Using the Component Generator
+
+The easiest way to create new components is using the built-in generator:
+
+```bash
+# Create a new problem component
+qubots component create \
+    --name "Vehicle Routing Problem" \
+    --type problem \
+    --description "VRP with time windows and capacity constraints" \
+    --parameters '{"num_vehicles": 5, "capacity": 100, "time_limit": 480}'
+
+# Create a new optimizer component
+qubots component create \
+    --name "Simulated Annealing" \
+    --type optimizer \
+    --description "SA algorithm with adaptive cooling" \
+    --parameters '{"initial_temp": 1000, "cooling_rate": 0.95, "min_temp": 0.01}'
+```
+
+This generates a complete component structure:
+```
+my_component/
+├── qubot.py           # Main implementation
+├── config.json        # Component configuration
+├── requirements.txt   # Dependencies
+├── test_qubot.py      # Unit tests
+└── README.md          # Documentation
+```
+
+### Component Repository Structure
+
+Each component repository should contain:
+
+- **`qubot.py`**: Main implementation file with problem/optimizer class
+- **`config.json`**: Component metadata and parameter definitions
+- **`requirements.txt`**: Python dependencies
+- **`README.md`**: Documentation and usage examples
+- **`test_qubot.py`**: Unit tests (optional but recommended)
+
+### Manual Implementation
+
+For advanced customization, implement the base classes directly:
+
+```python
+from qubots import BaseProblem, ProblemMetadata, ProblemType, ObjectiveType
+
+class CustomProblem(BaseProblem):
+    def __init__(self, size=100):
+        self.size = size
+        super().__init__()
+
+    def _get_default_metadata(self):
+        return ProblemMetadata(
+            name="Custom Problem",
+            description="A custom optimization problem",
+            problem_type=ProblemType.DISCRETE,
+            objective_type=ObjectiveType.MINIMIZE,
+            domain="custom",
+            tags={"custom", "example"}
+        )
+
+    def evaluate_solution(self, solution):
+        # Your evaluation logic
+        return sum(solution)
+
+    def random_solution(self):
+        import random
+        return [random.randint(0, 1) for _ in range(self.size)]
+```
+
+## 📊 Development Tools
+
+### Testing and Validation
+
+```bash
+# Validate workflow structure
+qubots workflow validate --file my_workflow.json --detailed
+
+# Run component tests
+python -m pytest examples/test_*.py
+
+# Check system status
+qubots status
+```
+
+### Local Development Environment
+
+```bash
+# Start complete development environment
+./start_local.sh
+
+# Access services:
+# - Gitea: http://localhost:3000
+# - API: http://localhost:8000
+# - Web UI: http://localhost:3001
 ```
 
 ## Documentation
@@ -163,9 +312,26 @@ The documentation includes:
 
 This project is licensed under the [Apache License 2.0](./LICENSE).
 
-## Links
+## 🔗 Links
 
-- **Homepage**: [rastion.com](https://rastion.com)
-- **Documentation**: [docs.rastion.com](https://docs.rastion.com)
-- **Repository**: [github.com/Rastion/qubots](https://github.com/Rastion/qubots)
+- **Repository**: [github.com/leonidas1312/qubots](https://github.com/leonidas1312/qubots)
+- **Issues**: [github.com/leonidas1312/qubots/issues](https://github.com/leonidas1312/qubots/issues)
+- **Releases**: [github.com/leonidas1312/qubots/releases](https://github.com/leonidas1312/qubots/releases)
 - **PyPI**: [pypi.org/project/qubots](https://pypi.org/project/qubots/)
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
+
+- 🐛 Reporting bugs and requesting features
+- 🔧 Setting up the development environment
+- 📝 Code style and testing requirements
+- 🚀 Submitting pull requests
+
+## 🙏 Acknowledgments
+
+Built with modern web technologies and optimization frameworks:
+- **React Flow** for visual workflow editing
+- **FastAPI** for high-performance API backend
+- **Docker** for containerized development
+- **MCP Protocol** for AI agent integration

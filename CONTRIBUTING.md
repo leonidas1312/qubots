@@ -12,53 +12,82 @@ Thank you for your interest in contributing to Qubots! This document provides gu
    cd qubots
    ```
 
-2. **Create a virtual environment**
+2. **Install Python dependencies**
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   pip install -e .
    ```
 
-3. **Install development dependencies**
+3. **Set up local development environment**
    ```bash
-   pip install -e .[dev]
+   # Set up local Gitea and services
+   python setup_local.py
+
+   # Start the complete development stack
+   ./start_web_interface.sh
    ```
 
-4. **Install pre-commit hooks**
+4. **Verify setup**
    ```bash
-   pre-commit install
+   # Test CLI
+   qubots status
+
+   # Access web interface at http://localhost:3001
+   # Access Gitea at http://localhost:3000
+   # Access API at http://localhost:8000
    ```
+
+### Prerequisites
+
+- **Python 3.8+** for core development
+- **Node.js 16+** for web interface development
+- **Docker** for local development environment
+- **Git** for version control
 
 ## 🛠️ Development Workflow
 
 ### Code Style
 
-We use several tools to maintain code quality:
+We maintain code quality across multiple languages:
 
-- **Black**: Code formatting
-- **isort**: Import sorting
-- **flake8**: Linting
-- **mypy**: Type checking
+**Python:**
+- Follow PEP 8 with 88-character line limit
+- Use type hints for better code documentation
+- Write clear docstrings for all public methods
 
-Run all checks:
-```bash
-black qubots tests
-isort qubots tests
-flake8 qubots tests
-mypy qubots
-```
+**JavaScript/React:**
+- Use Prettier with default settings
+- Follow React best practices and hooks patterns
+- Implement responsive design principles
+
+**General:**
+- Write clear, self-documenting code
+- Add comments for complex logic
+- Use meaningful variable and function names
 
 ### Testing
 
-Run tests with pytest:
+**Python Tests:**
 ```bash
-# Run all tests
-pytest
+# Run core tests
+python -m pytest examples/test_*.py
 
-# Run with coverage
-pytest --cov=qubots
+# Test CLI functionality
+qubots workflow validate --file examples/portfolio_workflow.json
+```
 
-# Run specific test file
-pytest tests/test_base_problem.py
+**Web Interface Tests:**
+```bash
+cd web_interface
+npm test
+```
+
+**Integration Tests:**
+```bash
+# Test complete workflow
+python test_integration.py
+
+# Test MCP tools
+cd mcp_tools && npm test
 ```
 
 ### Adding New Features
@@ -120,6 +149,20 @@ For new features:
 - Add optional dependencies to pyproject.toml
 - Include installation and usage examples
 - Test with different library versions
+
+#### Web Interface Components
+- Use React functional components with hooks
+- Follow the existing component structure in `web_interface/src/`
+- Implement responsive design with Tailwind CSS
+- Add proper error boundaries and loading states
+- Test UI components with user interactions
+
+#### MCP Tools and AI Integration
+- Follow MCP protocol specifications for tool definitions
+- Add JSON schemas for input validation in `mcp_tools/schemas/`
+- Ensure NPX compatibility for easy AI agent usage
+- Test cross-platform functionality (Windows, macOS, Linux)
+- Document tool usage with clear examples
 
 ### 4. Documentation
 
