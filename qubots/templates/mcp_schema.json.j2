@@ -1,0 +1,23 @@
+{
+  "name": "{{ name }}",
+  "version": "{{ version }}",
+  "description": "{{ description }}",
+  "author": "{{ author }}",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "workflow.py",
+  "exports": {
+    "tools": {{ tools | tojson(indent=2) }}
+  },
+  "qubots": {{ qubots | tojson(indent=2) }},
+  "mcp": {
+    "version": "1.0.0",
+    "compatibility": ["npx", "node", "python"],
+    "runtime": {
+      "python": {
+        "version": ">=3.8",
+        "dependencies": ["qubots", "numpy", "scipy"]
+      }
+    }
+  }
+}

@@ -1,0 +1,90 @@
+version: "3.8"
+
+services:
+  gitea:
+    image: gitea/gitea:1.21
+    container_name: qubots-gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - GITEA__database__DB_TYPE=sqlite3
+      - GITEA__database__PATH=/data/gitea/gitea.db
+      - GITEA__server__DOMAIN=localhost
+      - GITEA__server__SSH_DOMAIN=localhost
+      - GITEA__server__HTTP_PORT=3000
+      - GITEA__server__ROOT_URL=http://localhost:3000/
+      - GITEA__server__DISABLE_SSH=false
+      - GITEA__server__SSH_PORT=2223
+      - GITEA__server__START_SSH_SERVER=true
+      - GITEA__security__INSTALL_LOCK=false
+      - GITEA__service__DISABLE_REGISTRATION=false
+      - GITEA__service__REQUIRE_SIGNIN_VIEW=false
+      - GITEA__repository__DEFAULT_PRIVATE=false
+      - GITEA__api__ENABLE_SWAGGER=true
+    restart: unless-stopped
+    networks:
+      - qubots-network
+    volumes:
+      - gitea-data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "2223:22"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  qubots-web:
+    build:
+      context: .
+      dockerfile: web_interface/Dockerfile
+    container_name: qubots-web-interface
+    environment:
+      - REACT_APP_GITEA_URL=http://localhost:3000
+      - REACT_APP_API_URL=http://localhost:8000
+    ports:
+      - "3001:3000"
+    depends_on:
+      - gitea
+      - qubots-api
+    networks:
+      - qubots-network
+    volumes:
+      - ./web_interface:/app
+      - /app/node_modules
+    profiles:
+      - web-interface
+
+  qubots-api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    container_name: qubots-api
+    environment:
+      - GITEA_URL=http://gitea:3000
+      - DATABASE_URL=sqlite:///data/qubots.db
+    ports:
+      - "8000:8000"
+    depends_on:
+      - gitea
+    networks:
+      - qubots-network
+    volumes:
+      - api-data:/data
+      - ./:/app
+    profiles:
+      - api
+
+volumes:
+  gitea-data:
+    driver: local
+  api-data:
+    driver: local
+
+networks:
+  qubots-network:
+    driver: bridge

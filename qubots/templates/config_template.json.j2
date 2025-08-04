@@ -1,0 +1,22 @@
+{
+  "type": "{{ type }}",
+  "entry_point": "qubot",
+  "class_name": "{{ class_name }}",
+  "default_params": {{ parameters | tojson(indent=2) }},
+  "metadata": {
+    "name": "{{ name }}",
+    "description": "{{ description }}",
+    "domain": "general",
+    "tags": ["custom", "generated"],
+    "difficulty": "intermediate"
+  },
+  "parameters": {
+    {% for param, value in parameters.items() %}
+    "{{ param }}": {
+      "type": "{% if value is number %}number{% elif value is string %}string{% elif value is boolean %}boolean{% else %}object{% endif %}",
+      "default": {{ value | tojson }},
+      "description": "{{ param | replace('_', ' ') | title }} parameter"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  }
+}

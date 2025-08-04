@@ -1,0 +1,20 @@
+{
+  "type": "problem",
+  "entry_point": "qubot",
+  "class_name": "LocalTestProblem",
+  "default_params": {
+    "size": 10
+  },
+  "metadata": {
+    "name": "Local Test Problem",
+    "description": "A simple test problem for local development",
+    "domain": "testing",
+    "tags": [
+      "test",
+      "local",
+      "simple"
+    ],
+    "difficulty": "beginner",
+    "problem_type": "discrete"
+  }
+}

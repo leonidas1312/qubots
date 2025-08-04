@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Qubots Workflow Validate",
+  "description": "Schema for validating a workflow definition",
+  "type": "object",
+  "properties": {
+    "file": {
+      "type": "string",
+      "description": "Path to the workflow file to validate",
+      "pattern": "^.*\\.json$"
+    },
+    "detailed": {
+      "type": "boolean",
+      "description": "Show detailed validation results",
+      "default": false
+    },
+    "strict": {
+      "type": "boolean",
+      "description": "Enable strict validation mode",
+      "default": false
+    },
+    "check_components": {
+      "type": "boolean",
+      "description": "Validate component availability",
+      "default": true
+    }
+  },
+  "required": ["file"],
+  "additionalProperties": false
+}

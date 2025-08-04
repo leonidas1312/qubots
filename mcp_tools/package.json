@@ -1,0 +1,87 @@
+{
+  "name": "@qubots/mcp-tools",
+  "version": "1.0.0",
+  "description": "MCP (Model Context Protocol) tools for Qubots optimization workflows",
+  "main": "index.js",
+  "bin": {
+    "qubots-mcp": "./bin/qubots-mcp.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest",
+    "build": "npm run build:tools",
+    "build:tools": "node scripts/build-tools.js"
+  },
+  "keywords": [
+    "mcp",
+    "optimization",
+    "qubots",
+    "workflow",
+    "ai",
+    "tools"
+  ],
+  "author": "Qubots Team",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "inquirer": "^9.2.12",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "fs-extra": "^11.1.1",
+    "axios": "^1.6.0",
+    "yaml": "^2.3.4",
+    "json-schema": "^0.4.0",
+    "ajv": "^8.12.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "@types/node": "^20.8.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leonidas1312/qubots.git",
+    "directory": "mcp_tools"
+  },
+  "bugs": {
+    "url": "https://github.com/leonidas1312/qubots/issues"
+  },
+  "homepage": "https://github.com/leonidas1312/qubots#readme",
+  "mcp": {
+    "version": "1.0.0",
+    "tools": [
+      {
+        "name": "qubots-workflow-create",
+        "description": "Create a new optimization workflow",
+        "schema": "./schemas/workflow-create.json"
+      },
+      {
+        "name": "qubots-workflow-validate",
+        "description": "Validate a workflow definition",
+        "schema": "./schemas/workflow-validate.json"
+      },
+      {
+        "name": "qubots-workflow-execute",
+        "description": "Execute an optimization workflow",
+        "schema": "./schemas/workflow-execute.json"
+      },
+      {
+        "name": "qubots-component-search",
+        "description": "Search for optimization components",
+        "schema": "./schemas/component-search.json"
+      },
+      {
+        "name": "qubots-component-install",
+        "description": "Install an optimization component",
+        "schema": "./schemas/component-install.json"
+      },
+      {
+        "name": "qubots-code-generate",
+        "description": "Generate Python code from workflow",
+        "schema": "./schemas/code-generate.json"
+      }
+    ]
+  }
+}

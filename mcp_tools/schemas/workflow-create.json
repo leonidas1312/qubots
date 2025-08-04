@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Qubots Workflow Create",
+  "description": "Schema for creating a new optimization workflow",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the workflow",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the workflow",
+      "maxLength": 500
+    },
+    "author": {
+      "type": "string",
+      "description": "Author of the workflow",
+      "default": "Qubots User"
+    },
+    "output": {
+      "type": "string",
+      "description": "Output file path for the workflow",
+      "pattern": "^.*\\.json$"
+    },
+    "interactive": {
+      "type": "boolean",
+      "description": "Enable interactive mode",
+      "default": false
+    },
+    "template": {
+      "type": "string",
+      "description": "Template to use for workflow creation",
+      "enum": ["empty", "basic", "portfolio", "routing", "scheduling"]
+    }
+  },
+  "required": ["name"],
+  "additionalProperties": false
+}
