@@ -2,65 +2,61 @@
   "name": "qubots-web-interface",
   "version": "1.0.0",
   "description": "Visual workflow designer for qubots optimization framework",
+  "type": "module",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.3.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "react-flow-renderer": "^10.3.17",
-    "reactflow": "^11.10.1",
-    "@reactflow/core": "^11.10.1",
-    "@reactflow/controls": "^11.2.7",
-    "@reactflow/background": "^11.3.7",
-    "@reactflow/minimap": "^11.7.7",
-    "@reactflow/node-toolbar": "^1.3.7",
-    "axios": "^1.4.0",
-    "react-router-dom": "^6.11.0",
-    "react-hook-form": "^7.44.3",
-    "react-select": "^5.7.3",
-    "react-json-view": "^1.21.3",
-    "react-syntax-highlighter": "^15.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@xyflow/react": "^12.3.2",
+    "axios": "^1.7.9",
+    "react-router-dom": "^6.28.0",
+    "react-hook-form": "^7.54.0",
+    "@hookform/resolvers": "^3.9.1",
+    "zod": "^3.23.8",
+    "react-select": "^5.8.2",
+    "react-syntax-highlighter": "^15.6.1",
     "react-hot-toast": "^2.4.1",
-    "lucide-react": "^0.263.1",
-    "clsx": "^1.2.1",
-    "tailwindcss": "^3.3.2",
-    "@headlessui/react": "^1.7.15",
-    "web-vitals": "^2.1.4"
+    "lucide-react": "^0.468.0",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.5.4",
+    "@headlessui/react": "^2.2.0",
+    "zustand": "^5.0.2",
+    "@tanstack/react-query": "^5.62.2",
+    "framer-motion": "^11.15.0",
+    "react-dropzone": "^14.3.5",
+    "react-virtualized-auto-sizer": "^1.0.24",
+    "react-window": "^1.8.10",
+    "date-fns": "^4.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/react": "^18.2.6",
-    "@types/react-dom": "^18.2.4",
-    "@types/react-syntax-highlighter": "^15.5.7",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.24",
-    "typescript": "^4.9.5"
-  },
-  "proxy": "http://localhost:8000"
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "@types/react-window": "^1.8.8",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/ui": "^2.1.8",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  }
 }

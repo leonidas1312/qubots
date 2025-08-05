@@ -1,5 +1,5 @@
 import React from 'react';
-import { Handle, Position } from 'reactflow';
+import { Handle, Position } from '@xyflow/react';
 import { Database, Brain, Package, Settings } from 'lucide-react';
 
 const CustomNode = ({ data, selected }) => {

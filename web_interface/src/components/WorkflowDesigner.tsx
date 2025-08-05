@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react';
-import ReactFlow, {
+import {
+  ReactFlow,
   addEdge,
   useNodesState,
   useEdgesState,
@@ -7,8 +8,8 @@ import ReactFlow, {
   MiniMap,
   Background,
   Panel,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
 
 import ComponentSidebar from './workflow/ComponentSidebar';
 import ParameterPanel from './workflow/ParameterPanel';
