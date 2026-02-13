@@ -1,0 +1,8 @@
+type: optimizer
+name: hill_climb_optimizer
+entrypoint: qubot.py:HillClimbOptimizer
+parameters:
+  steps:
+    default: 200
+  restarts:
+    default: 3

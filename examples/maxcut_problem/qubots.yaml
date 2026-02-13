@@ -1,0 +1,10 @@
+type: problem
+name: maxcut_problem
+entrypoint: qubot.py:MaxCutProblem
+parameters:
+  n_nodes:
+    default: 20
+  edge_prob:
+    default: 0.2
+  seed:
+    default: 0

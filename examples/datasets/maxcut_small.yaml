@@ -1,0 +1,5 @@
+problem: ../maxcut_problem
+instances:
+  - { n_nodes: 14, edge_prob: 0.20, seed: 1 }
+  - { n_nodes: 18, edge_prob: 0.25, seed: 2 }
+  - { n_nodes: 22, edge_prob: 0.18, seed: 3 }

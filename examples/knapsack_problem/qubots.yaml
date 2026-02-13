@@ -1,0 +1,10 @@
+type: problem
+name: knapsack_problem
+entrypoint: qubot.py:KnapsackProblem
+parameters:
+  n_items:
+    default: 30
+  capacity_ratio:
+    default: 0.4
+  seed:
+    default: 0

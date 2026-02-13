@@ -1,0 +1,10 @@
+type: optimizer
+name: simulated_annealing_optimizer
+entrypoint: qubot.py:SimulatedAnnealingOptimizer
+parameters:
+  steps:
+    default: 300
+  t0:
+    default: 1.0
+  cooling:
+    default: 0.995

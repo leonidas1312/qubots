@@ -1,0 +1,11 @@
+type: optimizer
+name: random_search
+entrypoint: qubot.py:RandomSearchOptimizer
+parameters:
+  iterations:
+    default: 200
+tunable_parameters:
+  iterations:
+    type: int
+    min: 5
+    max: 25

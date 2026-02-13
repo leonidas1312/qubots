@@ -1,0 +1,6 @@
+type: problem
+name: one_max
+entrypoint: qubot.py:OneMaxProblem
+parameters:
+  n_bits:
+    default: 32

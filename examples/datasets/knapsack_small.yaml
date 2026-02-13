@@ -1,0 +1,5 @@
+problem: ../knapsack_problem
+instances:
+  - { n_items: 20, capacity_ratio: 0.35, seed: 1 }
+  - { n_items: 30, capacity_ratio: 0.40, seed: 2 }
+  - { n_items: 40, capacity_ratio: 0.45, seed: 3 }

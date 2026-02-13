@@ -1,0 +1,15 @@
+{
+  "best_params": {
+    "choice_param": "b",
+    "iterations": 24,
+    "mutation_rate": 0.2054494755502674
+  },
+  "score": -24.333333333333332,
+  "metric": "mean_best_value",
+  "budget": 10,
+  "dataset_path": "/mnt/c/Users/gleon/OneDrive/Desktop/Projects/qubots/examples/one_max_dataset/dataset.yaml",
+  "problem_repo": "/mnt/c/Users/gleon/OneDrive/Desktop/Projects/qubots/examples/one_max_problem",
+  "optimizer_repo": "/mnt/c/Users/gleon/OneDrive/Desktop/Projects/qubots/examples/random_search_optimizer",
+  "qubots_version": "0.1.0",
+  "timestamp": "2026-02-12T18:27:56.544396+00:00"
+}
