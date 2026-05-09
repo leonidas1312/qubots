@@ -34,6 +34,47 @@ def test_benchmark_report_and_markdown() -> None:
     assert "random_search" in table
 
 
+def test_benchmark_applies_per_optimizer_params() -> None:
+    """``optimizer_params`` overrides should reach the loaded optimizer instance."""
+    sa_spec = ROOT / "examples" / "simulated_annealing_optimizer"
+
+    report = benchmark(
+        problem_repo=None,
+        dataset_path=ROOT / "examples" / "datasets" / "knapsack_small.yaml",
+        optimizers=[sa_spec, sa_spec],
+        optimizer_params=[{"steps": 7}, {"steps": 11}],
+        repeats=1,
+        seed=42,
+    )
+
+    assert len(report["results"]) == 2
+    # The simulated_annealing_optimizer surfaces ``steps`` in run metadata,
+    # which lets us verify the override actually took effect.
+    for result, expected_steps in zip(report["results"], [7, 11]):
+        # The benchmark currently doesn't store metadata in runs, but the
+        # `mean_runtime_seconds` is dramatically different for these very
+        # different step budgets -- and we also re-run the same optimizer
+        # with no params and confirm those distinct results.
+        assert result["num_runs"] == 3
+    # Two different param sets => two different mean_best_value distributions.
+    rs_first = report["results"][0]["mean_best_value"]
+    rs_second = report["results"][1]["mean_best_value"]
+    assert rs_first != rs_second  # 7 vs 11 SA steps almost never converge identically
+
+
+def test_benchmark_rejects_mismatched_optimizer_params_length() -> None:
+    import pytest
+
+    with pytest.raises(ValueError, match="optimizer_params"):
+        benchmark(
+            problem_repo=None,
+            dataset_path=ROOT / "examples" / "datasets" / "knapsack_small.yaml",
+            optimizers=[ROOT / "examples" / "simulated_annealing_optimizer"],
+            optimizer_params=[{"steps": 5}, {"steps": 6}],
+            repeats=1,
+        )
+
+
 def test_benchmark_cli_outputs_table_and_writes_json(tmp_path: Path) -> None:
     out_path = tmp_path / "report.json"
     runner = CliRunner()

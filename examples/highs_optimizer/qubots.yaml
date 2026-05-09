@@ -1,0 +1,15 @@
+qubots_schema_version: 2
+type: optimizer
+name: highs
+entrypoint: qubot.py:HiGHSOptimizer
+requirements:
+  - "highspy>=1.7"
+parameters:
+  time_limit_seconds:
+    default: null
+  mip_rel_gap:
+    default: null
+  threads:
+    default: null
+  log_to_console:
+    default: false

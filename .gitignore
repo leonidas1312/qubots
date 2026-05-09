@@ -5,3 +5,12 @@ __pycache__/
 .venv/
 dist/
 build/
+.coverage
+.mypy_cache/
+.ruff_cache/
+trained/
+reports/
+generated/
+.idea/
+.vscode/
+*.swp

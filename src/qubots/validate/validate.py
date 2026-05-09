@@ -57,6 +57,32 @@ def _validate_parameters_schema(raw: dict[str, Any], issues: list[str]) -> None:
             issues.append(f"parameters.{param_name} must be YAML-serializable")
 
 
+_PIP_SPEC_RE = re.compile(
+    r"^[A-Za-z0-9][A-Za-z0-9._-]*"
+    r"(?:\s*\[[A-Za-z0-9._,\s-]+\])?"
+    r"(?:\s*[<>=!~]=?\s*[A-Za-z0-9._*+-]+(?:\s*,\s*[<>=!~]=?\s*[A-Za-z0-9._*+-]+)*)?$"
+)
+
+
+def _validate_requirements_schema(raw: dict[str, Any], issues: list[str]) -> None:
+    if "requirements" not in raw:
+        return
+
+    requirements = raw["requirements"]
+    if not isinstance(requirements, list):
+        issues.append("Manifest 'requirements' must be a list of pip-spec strings")
+        return
+
+    for index, item in enumerate(requirements):
+        if not isinstance(item, str) or not item.strip():
+            issues.append(f"requirements[{index}] must be a non-empty string")
+            continue
+        if not _PIP_SPEC_RE.match(item.strip()):
+            issues.append(
+                f"requirements[{index}] is not a valid pip spec: {item!r}"
+            )
+
+
 def _validate_tunable_schema(raw: dict[str, Any], issues: list[str]) -> None:
     if "tunable_parameters" not in raw:
         return
@@ -159,11 +185,17 @@ def _validate_entrypoint(
         if not issubclass(cls, BaseProblem):
             issues.append(f"Entrypoint class '{class_name}' must subclass BaseProblem")
         else:
-            if getattr(cls, "evaluate", None) is BaseProblem.evaluate:
-                issues.append(f"Problem class '{class_name}' must implement evaluate()")
-            if getattr(cls, "random_solution", None) is BaseProblem.random_solution:
+            has_blackbox = (
+                getattr(cls, "evaluate", None) is not BaseProblem.evaluate
+                and getattr(cls, "random_solution", None) is not BaseProblem.random_solution
+            )
+            has_milp = "as_milp" in cls.__mro__[0].__dict__ or any(
+                "as_milp" in base.__dict__ for base in cls.__mro__
+            )
+            if not (has_blackbox or has_milp):
                 issues.append(
-                    f"Problem class '{class_name}' must implement random_solution()"
+                    f"Problem class '{class_name}' must implement either "
+                    "evaluate()+random_solution() or as_milp()"
                 )
 
     if component_type == "optimizer":
@@ -222,6 +254,7 @@ def validate_repo(path: str | Path) -> list[str]:
 
     _validate_parameters_schema(raw_manifest, issues)
     _validate_tunable_schema(raw_manifest, issues)
+    _validate_requirements_schema(raw_manifest, issues)
 
     if "entrypoint" in raw_manifest:
         _validate_entrypoint(repo, component_type, raw_manifest.get("entrypoint"), issues)

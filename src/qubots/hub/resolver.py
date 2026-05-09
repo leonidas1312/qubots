@@ -1,13 +1,30 @@
-"""Repository resolver for local paths and GitHub specs."""
+"""Repository resolver for local paths and GitHub specs.
+
+Security model:
+
+- Local paths are trusted (the user has the code on disk and can read it).
+- GitHub specs are untrusted by default. Loading them executes arbitrary
+  Python code from a third party, so two opt-ins are needed:
+
+  - ``QUBOTS_TRUST_REMOTE_CODE=1`` (preferred) or ``--trust-remote-code``
+    on the CLI, OR
+  - ``QUBOTS_ALLOW_REMOTE=1`` (legacy alias kept for backward compatibility).
+
+  Either flag enables remote loading; the explicit
+  ``trust-remote-code`` name is preferred because it makes the security
+  trade-off visible. Each remote load also emits a ``RuntimeWarning``
+  showing the resolved repo + ref so users can see what they ran.
+"""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import os
-from pathlib import Path
 import re
 import shutil
 import subprocess
+import warnings
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import yaml
@@ -70,12 +87,36 @@ def _cache_root() -> Path:
     return Path.home() / ".cache" / "qubots" / "repos"
 
 
+def _truthy_env(name: str) -> bool:
+    return os.environ.get(name, "").lower() in {"1", "true", "yes", "on"}
+
+
+def _is_remote_trusted() -> bool:
+    """Either the modern flag or the legacy alias enables remote loading."""
+    return _truthy_env("QUBOTS_TRUST_REMOTE_CODE") or _truthy_env("QUBOTS_ALLOW_REMOTE")
+
+
 def _assert_remote_allowed() -> None:
-    if os.environ.get("QUBOTS_ALLOW_REMOTE") == "1":
+    if _is_remote_trusted():
         return
     raise RemoteRepoNotAllowedError(
-        "Remote GitHub specs are disabled. Set QUBOTS_ALLOW_REMOTE=1 "
-        "or pass --allow-remote on CLI commands."
+        "Loading a remote GitHub spec executes arbitrary third-party Python "
+        "code on your machine. To opt in, set QUBOTS_TRUST_REMOTE_CODE=1 "
+        "(or pass --trust-remote-code on the CLI). "
+        "QUBOTS_ALLOW_REMOTE=1 / --allow-remote remain as legacy aliases."
+    )
+
+
+def _warn_on_remote_load(spec: GitHubSpec, resolved_path: Path) -> None:
+    if _truthy_env("QUBOTS_SUPPRESS_REMOTE_WARNING"):
+        return
+    suffix = f":{spec.subdir}" if spec.subdir else ""
+    location = f"github:{spec.owner}/{spec.repo}{suffix}@{spec.ref}"
+    warnings.warn(
+        f"Executing remote qubots component {location} "
+        f"(resolved to {resolved_path}). Trust the source.",
+        RuntimeWarning,
+        stacklevel=3,
     )
 
 
@@ -207,9 +248,12 @@ def resolve_repo_info(spec: str | Path) -> ResolvedRepo:
                 f"GitHub spec subdir not found in cloned repo: {parsed.subdir}"
             )
 
+    final_path = resolved_path.resolve()
+    _warn_on_remote_load(parsed, final_path)
+
     return ResolvedRepo(
         spec=spec_str,
-        resolved_path=resolved_path.resolve(),
+        resolved_path=final_path,
         is_remote=True,
         ref=parsed.ref,
         owner=parsed.owner,

@@ -14,6 +14,31 @@ from qubots.hub.resolver import derive_repo_name, is_github_spec
 from qubots.tune.dataset import load_dataset_spec
 
 
+def _resolve_relative_path_params(
+    instance_params: dict[str, Any], dataset_path: Path
+) -> dict[str, Any]:
+    """Rewrite string params that point to files next to the dataset.
+
+    A value is treated as a path-typed parameter only if (a) it's a string,
+    (b) it isn't already absolute, and (c) it resolves to an existing file
+    when joined with the dataset's directory. This lets dataset YAMLs
+    bundle data files alongside themselves without absolute paths.
+    """
+    if not instance_params:
+        return instance_params
+    base = dataset_path.parent
+    out: dict[str, Any] = dict(instance_params)
+    for key, value in instance_params.items():
+        if not isinstance(value, str) or not value:
+            continue
+        if Path(value).is_absolute():
+            continue
+        candidate = (base / value).resolve()
+        if candidate.is_file():
+            out[key] = str(candidate)
+    return out
+
+
 def _resolve_dataset_problem_spec(
     problem_repo: str | Path | None,
     dataset_path: Path,
@@ -70,11 +95,24 @@ def benchmark(
     optimizers: list[str | Path],
     repeats: int = 1,
     seed: int | None = None,
+    optimizer_params: list[dict[str, Any] | None] | None = None,
 ) -> dict[str, Any]:
     if repeats <= 0:
         raise ValueError("repeats must be a positive integer")
     if not optimizers:
         raise ValueError("optimizers must contain at least one path")
+
+    if optimizer_params is not None:
+        if len(optimizer_params) != len(optimizers):
+            raise ValueError(
+                "optimizer_params must be the same length as optimizers "
+                f"(got {len(optimizer_params)} vs {len(optimizers)})"
+            )
+        for index, item in enumerate(optimizer_params):
+            if item is not None and not isinstance(item, dict):
+                raise ValueError(
+                    f"optimizer_params[{index}] must be a dict or None"
+                )
 
     dataset_file = Path(dataset_path).resolve()
     dataset_spec = load_dataset_spec(dataset_file)
@@ -98,6 +136,10 @@ def benchmark(
         source_type = ""
         display_name = ""
 
+        params_for_this_optimizer: dict[str, Any] | None = (
+            optimizer_params[optimizer_index] if optimizer_params is not None else None
+        )
+
         for repeat_index in range(repeats):
             for instance_index, instance_params in enumerate(dataset_spec.instances):
                 if seed is not None:
@@ -109,10 +151,15 @@ def benchmark(
                     )
 
                 problem = AutoProblem.from_repo(problem_spec)
-                if instance_params:
-                    problem.set_parameters(**instance_params)
+                resolved_params = _resolve_relative_path_params(
+                    instance_params, dataset_file
+                )
+                if resolved_params:
+                    problem.set_parameters(**resolved_params)
 
                 optimizer, source_type = _load_optimizer_from_spec(optimizer_spec)
+                if params_for_this_optimizer:
+                    optimizer.set_parameters(**params_for_this_optimizer)
                 display_name = _display_name_for_optimizer(
                     optimizer_spec=optimizer_spec,
                     source_type=source_type,

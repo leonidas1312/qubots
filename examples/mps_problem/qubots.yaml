@@ -1,0 +1,9 @@
+qubots_schema_version: 2
+type: problem
+name: mps_problem
+entrypoint: qubot.py:MPSProblem
+requirements:
+  - "highspy>=1.7"
+parameters:
+  mps_path:
+    default: null

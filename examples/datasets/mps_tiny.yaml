@@ -1,0 +1,4 @@
+qubots_schema_version: 1
+problem: ../mps_problem
+instances:
+  - mps_path: mps_tiny.mps

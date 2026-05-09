@@ -5,19 +5,61 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "qubots"
 version = "0.1.0"
-description = "Minimal local-first optimization framework"
+description = "Local-first optimization framework with a HuggingFace-style hub for pluggable problems and solvers."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { file = "LICENSE" }
 authors = [{ name = "Qubots" }]
+keywords = [
+  "optimization",
+  "operations-research",
+  "milp",
+  "mixed-integer-programming",
+  "linear-programming",
+  "constraint-programming",
+  "qubo",
+  "highs",
+  "or-tools",
+  "cp-sat",
+  "miplib",
+  "hyperparameter-tuning",
+  "benchmarks",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = [
   "typer>=0.12",
   "pyyaml>=6.0",
   "rich>=13.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/leonidas1312/qubots"
+Repository = "https://github.com/leonidas1312/qubots"
+Issues = "https://github.com/leonidas1312/qubots/issues"
+
 [project.optional-dependencies]
 dev = ["pytest>=7.0"]
+highs = ["highspy>=1.7"]
+cpsat = ["ortools>=9.10"]
+miplib = ["highspy>=1.7", "certifi>=2024.0.0"]
+all = [
+  "highspy>=1.7",
+  "ortools>=9.10",
+  "certifi>=2024.0.0",
+]
 
 [project.scripts]
 qubots = "qubots.cli.app:app"
