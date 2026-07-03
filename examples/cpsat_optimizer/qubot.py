@@ -37,7 +37,8 @@ def _import_cp_model() -> Any:
     except ImportError as exc:
         raise ImportError(
             "CPSATOptimizer requires the 'ortools' package. "
-            "Install with: pip install qubots[cpsat]"
+            "Install with: pip install qubots[cpsat]. "
+            f"Underlying import error: {exc}"
         ) from exc
     return cp_model
 

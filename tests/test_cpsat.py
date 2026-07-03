@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 
 
-pytest.importorskip("ortools.sat.python")
+pytest.importorskip("ortools.sat.python.cp_model", exc_type=ImportError)
 
 
 from qubots import AutoOptimizer, AutoProblem, MILPModel  # noqa: E402
@@ -36,7 +36,7 @@ def test_cpsat_solves_small_knapsack_to_optimum() -> None:
 
 
 def test_cpsat_matches_highs_on_same_instance() -> None:
-    pytest.importorskip("highspy")
+    pytest.importorskip("highspy", exc_type=ImportError)
 
     problem_a = AutoProblem.from_repo(KNAPSACK_MILP)
     problem_a.set_parameters(n_items=20, capacity_ratio=0.4, seed=7)

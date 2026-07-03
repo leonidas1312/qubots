@@ -10,7 +10,7 @@ HIGHS_OPTIMIZER = ROOT / "examples" / "highs_optimizer"
 KNAPSACK_MILP = ROOT / "examples" / "knapsack_milp_problem"
 
 
-highspy = pytest.importorskip("highspy")
+highspy = pytest.importorskip("highspy", exc_type=ImportError)
 
 
 def test_highs_solves_small_knapsack_to_optimality() -> None:

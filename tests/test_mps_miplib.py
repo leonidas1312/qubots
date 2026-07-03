@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import pytest
 
-pytest.importorskip("highspy")
+pytest.importorskip("highspy", exc_type=ImportError)
 
 from qubots import AutoOptimizer, AutoProblem  # noqa: E402
 from qubots.contrib.miplib import fetch_miplib, is_miplib_cached  # noqa: E402

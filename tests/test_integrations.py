@@ -13,7 +13,7 @@ INTEGRATIONS = ROOT / "integrations"
 
 
 def test_scipy_assignment_optimizer_solves_detected_matrix() -> None:
-    pytest.importorskip("scipy")
+    pytest.importorskip("scipy", exc_type=ImportError)
 
     problem = AutoProblem.from_data(FIXTURES / "assignment.csv", family="assignment")
     optimizer = AutoOptimizer.from_repo(INTEGRATIONS / "scipy_assignment_optimizer")
@@ -27,7 +27,7 @@ def test_scipy_assignment_optimizer_solves_detected_matrix() -> None:
 
 
 def test_cvxpy_optimizer_solves_continuous_blending_problem() -> None:
-    pytest.importorskip("cvxpy")
+    pytest.importorskip("cvxpy", exc_type=ImportError)
 
     problem = AutoProblem.from_repo(INTEGRATIONS / "continuous_blending_problem")
     optimizer = AutoOptimizer.from_repo(INTEGRATIONS / "cvxpy_lp_optimizer")
@@ -42,8 +42,8 @@ def test_cvxpy_optimizer_solves_continuous_blending_problem() -> None:
 
 
 def test_pulp_optimizer_solves_pandas_knapsack_problem() -> None:
-    pytest.importorskip("pulp")
-    pytest.importorskip("pandas")
+    pytest.importorskip("pulp", exc_type=ImportError)
+    pytest.importorskip("pandas", exc_type=ImportError)
 
     problem = AutoProblem.from_repo(INTEGRATIONS / "pandas_knapsack_problem")
     optimizer = AutoOptimizer.from_repo(INTEGRATIONS / "pulp_milp_optimizer")
@@ -58,13 +58,15 @@ def test_pulp_optimizer_solves_pandas_knapsack_problem() -> None:
 
 
 def test_pyomo_optimizer_solves_pandas_knapsack_problem() -> None:
-    pytest.importorskip("pyomo")
-    pytest.importorskip("pandas")
+    pytest.importorskip("pyomo", exc_type=ImportError)
+    pytest.importorskip("pandas", exc_type=ImportError)
 
     problem = AutoProblem.from_repo(INTEGRATIONS / "pandas_knapsack_problem")
     optimizer = AutoOptimizer.from_repo(INTEGRATIONS / "pyomo_milp_optimizer")
 
     result = optimizer.optimize(problem)
+    if result.status == "error" and "not available" in (result.error or ""):
+        pytest.skip(result.error)
 
     assert result.status == "ok"
     assert result.metadata["framework"] == "pyomo"
@@ -74,7 +76,7 @@ def test_pyomo_optimizer_solves_pandas_knapsack_problem() -> None:
 
 
 def test_optuna_binary_optimizer_improves_one_max() -> None:
-    pytest.importorskip("optuna")
+    pytest.importorskip("optuna", exc_type=ImportError)
 
     problem = AutoProblem.from_repo(ROOT / "examples" / "one_max_problem")
     problem.set_parameters(n_bits=8)
@@ -90,7 +92,7 @@ def test_optuna_binary_optimizer_improves_one_max() -> None:
 
 
 def test_networkx_integration_solves_detected_graph() -> None:
-    pytest.importorskip("networkx")
+    pytest.importorskip("networkx", exc_type=ImportError)
 
     problem = AutoProblem.from_data(
         ROOT / "examples" / "pilots" / "qoblib_karate_edges.gph",
@@ -109,7 +111,7 @@ def test_networkx_integration_solves_detected_graph() -> None:
 
 
 def test_jax_integration_solves_detected_graph() -> None:
-    pytest.importorskip("jax")
+    pytest.importorskip("jax", exc_type=ImportError)
 
     problem = AutoProblem.from_data(
         ROOT / "examples" / "pilots" / "qoblib_karate_edges.gph",
@@ -128,8 +130,8 @@ def test_jax_integration_solves_detected_graph() -> None:
 
 
 def test_dwave_neal_integration_solves_detected_graph() -> None:
-    pytest.importorskip("dimod")
-    pytest.importorskip("neal")
+    pytest.importorskip("dimod", exc_type=ImportError)
+    pytest.importorskip("neal", exc_type=ImportError)
 
     problem = AutoProblem.from_data(
         ROOT / "examples" / "pilots" / "qoblib_karate_edges.gph",
@@ -148,7 +150,7 @@ def test_dwave_neal_integration_solves_detected_graph() -> None:
 
 
 def test_qiskit_qaoa_integration_solves_tiny_graph() -> None:
-    pytest.importorskip("qiskit")
+    pytest.importorskip("qiskit", exc_type=ImportError)
 
     problem = AutoProblem.from_data(FIXTURES / "graph.edgelist", family="maxcut")
     optimizer = AutoOptimizer.from_repo(INTEGRATIONS / "qiskit_qaoa_maxcut_optimizer")
@@ -164,7 +166,7 @@ def test_qiskit_qaoa_integration_solves_tiny_graph() -> None:
 
 
 def test_qiskit_vqe_integration_solves_tiny_graph() -> None:
-    pytest.importorskip("qiskit")
+    pytest.importorskip("qiskit", exc_type=ImportError)
 
     problem = AutoProblem.from_data(FIXTURES / "graph.edgelist", family="maxcut")
     optimizer = AutoOptimizer.from_repo(INTEGRATIONS / "qiskit_vqe_maxcut_optimizer")
@@ -180,8 +182,8 @@ def test_qiskit_vqe_integration_solves_tiny_graph() -> None:
 
 
 def test_integration_dataset_benchmarks() -> None:
-    pytest.importorskip("pulp")
-    pytest.importorskip("pandas")
+    pytest.importorskip("pulp", exc_type=ImportError)
+    pytest.importorskip("pandas", exc_type=ImportError)
 
     report = benchmark(
         problem_repo=None,
@@ -197,7 +199,7 @@ def test_integration_dataset_benchmarks() -> None:
 
 
 def test_continuous_integration_dataset_benchmarks() -> None:
-    pytest.importorskip("cvxpy")
+    pytest.importorskip("cvxpy", exc_type=ImportError)
 
     report = benchmark(
         problem_repo=None,
@@ -213,7 +215,7 @@ def test_continuous_integration_dataset_benchmarks() -> None:
 
 
 def test_qiskit_integration_dataset_benchmarks() -> None:
-    pytest.importorskip("qiskit")
+    pytest.importorskip("qiskit", exc_type=ImportError)
 
     report = benchmark(
         problem_repo=None,

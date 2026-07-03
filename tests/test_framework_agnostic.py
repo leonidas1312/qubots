@@ -10,7 +10,7 @@ from qubots import AutoOptimizer, AutoProblem, benchmark
 ROOT = Path(__file__).resolve().parents[1]
 
 
-pytest.importorskip("networkx")
+pytest.importorskip("networkx", exc_type=ImportError)
 
 
 def test_networkx_optimizer_runs_on_detected_graph_data() -> None:
