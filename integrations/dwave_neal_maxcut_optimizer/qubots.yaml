@@ -1,0 +1,19 @@
+qubots_schema_version: 3
+type: optimizer
+name: dwave_neal_maxcut
+entrypoint: qubot.py:DWaveNealMaxCutOptimizer
+capabilities:
+  - blackbox
+  - graph
+requirements:
+  - "dimod>=0.12"
+  - "dwave-neal>=0.6"
+metrics:
+  - cut_weight
+parameters:
+  num_reads:
+    default: 50
+  sweeps:
+    default: 100
+  seed:
+    default: 0

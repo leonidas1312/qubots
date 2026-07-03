@@ -1,0 +1,245 @@
+{
+  "artifact_type": "qubots.benchmark_report",
+  "qubots_version": "3.0.0",
+  "dataset_path": "/home/ileo/AProjects/qubots/docs/pilots/artifacts/campaign-budget/dataset.yaml",
+  "problem_repo": "/home/ileo/AProjects/qubots/docs/pilots/artifacts/campaign-budget/imported_problem/problem_spec.yaml",
+  "repeats": 3,
+  "seed": 7,
+  "results": [
+    {
+      "optimizer": "examples/random_search_optimizer",
+      "display_name": "random_search",
+      "source_type": "repo",
+      "num_runs": 3,
+      "mean_best_value": -122.0,
+      "mean_runtime_seconds": 0.0013210350007284433,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "examples/random_search_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/examples/random_search_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de",
+          "detector": "item_table",
+          "solver_parameters": {
+            "iterations": 200
+          },
+          "best_value": -122.0,
+          "best_solution": [
+            1,
+            1,
+            0,
+            0,
+            1
+          ],
+          "objective": -122.0,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.001050172999384813,
+          "status": "ok",
+          "error": null
+        },
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 1,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "examples/random_search_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/examples/random_search_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de",
+          "detector": "item_table",
+          "solver_parameters": {
+            "iterations": 200
+          },
+          "best_value": -122.0,
+          "best_solution": [
+            1,
+            1,
+            0,
+            0,
+            1
+          ],
+          "objective": -122.0,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.0010182690020883456,
+          "status": "ok",
+          "error": null
+        },
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 2,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "examples/random_search_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/examples/random_search_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de",
+          "detector": "item_table",
+          "solver_parameters": {
+            "iterations": 200
+          },
+          "best_value": -122.0,
+          "best_solution": [
+            1,
+            1,
+            0,
+            0,
+            1
+          ],
+          "objective": -122.0,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.0018946630007121712,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    },
+    {
+      "optimizer": "examples/highs_optimizer",
+      "display_name": "highs",
+      "source_type": "repo",
+      "num_runs": 3,
+      "mean_best_value": -122.0,
+      "mean_runtime_seconds": 0.04680709899791206,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "examples/highs_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/examples/highs_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de",
+          "detector": "item_table",
+          "solver_parameters": {
+            "time_limit_seconds": null,
+            "mip_rel_gap": null,
+            "threads": null,
+            "log_to_console": false
+          },
+          "best_value": -122.0,
+          "best_solution": [
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "objective": 122.0,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.11785951998899691,
+          "status": "ok",
+          "error": null
+        },
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 1,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "examples/highs_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/examples/highs_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de",
+          "detector": "item_table",
+          "solver_parameters": {
+            "time_limit_seconds": null,
+            "mip_rel_gap": null,
+            "threads": null,
+            "log_to_console": false
+          },
+          "best_value": -122.0,
+          "best_solution": [
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "objective": 122.0,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.010628474003169686,
+          "status": "ok",
+          "error": null
+        },
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 2,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "examples/highs_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/examples/highs_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de",
+          "detector": "item_table",
+          "solver_parameters": {
+            "time_limit_seconds": null,
+            "mip_rel_gap": null,
+            "threads": null,
+            "log_to_console": false
+          },
+          "best_value": -122.0,
+          "best_solution": [
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "objective": 122.0,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.011933303001569584,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+qubots_schema_version: 3
+type: optimizer
+name: optuna_binary
+entrypoint: qubot.py:OptunaBinaryOptimizer
+capabilities:
+  - blackbox
+requirements:
+  - "optuna>=4.0"
+metrics:
+  - objective
+parameters:
+  n_trials:
+    default: 64
+  seed:
+    default: 0

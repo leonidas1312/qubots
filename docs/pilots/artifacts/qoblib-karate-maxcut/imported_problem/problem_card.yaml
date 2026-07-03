@@ -1,0 +1,17 @@
+schema_version: 3
+name: qoblib_karate_maxcut
+family: maxcut
+domain: graph-optimization
+objective_sense: max
+variables:
+  nodes: 34
+constraints:
+  edges: 78
+data_files:
+- data/qoblib_karate_edges.gph
+metrics:
+- cut_weight
+license: CC BY 4.0
+citation: 'Koch et al. 2025, Quantum Optimization Benchmarking Library - The Intractable Decathlon, arXiv:2504.03832'
+validation_status: valid
+warnings: []

@@ -1,0 +1,16 @@
+schema_version: 3
+name: miplib_flugpl_milp
+family: milp
+domain: mathematical-programming
+objective_sense: source-defined
+variables: {}
+constraints: {}
+data_files:
+- data/flugpl.mps
+metrics:
+- objective
+- feasibility
+license: 'Source terms: see https://miplib.zib.de'
+citation: MIPLIB benchmark instance flugpl, https://miplib.zib.de
+validation_status: valid
+warnings: []

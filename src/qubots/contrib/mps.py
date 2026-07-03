@@ -1,13 +1,12 @@
 """Read industry-standard MPS / LP files into a qubots MILPModel.
 
 Uses HiGHS's built-in MPS reader (via ``highspy``) and converts the resulting
-``HighsLp`` into our ``MILPModel``. Range constraints (``rl <= a*x <= ru``
-where ``rl != ru``) are encoded as paired ``A_ub`` rows.
+``HighsLp`` into our ``MILPModel`` or ``SparseMILPModel``. Range constraints
+(``rl <= a*x <= ru`` where ``rl != ru``) are encoded as paired ``A_ub`` rows.
 
-The resulting MILPModel is **dense**, so very large MIPLIB instances
-(millions of nonzeros) will exhaust memory. Use this for small-to-medium
-benchmarks (≲ 5000 vars × 5000 rows). A future sparse representation will
-lift this limit.
+``read_mps()`` keeps the original dense behavior for compatibility.
+``read_mps_sparse()`` avoids materializing zero coefficients and is the
+preferred path for imported MPS / MIPLIB-style instances.
 """
 
 from __future__ import annotations
@@ -16,7 +15,7 @@ import math
 from pathlib import Path
 from typing import Any
 
-from qubots.core.milp import MILPModel
+from qubots.core.milp import MILPModel, SparseMILPModel
 from qubots.core.problem import BaseProblem
 
 
@@ -54,6 +53,27 @@ def _build_dense_rows(matrix: Any, n_row: int, n_col: int, highspy: Any) -> list
             for k in range(starts[c], starts[c + 1]):
                 rows[indices[k]][c] = float(values[k])
     return rows
+
+
+def _build_sparse_rows(matrix: Any, n_row: int, n_col: int, highspy: Any) -> list[list[tuple[int, float]]]:
+    starts = list(matrix.start_)
+    indices = list(matrix.index_)
+    values = list(matrix.value_)
+
+    rows: list[dict[int, float]] = [dict() for _ in range(n_row)]
+    if matrix.format_ == highspy.MatrixFormat.kRowwise:
+        for r in range(n_row):
+            for k in range(starts[r], starts[r + 1]):
+                value = float(values[k])
+                if value != 0.0:
+                    rows[r][int(indices[k])] = value
+    else:  # column-wise
+        for c in range(n_col):
+            for k in range(starts[c], starts[c + 1]):
+                value = float(values[k])
+                if value != 0.0:
+                    rows[int(indices[k])][c] = value
+    return [sorted(row.items()) for row in rows]
 
 
 def read_mps(path: str | Path) -> MILPModel:
@@ -146,6 +166,95 @@ def read_mps(path: str | Path) -> MILPModel:
     )
 
 
+def read_mps_sparse(path: str | Path) -> SparseMILPModel:
+    """Parse an MPS or LP file and return a sparse MILP model."""
+    highspy = _import_highspy()
+
+    file_path = Path(path).expanduser().resolve()
+    if not file_path.exists():
+        raise FileNotFoundError(f"MPS file not found: {file_path}")
+
+    h = highspy.Highs()
+    h.silent()
+    status = h.readModel(str(file_path))
+    if status != highspy.HighsStatus.kOk:
+        raise ValueError(f"HiGHS failed to read MPS file: {file_path}")
+
+    lp = h.getLp()
+    n_col = int(lp.num_col_)
+    n_row = int(lp.num_row_)
+
+    sense = "min" if lp.sense_ == highspy.ObjSense.kMinimize else "max"
+    c = [float(v) for v in lp.col_cost_]
+
+    inf = float(highspy.kHighsInf)
+    lb = [_to_finite(v, inf) for v in lp.col_lower_]
+    ub = [_to_finite(v, inf) for v in lp.col_upper_]
+
+    integrality_raw = list(lp.integrality_) if lp.integrality_ else []
+    if integrality_raw:
+        integrality = [v == highspy.HighsVarType.kInteger for v in integrality_raw]
+    else:
+        integrality = [False] * n_col
+
+    var_names_raw = list(lp.col_names_) if lp.col_names_ else []
+    var_names = (
+        [str(n) for n in var_names_raw]
+        if len(var_names_raw) == n_col
+        else [f"x{i}" for i in range(n_col)]
+    )
+
+    row_names_raw = list(lp.row_names_) if lp.row_names_ else []
+    row_names = (
+        [str(n) for n in row_names_raw]
+        if len(row_names_raw) == n_row
+        else [f"r{i}" for i in range(n_row)]
+    )
+
+    rows = _build_sparse_rows(lp.a_matrix_, n_row, n_col, highspy)
+
+    A_ub: list[list[tuple[int, float]]] = []
+    b_ub: list[float] = []
+    A_eq: list[list[tuple[int, float]]] = []
+    b_eq: list[float] = []
+    constraint_names: list[str] = []
+
+    for r in range(n_row):
+        rl = float(lp.row_lower_[r])
+        ru = float(lp.row_upper_[r])
+        row = rows[r]
+        name = row_names[r]
+
+        if rl == ru:
+            A_eq.append(row)
+            b_eq.append(rl)
+            constraint_names.append(name)
+            continue
+
+        if ru < inf:
+            A_ub.append(list(row))
+            b_ub.append(ru)
+            constraint_names.append(name + ("<=" if rl > -inf else ""))
+        if rl > -inf:
+            A_ub.append([(index, -value) for index, value in row])
+            b_ub.append(-rl)
+            constraint_names.append(name + (">=" if ru < inf else ""))
+
+    return SparseMILPModel(
+        sense=sense,
+        c=c,
+        var_names=var_names,
+        integrality=integrality,
+        lb=lb,
+        ub=ub,
+        A_ub=A_ub,
+        b_ub=b_ub,
+        A_eq=A_eq,
+        b_eq=b_eq,
+        constraint_names=constraint_names,
+    )
+
+
 class MPSProblem(BaseProblem):
     """qubots problem that wraps any MPS/LP file as a :class:`MILPModel`.
 
@@ -154,20 +263,30 @@ class MPSProblem(BaseProblem):
     parsed lazily on first call to ``as_milp()`` and cached.
     """
 
-    def __init__(self, mps_path: str | Path | None = None) -> None:
+    def __init__(
+        self, mps_path: str | Path | None = None, *, sparse: bool = False
+    ) -> None:
         super().__init__()
         self.mps_path: str | None = str(mps_path) if mps_path is not None else None
-        self._cached_milp: MILPModel | None = None
+        self.sparse = bool(sparse)
+        self._cached_milp: MILPModel | SparseMILPModel | None = None
         self._cached_for_path: str | None = None
+        self._cached_sparse: bool | None = None
 
-    def as_milp(self) -> MILPModel:
+    def as_milp(self) -> MILPModel | SparseMILPModel:
         if self.mps_path is None:
             raise ValueError(
                 "MPSProblem requires mps_path. Set it via set_parameters(mps_path=...) "
                 "or in the manifest as parameters.mps_path.default."
             )
         path_str = str(Path(self.mps_path).expanduser().resolve())
-        if self._cached_milp is None or self._cached_for_path != path_str:
-            self._cached_milp = read_mps(path_str)
+        sparse = bool(getattr(self, "sparse", False))
+        if (
+            self._cached_milp is None
+            or self._cached_for_path != path_str
+            or self._cached_sparse != sparse
+        ):
+            self._cached_milp = read_mps_sparse(path_str) if sparse else read_mps(path_str)
             self._cached_for_path = path_str
+            self._cached_sparse = sparse
         return self._cached_milp

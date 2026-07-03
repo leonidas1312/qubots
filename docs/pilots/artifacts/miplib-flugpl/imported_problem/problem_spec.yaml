@@ -1,0 +1,25 @@
+schema_version: 3
+family: milp
+detector: mps_lp
+source_path: data/flugpl.mps
+source_format: mps
+data_hash: sha256:a1f0cb79a95639450dd984473a00efca24365457153d7fcb859c6581ddab4c2c
+parameters:
+  mps_path: data/flugpl.mps
+  sparse: true
+detection:
+  schema_version: 3
+  family: milp
+  confidence: 0.96
+  detector: mps_lp
+  evidence:
+  - File extension is .mps.
+  - Text contains MPS sections ROWS/COLUMNS/RHS.
+  required_columns: []
+  required_files:
+  - flugpl.mps
+  warnings: []
+  parameters:
+    mps_path: /home/ileo/.cache/qubots/miplib/flugpl.mps
+    sparse: true
+  path: /home/ileo/.cache/qubots/miplib/flugpl.mps

@@ -1,0 +1,3 @@
+problem: ../../examples/one_max_problem
+instances:
+  - { n_bits: 8 }

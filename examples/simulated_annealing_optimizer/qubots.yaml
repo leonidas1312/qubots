@@ -1,6 +1,8 @@
 type: optimizer
 name: simulated_annealing_optimizer
 entrypoint: qubot.py:SimulatedAnnealingOptimizer
+capabilities:
+  - blackbox
 parameters:
   steps:
     default: 300

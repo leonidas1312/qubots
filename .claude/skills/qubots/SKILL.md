@@ -1,7 +1,7 @@
 ---
 name: qubots
-description: Author, validate, and benchmark qubots optimization components (problems and solvers). Use when the user is creating a new component repo, debugging an existing one, building a dataset, or running a leaderboard.
-when: User mentions qubots, "new problem", "new optimizer", a `qubots.yaml` manifest, an `as_milp()` method, a MIPLIB instance, MPS files, or asks to scaffold/validate/benchmark an OR component. Also when editing files under examples/ or any directory containing a `qubots.yaml`.
+description: Author, validate, benchmark, detect, and import qubots optimization components (problems and solvers). Use when the user is creating a new component repo, debugging an existing one, building a dataset, importing data, running a leaderboard, or preparing a publish check.
+when: User mentions qubots, "new problem", "new optimizer", a `qubots.yaml` manifest, an `as_milp()` method, a MIPLIB instance, MPS files, TSPLIB files, edge lists, cost matrices, knapsack tables, or asks to detect/import/scaffold/validate/benchmark an OR component. Also when editing files under examples/ or any directory containing a `qubots.yaml`.
 ---
 
 # Qubots authoring skill
@@ -121,10 +121,12 @@ Result(
 ### `qubots.yaml` manifest
 
 ```yaml
-qubots_schema_version: 1
+qubots_schema_version: 3
 type: problem      # or "optimizer"
 name: my_component  # snake_case, [a-z][a-z0-9_]*
 entrypoint: qubot.py:MyClass
+capabilities: ["blackbox", "milp_dense"] # optional v3 metadata
+problem_family: knapsack                 # optional v3 metadata
 
 parameters:        # exposed via set_parameters() and dataset YAMLs
   n_items:
@@ -139,13 +141,17 @@ tunable_parameters: # optional: search spaces for qubots finetune
     max: 5000
 ```
 
+v1/v2 manifests still load. v3 adds optional `capabilities`,
+`problem_family`, `data_schema`, `metrics`, `license`, `citation`, and
+`rastion_card`.
+
 ## Common pitfalls (do not repeat)
 
 - **Wrong sign on objective.** If a `max` problem returns negative `best_value`, that's correct (it's the negated objective). If a `min` problem returns positive when the true optimum is negative, that's also correct. Check `metadata["sense"]` and `metadata["objective"]`.
 - **CP-SAT with continuous vars.** CP-SAT requires every variable integer-valued. Use HiGHS for mixed/continuous models.
 - **Path-traversal manifest.** `entrypoint` must be relative and inside the repo. `../foo.py:Bar` is rejected at load time.
 - **Remote loads need opt-in.** `github:owner/repo@sha:subdir` requires `QUBOTS_TRUST_REMOTE_CODE=1` (or `--trust-remote-code`). Do not silently set this for the user — it executes arbitrary third-party Python.
-- **Dense MPS reader.** `MPSProblem` builds a dense matrix. Don't try to load million-nonzero MIPLIB instances yet; start with `gen-ip002` / `flugpl`-class instances.
+- **MPS dense vs sparse.** `read_mps()` preserves dense behavior for small examples. `read_mps_sparse()` and imported MPS problem specs use `SparseMILPModel`; prefer sparse rows for larger instances.
 - **Don't invent constraints.** If the user's spec is incomplete, ask. The previous attempt at LLM-generated formulations was removed because it produced plausible-looking but wrong models — do not bring that back.
 
 ## Checklist before declaring a component done

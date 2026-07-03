@@ -1,0 +1,105 @@
+{
+  "artifact_type": "qubots.benchmark_report",
+  "qubots_version": "3.0.0",
+  "dataset_path": "/home/ileo/AProjects/qubots/integrations/datasets/continuous_blending.yaml",
+  "problem_repo": "/home/ileo/AProjects/qubots/integrations/continuous_blending_problem",
+  "repeats": 1,
+  "seed": 7,
+  "results": [
+    {
+      "optimizer": "integrations/cvxpy_lp_optimizer",
+      "display_name": "cvxpy_lp",
+      "source_type": "repo",
+      "num_runs": 1,
+      "mean_best_value": 12.999999987079242,
+      "mean_runtime_seconds": 0.01908081599685829,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {
+            "spec": "/home/ileo/AProjects/qubots/integrations/continuous_blending_problem",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/continuous_blending_problem",
+            "ref": null
+          },
+          "optimizer_source": {
+            "spec": "integrations/cvxpy_lp_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/cvxpy_lp_optimizer",
+            "ref": null
+          },
+          "data_hash": null,
+          "detector": null,
+          "solver_parameters": {
+            "solver": "CLARABEL",
+            "log_to_console": false
+          },
+          "best_value": 12.999999987079242,
+          "best_solution": [
+            2.0000000054988005,
+            2.9999999920272136
+          ],
+          "objective": 12.999999987079242,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.01908081599685829,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    },
+    {
+      "optimizer": "integrations/pyomo_milp_optimizer",
+      "display_name": "pyomo_milp",
+      "source_type": "repo",
+      "num_runs": 1,
+      "mean_best_value": 13.0,
+      "mean_runtime_seconds": 0.007219220002298243,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {
+            "spec": "/home/ileo/AProjects/qubots/integrations/continuous_blending_problem",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/continuous_blending_problem",
+            "ref": null
+          },
+          "optimizer_source": {
+            "spec": "integrations/pyomo_milp_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/pyomo_milp_optimizer",
+            "ref": null
+          },
+          "data_hash": null,
+          "detector": null,
+          "solver_parameters": {
+            "solver": "appsi_highs",
+            "time_limit_seconds": null,
+            "log_to_console": false
+          },
+          "best_value": 13.0,
+          "best_solution": [
+            2.0,
+            3.0
+          ],
+          "objective": 13.0,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.007219220002298243,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    }
+  ]
+}

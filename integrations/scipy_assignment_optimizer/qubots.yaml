@@ -1,0 +1,12 @@
+qubots_schema_version: 3
+type: optimizer
+name: scipy_assignment
+entrypoint: qubot.py:SciPyAssignmentOptimizer
+capabilities:
+  - blackbox
+  - integer_only
+requirements:
+  - "scipy>=1.10"
+metrics:
+  - total_cost
+parameters: {}

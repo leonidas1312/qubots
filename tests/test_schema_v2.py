@@ -1,8 +1,9 @@
-"""Schema v2 introduces a top-level ``requirements:`` field on component manifests.
+"""Manifest schema compatibility tests.
 
 v1 manifests must continue to load (no ``requirements`` field, treated as []).
-v2 manifests are accepted and parsed. Malformed ``requirements`` entries are
-rejected by both ``load_manifest`` and ``validate_repo``.
+v2 manifests are accepted and parsed. v3 adds optional capabilities and
+Rastion-facing metadata. Malformed ``requirements`` entries are rejected by both
+``load_manifest`` and ``validate_repo``.
 """
 
 from __future__ import annotations
@@ -27,10 +28,11 @@ def _write_manifest(repo: Path, body: str) -> None:
     (repo / "qubots.yaml").write_text(body, encoding="utf-8")
 
 
-def test_current_schema_is_v2() -> None:
-    assert CURRENT_SCHEMA_VERSION == 2
+def test_current_schema_is_v3() -> None:
+    assert CURRENT_SCHEMA_VERSION == 3
     assert 1 in SUPPORTED_SCHEMA_VERSIONS  # v1 backward compat
     assert 2 in SUPPORTED_SCHEMA_VERSIONS
+    assert 3 in SUPPORTED_SCHEMA_VERSIONS
 
 
 def test_v1_manifest_still_loads_with_empty_requirements(tmp_path: Path) -> None:
@@ -70,6 +72,42 @@ def test_v2_manifest_with_requirements_loads(tmp_path: Path) -> None:
     manifest = load_manifest(repo)
     assert manifest.schema_version == 2
     assert manifest.requirements == ["highspy>=1.7", "certifi>=2024.0"]
+
+
+def test_v3_manifest_with_detection_metadata_loads(tmp_path: Path) -> None:
+    repo = tmp_path / "v3_repo"
+    _write_manifest(
+        repo,
+        "\n".join(
+            [
+                "qubots_schema_version: 3",
+                "type: problem",
+                "name: imported_knapsack",
+                "entrypoint: qubot.py:ImportedDataProblem",
+                "capabilities:",
+                "  - blackbox",
+                "  - milp_dense",
+                "problem_family: knapsack",
+                "data_schema:",
+                "  detector: item_table",
+                "  source_format: csv",
+                "metrics:",
+                "  - total_value",
+                "license: MIT",
+                "citation: Example",
+                "rastion_card: problem_card.yaml",
+            ]
+        ),
+    )
+    manifest = load_manifest(repo)
+    assert manifest.schema_version == 3
+    assert manifest.capabilities == ["blackbox", "milp_dense"]
+    assert manifest.problem_family == "knapsack"
+    assert manifest.data_schema["detector"] == "item_table"
+    assert manifest.metrics == ["total_value"]
+    assert manifest.license == "MIT"
+    assert manifest.citation == "Example"
+    assert manifest.rastion_card == "problem_card.yaml"
 
 
 def test_v2_manifest_rejects_non_list_requirements(tmp_path: Path) -> None:

@@ -2,6 +2,37 @@
 
 All notable changes to qubots are tracked here.
 
+## 3.0.0 — 2026-07-03
+
+v3 adds a deterministic import layer for common optimization data patterns.
+The focus is autodetect + run, not free-form LLM model generation.
+
+### Added
+
+- `qubots.detect` with ranked, explainable detectors for MPS/LP, TSPLIB,
+  edge lists, cost matrices, knapsack item tables, existing manifests, and
+  dataset YAMLs.
+- `AutoProblem.from_data(...)` for loading supported files directly.
+- `qubots detect`, `qubots import`, and `qubots publish-check` CLI commands.
+- `ProblemDetection`, `ProblemSpec`, and `ProblemCard` metadata models.
+- Imported problem repos with `problem_spec.yaml`, `problem_card.yaml`,
+  `detection.json`, copied source data, and schema-v3 manifest metadata.
+- `SparseMILPModel` plus sparse MPS reading via `read_mps_sparse()`.
+- Benchmark JSON artifacts now include qubots version, source metadata,
+  data hash, detector, solver parameters, objective, and feasibility when
+  available.
+- Example pilot data and pilot notes under `examples/pilots/` and
+  `docs/pilots/`.
+
+### Compatibility
+
+- v1/v2 manifests remain supported.
+- `MILPModel` and the dense `read_mps()` path remain available for existing
+  examples and small instances.
+- HiGHS and OR-Tools native wheels may conflict when imported in one Python
+  process on Python 3.14. Install/use one native backend per environment for
+  now when running optional solver demos.
+
 ## 2.0.0 — 2026-05-09
 
 This is a clean break from the 1.x line, which had drifted toward

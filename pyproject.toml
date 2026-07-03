@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "qubots"
-version = "2.0.0"
+version = "3.0.0"
 description = "Local-first optimization framework with a HuggingFace-style hub for pluggable problems and solvers."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -55,10 +55,36 @@ dev = ["pytest>=7.0"]
 highs = ["highspy>=1.7"]
 cpsat = ["ortools>=9.10"]
 miplib = ["highspy>=1.7", "certifi>=2024.0.0"]
+integrations = [
+  "networkx>=3.0",
+  "scipy>=1.10",
+  "pulp>=3.0",
+  "pandas>=2.0",
+  "cvxpy>=1.4",
+  "pyomo>=6.8",
+  "optuna>=4.0",
+  "jax>=0.4",
+  "jaxlib>=0.4",
+  "dimod>=0.12",
+  "dwave-neal>=0.6",
+  "qiskit>=2.0",
+]
 all = [
   "highspy>=1.7",
   "ortools>=9.10",
   "certifi>=2024.0.0",
+  "networkx>=3.0",
+  "scipy>=1.10",
+  "pulp>=3.0",
+  "pandas>=2.0",
+  "cvxpy>=1.4",
+  "pyomo>=6.8",
+  "optuna>=4.0",
+  "jax>=0.4",
+  "jaxlib>=0.4",
+  "dimod>=0.12",
+  "dwave-neal>=0.6",
+  "qiskit>=2.0",
 ]
 
 [project.scripts]

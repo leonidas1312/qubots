@@ -1,0 +1,27 @@
+{
+  "artifact_type": "qubots.problem_detection",
+  "data_hash": "sha256:a1f0cb79a95639450dd984473a00efca24365457153d7fcb859c6581ddab4c2c",
+  "detection": {
+    "confidence": 0.96,
+    "detector": "mps_lp",
+    "evidence": [
+      "File extension is .mps.",
+      "Text contains MPS sections ROWS/COLUMNS/RHS."
+    ],
+    "family": "milp",
+    "parameters": {
+      "mps_path": "/home/ileo/.cache/qubots/miplib/flugpl.mps",
+      "sparse": true
+    },
+    "path": "/home/ileo/.cache/qubots/miplib/flugpl.mps",
+    "required_columns": [],
+    "required_files": [
+      "flugpl.mps"
+    ],
+    "schema_version": 3,
+    "warnings": []
+  },
+  "qubots_version": "3.0.0",
+  "source_path": "/home/ileo/.cache/qubots/miplib/flugpl.mps",
+  "stored_source_path": "data/flugpl.mps"
+}

@@ -1,0 +1,17 @@
+schema_version: 3
+name: tiny_maxcut
+family: maxcut
+domain: graph-optimization
+objective_sense: max
+variables:
+  nodes: 4
+constraints:
+  edges: 4
+data_files:
+- data/graph.edgelist
+metrics:
+- cut_weight
+license: null
+citation: null
+validation_status: valid
+warnings: []

@@ -1,0 +1,18 @@
+qubots_schema_version: 3
+type: optimizer
+name: cvxpy_lp
+entrypoint: qubot.py:CVXPYLPOptimizer
+capabilities:
+  - milp_dense
+  - milp_sparse
+  - continuous
+requirements:
+  - "cvxpy>=1.4"
+metrics:
+  - objective
+  - feasibility
+parameters:
+  solver:
+    default: CLARABEL
+  log_to_console:
+    default: false

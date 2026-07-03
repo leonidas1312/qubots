@@ -1,0 +1,31 @@
+{
+  "artifact_type": "qubots.problem_detection",
+  "data_hash": "sha256:b7e22e335c51d8c1f7273b123ba5e26fe528ad34c400602a3e31222c02a4f818",
+  "detections": [
+    {
+      "confidence": 0.86,
+      "detector": "edge_list",
+      "evidence": [
+        "Parsed 78 edge rows over 34 node labels.",
+        "Rows have source/target[/weight] shape.",
+        "Detected edge weights."
+      ],
+      "family": "maxcut",
+      "parameters": {
+        "edge_path": "/home/ileo/AProjects/qubots/examples/pilots/qoblib_karate_edges.gph",
+        "n_edges": 78,
+        "n_nodes": 34,
+        "weighted": true
+      },
+      "path": "/home/ileo/AProjects/qubots/examples/pilots/qoblib_karate_edges.gph",
+      "required_columns": [],
+      "required_files": [
+        "qoblib_karate_edges.gph"
+      ],
+      "schema_version": 3,
+      "warnings": []
+    }
+  ],
+  "path": "/home/ileo/AProjects/qubots/examples/pilots/qoblib_karate_edges.gph",
+  "qubots_version": "3.0.0"
+}

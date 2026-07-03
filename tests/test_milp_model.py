@@ -1,6 +1,6 @@
 import pytest
 
-from qubots import MILPModel, SupportsMILP
+from qubots import MILPModel, SparseMILPModel, SupportsMILP
 from qubots.core.problem import BaseProblem
 
 
@@ -13,6 +13,26 @@ def test_milp_model_validates_shape() -> None:
 
     with pytest.raises(ValueError):
         MILPModel(sense="min", c=[1.0], A_eq=[[1.0]], b_eq=[1.0, 2.0])
+
+
+def test_sparse_milp_model_validates_and_converts_to_dense() -> None:
+    sparse = SparseMILPModel(
+        sense="max",
+        c=[1.0, 2.0, 3.0],
+        integrality=[True, True, True],
+        lb=[0.0, 0.0, 0.0],
+        ub=[1.0, 1.0, 1.0],
+        A_ub=[[(0, 2.0), (2, 1.0)]],
+        b_ub=[2.0],
+    )
+    assert sparse.n_vars == 3
+    assert sparse.nnz == 2
+    assert sparse.is_feasible([1.0, 1.0, 0.0])
+    assert not sparse.is_feasible([1.0, 0.0, 1.0])
+
+    dense = sparse.to_dense()
+    assert isinstance(dense, MILPModel)
+    assert dense.A_ub == [[2.0, 0.0, 1.0]]
 
 
 def test_milp_model_defaults_fill_in() -> None:

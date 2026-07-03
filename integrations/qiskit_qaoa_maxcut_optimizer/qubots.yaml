@@ -1,0 +1,24 @@
+qubots_schema_version: 3
+type: optimizer
+name: qiskit_qaoa_maxcut
+entrypoint: qubot.py:QiskitQAOAMaxCutOptimizer
+capabilities:
+  - blackbox
+  - graph
+requirements:
+  - "qiskit>=2.0"
+metrics:
+  - cut_weight
+parameters:
+  p:
+    default: 1
+  gamma_grid:
+    default: 9
+  beta_grid:
+    default: 9
+  shots:
+    default: 512
+  seed:
+    default: 0
+  max_qubits:
+    default: 10

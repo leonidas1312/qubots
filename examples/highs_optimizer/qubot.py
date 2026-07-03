@@ -18,7 +18,7 @@ import math
 import time
 from typing import Any
 
-from qubots.core.milp import MILPModel, SupportsMILP
+from qubots.core.milp import MILPModel, SparseMILPModel, SupportsMILP
 from qubots.core.optimizer import BaseOptimizer
 from qubots.core.types import Result
 
@@ -42,7 +42,18 @@ class HiGHSOptimizer(BaseOptimizer):
         self.threads: int | None = None
         self.log_to_console: bool = False
 
-    def _build_model(self, milp: MILPModel) -> Any:
+    @staticmethod
+    def _row_entries(
+        milp: MILPModel | SparseMILPModel, row: Any
+    ) -> tuple[list[int], list[float]]:
+        if isinstance(milp, SparseMILPModel):
+            return [int(i) for i, _ in row], [float(v) for _, v in row]
+
+        indices = [i for i, a in enumerate(row) if a != 0.0]
+        values = [float(row[i]) for i in indices]
+        return indices, values
+
+    def _build_model(self, milp: MILPModel | SparseMILPModel) -> Any:
         highspy = _import_highspy()
         h = highspy.Highs()
         if not self.log_to_console:
@@ -73,13 +84,11 @@ class HiGHSOptimizer(BaseOptimizer):
                 h.changeColIntegrality(j, highspy.HighsVarType.kInteger)
 
         for row, b in zip(milp.A_ub, milp.b_ub):
-            indices = [i for i, a in enumerate(row) if a != 0.0]
-            values = [float(row[i]) for i in indices]
+            indices, values = self._row_entries(milp, row)
             h.addRow(-highspy.kHighsInf, float(b), len(indices), indices, values)
 
         for row, b in zip(milp.A_eq, milp.b_eq):
-            indices = [i for i, a in enumerate(row) if a != 0.0]
-            values = [float(row[i]) for i in indices]
+            indices, values = self._row_entries(milp, row)
             h.addRow(float(b), float(b), len(indices), indices, values)
 
         return h, highspy
@@ -104,14 +113,20 @@ class HiGHSOptimizer(BaseOptimizer):
         return "unknown"
 
     def optimize(self, problem: Any) -> Result:
-        if isinstance(problem, MILPModel):
+        if isinstance(problem, (MILPModel, SparseMILPModel)):
             milp = problem
         elif isinstance(problem, SupportsMILP):
             milp = problem.as_milp()
+            if not isinstance(milp, (MILPModel, SparseMILPModel)):
+                raise TypeError(
+                    "as_milp() must return MILPModel or SparseMILPModel; "
+                    f"got {type(milp).__name__}"
+                )
         else:
             raise TypeError(
-                "HiGHSOptimizer requires a problem implementing 'as_milp() -> MILPModel' "
-                f"or a MILPModel directly; got {type(problem).__name__}"
+                "HiGHSOptimizer requires a problem implementing as_milp() "
+                "or a MILPModel/SparseMILPModel directly; "
+                f"got {type(problem).__name__}"
             )
 
         start = time.perf_counter()
@@ -156,7 +171,10 @@ class HiGHSOptimizer(BaseOptimizer):
             "sense": milp.sense,
             "n_vars": milp.n_vars,
             "n_constraints": milp.n_constraints,
+            "model_format": "sparse" if isinstance(milp, SparseMILPModel) else "dense",
         }
+        if isinstance(milp, SparseMILPModel):
+            metadata["nnz"] = milp.nnz
         for attr in (
             "mip_gap",
             "mip_node_count",

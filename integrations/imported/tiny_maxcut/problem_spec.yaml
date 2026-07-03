@@ -1,0 +1,30 @@
+schema_version: 3
+family: maxcut
+detector: edge_list
+source_path: data/graph.edgelist
+source_format: edgelist
+data_hash: sha256:09e474f973a07515961358fab09d72ad55731e34584a50f56453bdbc6461c9ca
+parameters:
+  edge_path: data/graph.edgelist
+  n_nodes: 4
+  n_edges: 4
+  weighted: true
+detection:
+  schema_version: 3
+  family: maxcut
+  confidence: 0.86
+  detector: edge_list
+  evidence:
+  - Parsed 4 edge rows over 4 node labels.
+  - Rows have source/target[/weight] shape.
+  - Detected edge weights.
+  required_columns: []
+  required_files:
+  - graph.edgelist
+  warnings: []
+  parameters:
+    edge_path: /home/ileo/AProjects/qubots/tests/fixtures/detect/graph.edgelist
+    n_nodes: 4
+    n_edges: 4
+    weighted: true
+  path: /home/ileo/AProjects/qubots/tests/fixtures/detect/graph.edgelist

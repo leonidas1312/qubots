@@ -1,0 +1,18 @@
+qubots_schema_version: 3
+type: problem
+name: tiny_maxcut
+entrypoint: qubot.py:ImportedDataProblem
+capabilities:
+- blackbox
+- graph
+problem_family: maxcut
+data_schema:
+  source_format: edgelist
+  detector: edge_list
+  data_hash: sha256:09e474f973a07515961358fab09d72ad55731e34584a50f56453bdbc6461c9ca
+metrics:
+- cut_weight
+license: null
+citation: null
+rastion_card: problem_card.yaml
+parameters: {}

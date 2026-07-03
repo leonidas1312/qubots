@@ -1,6 +1,8 @@
 type: optimizer
 name: random_search
 entrypoint: qubot.py:RandomSearchOptimizer
+capabilities:
+  - blackbox
 parameters:
   iterations:
     default: 200

@@ -13,6 +13,7 @@ import yaml
 
 from qubots.core.optimizer import BaseOptimizer
 from qubots.core.problem import BaseProblem
+from qubots.hub.manifests import SUPPORTED_SCHEMA_VERSIONS
 from qubots.hub.resolver import resolve_repo_info
 
 
@@ -55,6 +56,49 @@ def _validate_parameters_schema(raw: dict[str, Any], issues: list[str]) -> None:
             continue
         if not _is_yaml_serializable(config):
             issues.append(f"parameters.{param_name} must be YAML-serializable")
+
+
+def _validate_schema_version(raw: dict[str, Any], issues: list[str]) -> None:
+    if "qubots_schema_version" not in raw:
+        return
+    value = raw["qubots_schema_version"]
+    if isinstance(value, bool) or not isinstance(value, int):
+        issues.append("Manifest 'qubots_schema_version' must be an integer")
+        return
+    if value not in SUPPORTED_SCHEMA_VERSIONS:
+        issues.append(
+            "Unsupported qubots_schema_version="
+            f"{value}; supported versions: {sorted(SUPPORTED_SCHEMA_VERSIONS)}"
+        )
+
+
+def _validate_string_list_field(
+    raw: dict[str, Any], field_name: str, issues: list[str]
+) -> None:
+    if field_name not in raw:
+        return
+    value = raw[field_name]
+    if not isinstance(value, list):
+        issues.append(f"Manifest '{field_name}' must be a list of strings")
+        return
+    for index, item in enumerate(value):
+        if not isinstance(item, str) or not item.strip():
+            issues.append(f"{field_name}[{index}] must be a non-empty string")
+
+
+def _validate_v3_metadata_schema(raw: dict[str, Any], issues: list[str]) -> None:
+    _validate_string_list_field(raw, "capabilities", issues)
+    _validate_string_list_field(raw, "metrics", issues)
+
+    if "problem_family" in raw and not isinstance(raw.get("problem_family"), str):
+        issues.append("Manifest 'problem_family' must be a string")
+
+    if "data_schema" in raw and not isinstance(raw.get("data_schema"), dict):
+        issues.append("Manifest 'data_schema' must be a mapping")
+
+    for field_name in ("license", "citation", "rastion_card"):
+        if field_name in raw and raw[field_name] is not None and not isinstance(raw[field_name], str):
+            issues.append(f"Manifest '{field_name}' must be a string or null")
 
 
 _PIP_SPEC_RE = re.compile(
@@ -252,9 +296,11 @@ def validate_repo(path: str | Path) -> list[str]:
     if "name" in raw_manifest and not isinstance(raw_manifest.get("name"), str):
         issues.append("Manifest 'name' must be a string")
 
+    _validate_schema_version(raw_manifest, issues)
     _validate_parameters_schema(raw_manifest, issues)
     _validate_tunable_schema(raw_manifest, issues)
     _validate_requirements_schema(raw_manifest, issues)
+    _validate_v3_metadata_schema(raw_manifest, issues)
 
     if "entrypoint" in raw_manifest:
         _validate_entrypoint(repo, component_type, raw_manifest.get("entrypoint"), issues)

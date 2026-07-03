@@ -1,0 +1,3 @@
+problem: ../imported/tiny_maxcut/problem_spec.yaml
+instances:
+  - {}

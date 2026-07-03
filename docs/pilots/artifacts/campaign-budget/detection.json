@@ -1,0 +1,31 @@
+{
+  "artifact_type": "qubots.problem_detection",
+  "data_hash": "sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de",
+  "detections": [
+    {
+      "confidence": 0.91,
+      "detector": "item_table",
+      "evidence": [
+        "Found value/weight/capacity item table with 5 items."
+      ],
+      "family": "knapsack",
+      "parameters": {
+        "item_path": "/home/ileo/AProjects/qubots/examples/pilots/campaign_budget.csv",
+        "n_items": 5
+      },
+      "path": "/home/ileo/AProjects/qubots/examples/pilots/campaign_budget.csv",
+      "required_columns": [
+        "value",
+        "weight",
+        "capacity"
+      ],
+      "required_files": [
+        "campaign_budget.csv"
+      ],
+      "schema_version": 3,
+      "warnings": []
+    }
+  ],
+  "path": "/home/ileo/AProjects/qubots/examples/pilots/campaign_budget.csv",
+  "qubots_version": "3.0.0"
+}

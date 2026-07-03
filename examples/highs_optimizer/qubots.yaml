@@ -1,7 +1,12 @@
-qubots_schema_version: 2
+qubots_schema_version: 3
 type: optimizer
 name: highs
 entrypoint: qubot.py:HiGHSOptimizer
+capabilities:
+  - milp_dense
+  - milp_sparse
+  - continuous
+  - integer_only
 requirements:
   - "highspy>=1.7"
 parameters:

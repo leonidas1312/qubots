@@ -1,8 +1,8 @@
 """Manifest parsing helpers.
 
 Manifests are versioned via the top-level ``qubots_schema_version`` key.
-A missing key is treated as version 1 for backward compatibility with
-the original 0.1.x manifests (which had no version field). Future
+A missing key is treated as the current schema for backward compatibility with
+the original manifests in this repo (which had no version field). Future
 incompatible schema changes increment ``CURRENT_SCHEMA_VERSION`` and add
 to ``SUPPORTED_SCHEMA_VERSIONS``; loaders refuse versions they don't
 understand with an explicit "upgrade qubots" message.
@@ -12,6 +12,11 @@ pip-installable specs (e.g. ``["highspy>=1.7"]``). The CI runner used by
 the community leaderboard installs these into an isolated venv per
 submission. v1 manifests have no ``requirements`` field and are loaded
 with an empty list.
+
+v3 adds optional autodetection/Rastion metadata: ``capabilities``,
+``problem_family``, ``data_schema``, ``metrics``, ``license``, ``citation``,
+and ``rastion_card``. These fields are metadata only; v1/v2 repos remain
+loadable and runnable.
 """
 
 from dataclasses import dataclass, field
@@ -21,8 +26,8 @@ from typing import Any
 import yaml
 
 
-CURRENT_SCHEMA_VERSION = 2
-SUPPORTED_SCHEMA_VERSIONS: frozenset[int] = frozenset({1, 2})
+CURRENT_SCHEMA_VERSION = 3
+SUPPORTED_SCHEMA_VERSIONS: frozenset[int] = frozenset({1, 2, 3})
 
 
 @dataclass
@@ -34,6 +39,13 @@ class Manifest:
     parameters: dict[str, dict[str, Any]] = field(default_factory=dict)
     tunable_parameters: dict[str, dict[str, Any]] = field(default_factory=dict)
     requirements: list[str] = field(default_factory=list)
+    capabilities: list[str] = field(default_factory=list)
+    problem_family: str | None = None
+    data_schema: dict[str, Any] = field(default_factory=dict)
+    metrics: list[str] = field(default_factory=list)
+    license: str | None = None
+    citation: str | None = None
+    rastion_card: str | None = None
 
 
 def _coerce_schema_version(raw: Any) -> int:
@@ -53,6 +65,22 @@ def _coerce_schema_version(raw: Any) -> int:
     raise ValueError(
         f"qubots_schema_version must be an integer, got {type(raw).__name__}"
     )
+
+
+def _coerce_optional_string_list(raw: Any, key: str) -> list[str]:
+    if raw is None:
+        return []
+    if isinstance(raw, list) and all(isinstance(item, str) for item in raw):
+        return list(raw)
+    raise ValueError(f"Manifest '{key}' must be a list of strings")
+
+
+def _coerce_optional_string(raw: Any, key: str) -> str | None:
+    if raw is None:
+        return None
+    if isinstance(raw, str):
+        return raw
+    raise ValueError(f"Manifest '{key}' must be a string")
 
 
 def load_manifest(repo_path: str | Path) -> Manifest:
@@ -96,6 +124,17 @@ def load_manifest(repo_path: str | Path) -> Manifest:
             "Manifest 'requirements' must be a list of pip-spec strings"
         )
 
+    capabilities = _coerce_optional_string_list(raw.get("capabilities"), "capabilities")
+    metrics = _coerce_optional_string_list(raw.get("metrics"), "metrics")
+
+    data_schema_raw = raw.get("data_schema")
+    if data_schema_raw is None:
+        data_schema: dict[str, Any] = {}
+    elif isinstance(data_schema_raw, dict):
+        data_schema = dict(data_schema_raw)
+    else:
+        raise ValueError("Manifest 'data_schema' must be a mapping")
+
     return Manifest(
         type=str(raw["type"]),
         name=str(raw["name"]),
@@ -104,4 +143,11 @@ def load_manifest(repo_path: str | Path) -> Manifest:
         parameters=parameters,
         tunable_parameters=tunable_parameters,
         requirements=requirements,
+        capabilities=capabilities,
+        problem_family=_coerce_optional_string(raw.get("problem_family"), "problem_family"),
+        data_schema=data_schema,
+        metrics=metrics,
+        license=_coerce_optional_string(raw.get("license"), "license"),
+        citation=_coerce_optional_string(raw.get("citation"), "citation"),
+        rastion_card=_coerce_optional_string(raw.get("rastion_card"), "rastion_card"),
     )

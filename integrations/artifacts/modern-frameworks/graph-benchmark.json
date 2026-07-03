@@ -1,0 +1,159 @@
+{
+  "artifact_type": "qubots.benchmark_report",
+  "qubots_version": "3.0.0",
+  "dataset_path": "/home/ileo/AProjects/qubots/docs/pilots/artifacts/qoblib-karate-maxcut/dataset.yaml",
+  "problem_repo": "/home/ileo/AProjects/qubots/docs/pilots/artifacts/qoblib-karate-maxcut/imported_problem/problem_spec.yaml",
+  "repeats": 1,
+  "seed": 7,
+  "results": [
+    {
+      "optimizer": "integrations/jax_maxcut_optimizer",
+      "display_name": "jax_maxcut",
+      "source_type": "repo",
+      "num_runs": 1,
+      "mean_best_value": -54.0,
+      "mean_runtime_seconds": 0.6850491479999619,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "integrations/jax_maxcut_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/jax_maxcut_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:b7e22e335c51d8c1f7273b123ba5e26fe528ad34c400602a3e31222c02a4f818",
+          "detector": "edge_list",
+          "solver_parameters": {
+            "max_passes": 20,
+            "seed": 0
+          },
+          "best_value": -54.0,
+          "best_solution": [
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0
+          ],
+          "objective": -54.0,
+          "feasibility": {
+            "available": false
+          },
+          "runtime_seconds": 0.6850491479999619,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    },
+    {
+      "optimizer": "integrations/dwave_neal_maxcut_optimizer",
+      "display_name": "dwave_neal_maxcut",
+      "source_type": "repo",
+      "num_runs": 1,
+      "mean_best_value": -61.0,
+      "mean_runtime_seconds": 0.04410994100908283,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "integrations/dwave_neal_maxcut_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/dwave_neal_maxcut_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:b7e22e335c51d8c1f7273b123ba5e26fe528ad34c400602a3e31222c02a4f818",
+          "detector": "edge_list",
+          "solver_parameters": {
+            "num_reads": 50,
+            "sweeps": 100,
+            "seed": 0
+          },
+          "best_value": -61.0,
+          "best_solution": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0
+          ],
+          "objective": -61.0,
+          "feasibility": {
+            "available": false
+          },
+          "runtime_seconds": 0.04410994100908283,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    }
+  ]
+}

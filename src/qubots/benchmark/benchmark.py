@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from importlib.metadata import PackageNotFoundError, version as pkg_version
 from pathlib import Path
 import random
 import statistics
@@ -10,6 +11,8 @@ from typing import Any
 
 from qubots.auto.auto_optimizer import AutoOptimizer
 from qubots.auto.auto_problem import AutoProblem
+from qubots.detect.models import ProblemSpec
+from qubots.detect.problems import problem_from_spec
 from qubots.hub.resolver import derive_repo_name, is_github_spec
 from qubots.tune.dataset import load_dataset_spec
 
@@ -74,6 +77,50 @@ def _load_optimizer_from_spec(spec: str | Path) -> tuple[Any, str]:
     return AutoOptimizer.from_repo(spec), "repo"
 
 
+def _package_version() -> str:
+    try:
+        return pkg_version("qubots")
+    except PackageNotFoundError:
+        return "0.0.0"
+
+
+def _is_problem_spec_file(spec: str | Path) -> bool:
+    text = str(spec)
+    if is_github_spec(text):
+        return False
+    path = Path(text)
+    return path.is_file() and path.suffix.lower() in {".yaml", ".yml"}
+
+
+def _load_problem_from_spec(spec: str | Path) -> Any:
+    if _is_problem_spec_file(spec):
+        try:
+            ProblemSpec.from_yaml(spec)
+        except Exception:
+            pass
+        else:
+            return problem_from_spec(spec)
+    return AutoProblem.from_repo(spec)
+
+
+def _feasibility_for_result(problem: Any, result: Any) -> dict[str, Any]:
+    if result.best_solution is None or not hasattr(problem, "as_milp"):
+        return {"available": False}
+    try:
+        milp = problem.as_milp()
+        if not hasattr(milp, "is_feasible"):
+            return {"available": False}
+        return {
+            "available": True,
+            "feasible": bool(milp.is_feasible(list(result.best_solution))),
+        }
+    except Exception as exc:
+        return {
+            "available": False,
+            "error": f"{type(exc).__name__}: {exc}",
+        }
+
+
 def _display_name_for_optimizer(
     optimizer_spec: str | Path,
     source_type: str,
@@ -123,6 +170,8 @@ def benchmark(
     )
 
     report: dict[str, Any] = {
+        "artifact_type": "qubots.benchmark_report",
+        "qubots_version": _package_version(),
         "dataset_path": str(dataset_file),
         "problem_repo": str(problem_spec),
         "repeats": int(repeats),
@@ -150,7 +199,7 @@ def benchmark(
                         + instance_index
                     )
 
-                problem = AutoProblem.from_repo(problem_spec)
+                problem = _load_problem_from_spec(problem_spec)
                 resolved_params = _resolve_relative_path_params(
                     instance_params, dataset_file
                 )
@@ -167,15 +216,37 @@ def benchmark(
                 )
 
                 result = optimizer.optimize(problem)
+                result_metadata = getattr(result, "metadata", {}) or {}
+                problem_source = getattr(problem, "_qubots_source", {})
+                optimizer_source = getattr(optimizer, "_qubots_source", {})
 
                 runs.append(
                     {
+                        "artifact_type": "qubots.benchmark_run",
+                        "qubots_version": _package_version(),
                         "repeat": repeat_index,
                         "instance_index": instance_index,
                         "instance_params": dict(instance_params),
+                        "problem_source": dict(problem_source),
+                        "optimizer_source": dict(optimizer_source),
+                        "data_hash": getattr(
+                            problem,
+                            "_qubots_data_hash",
+                            problem_source.get("data_hash"),
+                        ),
+                        "detector": getattr(
+                            problem,
+                            "_qubots_detector",
+                            problem_source.get("detector"),
+                        ),
+                        "solver_parameters": dict(getattr(optimizer, "parameters", {})),
                         "best_value": float(result.best_value),
+                        "best_solution": result.best_solution,
+                        "objective": result_metadata.get("objective", result.best_value),
+                        "feasibility": _feasibility_for_result(problem, result),
                         "runtime_seconds": float(result.runtime_seconds),
                         "status": str(result.status),
+                        "error": getattr(result, "error", None),
                     }
                 )
 

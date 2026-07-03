@@ -14,6 +14,13 @@ from qubots.benchmark.benchmark import (
     report_to_markdown,
     write_report,
 )
+from qubots.detect import (
+    data_hash,
+    detect as detect_problem,
+    import_problem,
+    publish_check,
+    write_publish_check,
+)
 from qubots.export.trained import export_trained_optimizer
 from qubots.hub.resolver import RemoteRepoNotAllowedError
 from qubots.leaderboard import (
@@ -68,6 +75,149 @@ def version() -> None:
         typer.echo(pkg_version("qubots"))
     except PackageNotFoundError:
         typer.echo("0.0.0")
+
+
+def _detect_artifact(path: Path, detections: list[Any]) -> dict[str, Any]:
+    try:
+        qubots_version = pkg_version("qubots")
+    except PackageNotFoundError:
+        qubots_version = "0.0.0"
+
+    payload: dict[str, Any] = {
+        "artifact_type": "qubots.problem_detection",
+        "qubots_version": qubots_version,
+        "path": str(path.expanduser().resolve()),
+        "detections": [item.to_dict() for item in detections],
+    }
+    if path.exists():
+        payload["data_hash"] = data_hash(path)
+    return payload
+
+
+def _write_json_artifact(path: Path, payload: dict[str, Any]) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(payload, f, indent=2, sort_keys=True)
+        f.write("\n")
+    return path
+
+
+@app.command(name="detect")
+def detect_command(
+    path: Path = typer.Argument(..., metavar="PATH"),
+    family: str | None = typer.Option(
+        None, "--family", help="Optional expected family filter."
+    ),
+    detector: str | None = typer.Option(
+        None, "--detector", help="Optional detector name, e.g. mps_lp or tsplib."
+    ),
+    json_output: bool = typer.Option(
+        False, "--json", help="Emit stable JSON instead of text."
+    ),
+    out: Path | None = typer.Option(
+        None, "--out", help="Optional path for detection JSON artifact."
+    ),
+) -> None:
+    """Detect optimization problem families from files or data."""
+    try:
+        detections = detect_problem(path, family=family, detector=detector)
+    except (FileNotFoundError, ValueError) as exc:
+        typer.echo(f"[FAIL] {exc}")
+        raise typer.Exit(code=1) from exc
+
+    artifact = _detect_artifact(path, detections)
+    if out is not None:
+        written = _write_json_artifact(out, artifact)
+        typer.echo(f"Detection JSON written: {written}")
+
+    if json_output:
+        typer.echo(json.dumps(artifact, indent=2, sort_keys=True))
+    else:
+        if not detections:
+            typer.echo("[FAIL] No supported problem family detected.")
+            raise typer.Exit(code=1)
+        for index, detection in enumerate(detections, start=1):
+            typer.echo(
+                f"{index}. {detection.family} "
+                f"({detection.confidence:.2f}, detector={detection.detector})"
+            )
+            for item in detection.evidence:
+                typer.echo(f"   evidence: {item}")
+            for warning in detection.warnings:
+                typer.echo(f"   warning: {warning}")
+
+
+@app.command(name="import")
+def import_command(
+    path: Path = typer.Argument(..., metavar="PATH"),
+    out: Path = typer.Option(..., "--out", help="Output qubot problem repo."),
+    family: str | None = typer.Option(
+        None, "--family", help="Optional expected family filter."
+    ),
+    detector: str | None = typer.Option(
+        None, "--detector", help="Optional detector name, e.g. mps_lp or tsplib."
+    ),
+    confidence_threshold: float = typer.Option(
+        0.75, "--confidence-threshold", min=0.0, max=1.0
+    ),
+    name: str | None = typer.Option(None, "--name", help="Component name override."),
+    force: bool = typer.Option(False, "--force", help="Overwrite output files."),
+) -> None:
+    """Create a reusable qubots problem repo from detected data."""
+    try:
+        result = import_problem(
+            path,
+            out,
+            family=family,
+            detector=detector,
+            confidence_threshold=confidence_threshold,
+            name=name,
+            force=force,
+        )
+    except (FileExistsError, FileNotFoundError, ValueError) as exc:
+        typer.echo(f"[FAIL] {exc}")
+        raise typer.Exit(code=1) from exc
+
+    typer.echo(
+        f"[OK] Imported {result.detection.family} problem "
+        f"({result.detection.detector}) at {result.path}"
+    )
+    for file_path in result.files:
+        typer.echo(f"  + {file_path.relative_to(result.path)}")
+    if result.validation_issues:
+        typer.echo("[FAIL] Imported repo did not validate:")
+        for issue in result.validation_issues:
+            typer.echo(f"  - {issue}")
+        raise typer.Exit(code=1)
+
+
+@app.command(name="publish-check")
+def publish_check_command(
+    path: Path = typer.Argument(..., metavar="PATH"),
+    json_output: bool = typer.Option(
+        False, "--json", help="Emit stable JSON instead of text."
+    ),
+    out: Path | None = typer.Option(
+        None, "--out", help="Optional path for publish-check JSON artifact."
+    ),
+) -> None:
+    """Validate whether a component repo is ready for Rastion-style publishing."""
+    report = publish_check(path)
+    if out is not None:
+        written = write_publish_check(report, out)
+        typer.echo(f"Publish-check JSON written: {written}")
+
+    if json_output:
+        typer.echo(json.dumps(report, indent=2, sort_keys=True))
+    else:
+        label = "[OK]" if report["status"] == "ok" else "[FAIL]"
+        typer.echo(f"{label} {report['repo']}")
+        for issue in report["issues"]:
+            typer.echo(f"  issue: {issue}")
+        for warning in report["warnings"]:
+            typer.echo(f"  warning: {warning}")
+
+    raise typer.Exit(code=0 if report["status"] == "ok" else 1)
 
 
 @app.command()

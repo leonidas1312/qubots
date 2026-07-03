@@ -1,0 +1,71 @@
+{
+  "artifact_type": "qubots.benchmark_report",
+  "qubots_version": "3.0.0",
+  "dataset_path": "/home/ileo/AProjects/qubots/docs/pilots/artifacts/miplib-flugpl/dataset.yaml",
+  "problem_repo": "/home/ileo/AProjects/qubots/docs/pilots/artifacts/miplib-flugpl/imported_problem/problem_spec.yaml",
+  "repeats": 1,
+  "seed": 7,
+  "results": [
+    {
+      "optimizer": "examples/highs_optimizer",
+      "display_name": "highs",
+      "source_type": "repo",
+      "num_runs": 1,
+      "mean_best_value": 1201499.9999999998,
+      "mean_runtime_seconds": 0.16451255598803982,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "examples/highs_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/examples/highs_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:a1f0cb79a95639450dd984473a00efca24365457153d7fcb859c6581ddab4c2c",
+          "detector": "mps_lp",
+          "solver_parameters": {
+            "time_limit_seconds": null,
+            "mip_rel_gap": null,
+            "threads": null,
+            "log_to_console": false
+          },
+          "best_value": 1201499.9999999998,
+          "best_solution": [
+            60.0,
+            6.0,
+            0.0,
+            60.0,
+            6.0,
+            600.0,
+            60.0,
+            16.0,
+            599.9999999999989,
+            70.0,
+            7.0,
+            200.0,
+            70.0,
+            12.0,
+            0.0,
+            75.0,
+            0.0,
+            750.0
+          ],
+          "objective": 1201499.9999999998,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.16451255598803982,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    }
+  ]
+}

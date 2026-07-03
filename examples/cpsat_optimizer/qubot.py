@@ -26,7 +26,7 @@ import math
 import time
 from typing import Any
 
-from qubots.core.milp import MILPModel, SupportsMILP
+from qubots.core.milp import MILPModel, SparseMILPModel, SupportsMILP
 from qubots.core.optimizer import BaseOptimizer
 from qubots.core.types import Result
 
@@ -133,12 +133,22 @@ class CPSATOptimizer(BaseOptimizer):
     def optimize(self, problem: Any) -> Result:
         if isinstance(problem, MILPModel):
             milp = problem
+        elif isinstance(problem, SparseMILPModel):
+            milp = problem.to_dense()
         elif isinstance(problem, SupportsMILP):
             milp = problem.as_milp()
+            if isinstance(milp, SparseMILPModel):
+                milp = milp.to_dense()
+            if not isinstance(milp, MILPModel):
+                raise TypeError(
+                    "as_milp() must return MILPModel or SparseMILPModel; "
+                    f"got {type(milp).__name__}"
+                )
         else:
             raise TypeError(
-                "CPSATOptimizer requires a problem implementing 'as_milp() -> MILPModel' "
-                f"or a MILPModel directly; got {type(problem).__name__}"
+                "CPSATOptimizer requires a problem implementing as_milp() "
+                "or a MILPModel/SparseMILPModel directly; "
+                f"got {type(problem).__name__}"
             )
 
         start = time.perf_counter()

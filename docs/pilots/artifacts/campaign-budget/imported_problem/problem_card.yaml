@@ -1,0 +1,18 @@
+schema_version: 3
+name: campaign_budget_knapsack
+family: knapsack
+domain: packing
+objective_sense: max
+variables:
+  items: 5
+constraints:
+  capacity: single knapsack capacity
+data_files:
+- data/campaign_budget.csv
+metrics:
+- total_value
+- total_weight
+license: null
+citation: null
+validation_status: valid
+warnings: []

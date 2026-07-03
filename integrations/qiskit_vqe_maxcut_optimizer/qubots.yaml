@@ -1,0 +1,20 @@
+qubots_schema_version: 3
+type: optimizer
+name: qiskit_vqe_maxcut
+entrypoint: qubot.py:QiskitVQEMaxCutOptimizer
+capabilities:
+  - blackbox
+  - graph
+requirements:
+  - "qiskit>=2.0"
+metrics:
+  - cut_weight
+parameters:
+  trials:
+    default: 64
+  shots:
+    default: 512
+  seed:
+    default: 0
+  max_qubits:
+    default: 10

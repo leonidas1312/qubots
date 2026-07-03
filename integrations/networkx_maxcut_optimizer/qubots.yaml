@@ -1,0 +1,16 @@
+qubots_schema_version: 3
+type: optimizer
+name: networkx_maxcut
+entrypoint: qubot.py:NetworkXMaxCutOptimizer
+capabilities:
+  - blackbox
+  - graph
+requirements:
+  - "networkx>=3.0"
+metrics:
+  - cut_weight
+parameters:
+  max_passes:
+    default: 20
+  seed:
+    default: 0

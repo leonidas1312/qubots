@@ -1,0 +1,60 @@
+{
+  "artifact_type": "qubots.benchmark_report",
+  "qubots_version": "3.0.0",
+  "dataset_path": "/home/ileo/AProjects/qubots/integrations/datasets/pandas_knapsack.yaml",
+  "problem_repo": "integrations/pandas_knapsack_problem",
+  "repeats": 1,
+  "seed": 7,
+  "results": [
+    {
+      "optimizer": "integrations/pulp_milp_optimizer",
+      "display_name": "pulp_milp",
+      "source_type": "repo",
+      "num_runs": 1,
+      "mean_best_value": -122.0,
+      "mean_runtime_seconds": 0.012537791990325786,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {
+            "spec": "integrations/pandas_knapsack_problem",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/pandas_knapsack_problem",
+            "ref": null
+          },
+          "optimizer_source": {
+            "spec": "integrations/pulp_milp_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/pulp_milp_optimizer",
+            "ref": null
+          },
+          "data_hash": null,
+          "detector": null,
+          "solver_parameters": {
+            "time_limit_seconds": null,
+            "log_to_console": false
+          },
+          "best_value": -122.0,
+          "best_solution": [
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "objective": 122.0,
+          "feasibility": {
+            "available": true,
+            "feasible": true
+          },
+          "runtime_seconds": 0.012537791990325786,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    }
+  ]
+}

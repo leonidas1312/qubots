@@ -112,6 +112,10 @@ def load_component(repo_path: str | Path, expected_type: str) -> Any:
     instance = cls()
     setattr(instance, "_qubots_repo_path", str(repo))
     setattr(instance, "_qubots_manifest", manifest)
+    if manifest.capabilities:
+        setattr(instance, "capabilities", list(manifest.capabilities))
+    if manifest.problem_family is not None:
+        setattr(instance, "problem_family", manifest.problem_family)
 
     defaults = _collect_default_parameters(manifest)
     if defaults and hasattr(instance, "set_parameters"):

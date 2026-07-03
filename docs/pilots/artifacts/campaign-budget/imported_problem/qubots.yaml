@@ -1,0 +1,20 @@
+qubots_schema_version: 3
+type: problem
+name: campaign_budget_knapsack
+entrypoint: qubot.py:ImportedDataProblem
+capabilities:
+- blackbox
+- milp_dense
+- integer_only
+problem_family: knapsack
+data_schema:
+  source_format: csv
+  detector: item_table
+  data_hash: sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de
+metrics:
+- total_value
+- total_weight
+license: null
+citation: null
+rastion_card: problem_card.yaml
+parameters: {}

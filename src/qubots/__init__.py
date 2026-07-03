@@ -5,10 +5,18 @@ from importlib.metadata import PackageNotFoundError, version
 from qubots.auto.auto_optimizer import AutoOptimizer
 from qubots.auto.auto_problem import AutoProblem
 from qubots.benchmark.benchmark import benchmark
-from qubots.core.milp import MILPModel, SupportsMILP
+from qubots.core.milp import MILPModel, SparseMILPModel, SupportsMILP
 from qubots.core.optimizer import BaseOptimizer
 from qubots.core.problem import BaseProblem
 from qubots.core.types import Result
+from qubots.detect import (
+    ProblemCard,
+    ProblemDetection,
+    ProblemSpec,
+    detect,
+    import_problem,
+    publish_check,
+)
 from qubots.leaderboard import (
     LeaderboardReport,
     Submission,
@@ -32,7 +40,14 @@ __all__ = [
     "LeaderboardReport",
     "MILPModel",
     "Pipeline",
+    "ProblemCard",
+    "ProblemDetection",
+    "ProblemSpec",
+    "SparseMILPModel",
+    "detect",
+    "import_problem",
     "pipeline",
+    "publish_check",
     "Result",
     "run_leaderboard",
     "Submission",

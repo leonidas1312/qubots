@@ -1,0 +1,25 @@
+qubots_schema_version: 3
+type: problem
+name: pandas_campaign_knapsack
+entrypoint: qubot.py:PandasKnapsackProblem
+capabilities:
+  - blackbox
+  - milp_dense
+  - integer_only
+problem_family: knapsack
+requirements:
+  - "pandas>=2.0"
+data_schema:
+  source_format: csv
+  columns:
+    - value
+    - weight
+    - capacity
+metrics:
+  - total_value
+  - total_weight
+parameters:
+  item_path:
+    default: data/campaign_budget.csv
+  seed:
+    default: 0

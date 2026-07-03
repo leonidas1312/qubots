@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 class BaseOptimizer(ABC):
     def __init__(self) -> None:
         self.parameters: dict[str, Any] = {}
+        self.capabilities: list[str] = ["blackbox"]
 
     def set_parameters(self, **kwargs: Any) -> None:
         self.parameters.update(kwargs)

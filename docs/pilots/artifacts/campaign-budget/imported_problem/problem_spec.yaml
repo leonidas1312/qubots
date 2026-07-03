@@ -1,0 +1,27 @@
+schema_version: 3
+family: knapsack
+detector: item_table
+source_path: data/campaign_budget.csv
+source_format: csv
+data_hash: sha256:d5bf612bdec5d0d686cbe51b5aad281a014b3534cdf61428766c9282d37e38de
+parameters:
+  item_path: data/campaign_budget.csv
+  n_items: 5
+detection:
+  schema_version: 3
+  family: knapsack
+  confidence: 0.91
+  detector: item_table
+  evidence:
+  - Found value/weight/capacity item table with 5 items.
+  required_columns:
+  - value
+  - weight
+  - capacity
+  required_files:
+  - campaign_budget.csv
+  warnings: []
+  parameters:
+    item_path: /home/ileo/AProjects/qubots/examples/pilots/campaign_budget.csv
+    n_items: 5
+  path: /home/ileo/AProjects/qubots/examples/pilots/campaign_budget.csv

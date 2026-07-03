@@ -1,0 +1,104 @@
+{
+  "artifact_type": "qubots.benchmark_report",
+  "qubots_version": "3.0.0",
+  "dataset_path": "/home/ileo/AProjects/qubots/integrations/datasets/tiny_maxcut.yaml",
+  "problem_repo": "/home/ileo/AProjects/qubots/integrations/imported/tiny_maxcut/problem_spec.yaml",
+  "repeats": 1,
+  "seed": 7,
+  "results": [
+    {
+      "optimizer": "integrations/qiskit_qaoa_maxcut_optimizer",
+      "display_name": "qiskit_qaoa_maxcut",
+      "source_type": "repo",
+      "num_runs": 1,
+      "mean_best_value": -7.0,
+      "mean_runtime_seconds": 0.08768087600765284,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "integrations/qiskit_qaoa_maxcut_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/qiskit_qaoa_maxcut_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:09e474f973a07515961358fab09d72ad55731e34584a50f56453bdbc6461c9ca",
+          "detector": "edge_list",
+          "solver_parameters": {
+            "p": 1,
+            "gamma_grid": 9,
+            "beta_grid": 9,
+            "shots": 512,
+            "seed": 0,
+            "max_qubits": 10
+          },
+          "best_value": -7.0,
+          "best_solution": [
+            0,
+            1,
+            0,
+            1
+          ],
+          "objective": -7.0,
+          "feasibility": {
+            "available": false
+          },
+          "runtime_seconds": 0.08768087600765284,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    },
+    {
+      "optimizer": "integrations/qiskit_vqe_maxcut_optimizer",
+      "display_name": "qiskit_vqe_maxcut",
+      "source_type": "repo",
+      "num_runs": 1,
+      "mean_best_value": -7.0,
+      "mean_runtime_seconds": 0.0787468749913387,
+      "success_rate": 1.0,
+      "runs": [
+        {
+          "artifact_type": "qubots.benchmark_run",
+          "qubots_version": "3.0.0",
+          "repeat": 0,
+          "instance_index": 0,
+          "instance_params": {},
+          "problem_source": {},
+          "optimizer_source": {
+            "spec": "integrations/qiskit_vqe_maxcut_optimizer",
+            "resolved_path": "/home/ileo/AProjects/qubots/integrations/qiskit_vqe_maxcut_optimizer",
+            "ref": null
+          },
+          "data_hash": "sha256:09e474f973a07515961358fab09d72ad55731e34584a50f56453bdbc6461c9ca",
+          "detector": "edge_list",
+          "solver_parameters": {
+            "trials": 64,
+            "shots": 512,
+            "seed": 0,
+            "max_qubits": 10
+          },
+          "best_value": -7.0,
+          "best_solution": [
+            0,
+            1,
+            0,
+            1
+          ],
+          "objective": -7.0,
+          "feasibility": {
+            "available": false
+          },
+          "runtime_seconds": 0.0787468749913387,
+          "status": "ok",
+          "error": null
+        }
+      ]
+    }
+  ]
+}

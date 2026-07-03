@@ -1,0 +1,13 @@
+qubots_schema_version: 3
+type: problem
+name: continuous_blending
+entrypoint: qubot.py:ContinuousBlendingProblem
+capabilities:
+  - blackbox
+  - milp_dense
+  - continuous
+problem_family: blending
+metrics:
+  - total_cost
+  - feasibility
+parameters: {}

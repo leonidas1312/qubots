@@ -1,0 +1,21 @@
+qubots_schema_version: 3
+type: problem
+name: miplib_flugpl_milp
+entrypoint: qubot.py:ImportedDataProblem
+capabilities:
+- milp_sparse
+- milp_dense
+problem_family: milp
+data_schema:
+  source_format: mps
+  detector: mps_lp
+  data_hash: sha256:a1f0cb79a95639450dd984473a00efca24365457153d7fcb859c6581ddab4c2c
+metrics:
+- objective
+- feasibility
+license: 'Source terms: see https://miplib.zib.de'
+citation: MIPLIB benchmark instance flugpl, https://miplib.zib.de
+rastion_card: problem_card.yaml
+parameters: {}
+requirements:
+- highspy>=1.7

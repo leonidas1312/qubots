@@ -8,10 +8,29 @@
 [![Python](https://img.shields.io/pypi/pyversions/qubots.svg)](https://pypi.org/project/qubots/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
+<p>
+  <img alt="HiGHS" src="https://img.shields.io/badge/HiGHS-LP%2FMILP-005F73?style=for-the-badge">
+  <img alt="OR-Tools" src="https://img.shields.io/badge/OR--Tools-CP--SAT-4285F4?style=for-the-badge&logo=google&logoColor=white">
+  <img alt="NetworkX" src="https://img.shields.io/badge/NetworkX-Graphs-2E7D32?style=for-the-badge&logo=python&logoColor=white">
+  <img alt="SciPy" src="https://img.shields.io/badge/SciPy-Assignment-8CAAE6?style=for-the-badge&logo=scipy&logoColor=white">
+  <img alt="PuLP" src="https://img.shields.io/badge/PuLP-MILP-7A3E9D?style=for-the-badge&logo=python&logoColor=white">
+  <img alt="Pandas" src="https://img.shields.io/badge/Pandas-Data-150458?style=for-the-badge&logo=pandas&logoColor=white">
+  <img alt="CVXPY" src="https://img.shields.io/badge/CVXPY-Convex%20LP-1F77B4?style=for-the-badge&logo=python&logoColor=white">
+  <img alt="Pyomo" src="https://img.shields.io/badge/Pyomo-Modeling-4B8BBE?style=for-the-badge&logo=python&logoColor=white">
+  <img alt="Optuna" src="https://img.shields.io/badge/Optuna-Search-00A98F?style=for-the-badge">
+  <img alt="JAX" src="https://img.shields.io/badge/JAX-Accelerated-FF6F00?style=for-the-badge&logo=jax&logoColor=white">
+  <img alt="D-Wave" src="https://img.shields.io/badge/D--Wave%20Ocean-QUBO-1B365D?style=for-the-badge">
+  <img alt="Qiskit" src="https://img.shields.io/badge/Qiskit-QAOA%2FVQE-6929C4?style=for-the-badge&logo=qiskit&logoColor=white">
+</p>
+
 ## Install
 
 ```bash
-pip install qubots[highs,cpsat,miplib]
+pip install qubots[highs]
+# or
+pip install qubots[cpsat]
+# or, for the integration examples
+pip install qubots[integrations]
 ```
 
 Or just the core for now and add backends later:
@@ -36,10 +55,125 @@ print(result.best_value, result.best_solution)
 ## Why qubots
 
 - **Pluggable components**: every problem and every solver is a small repo with a `qubots.yaml` manifest — drop one in, run it, share it.
+- **Autodetect + import**: detect common optimization data files and turn them into runnable problem repos with stable metadata.
 - **Real solvers**: HiGHS (LP/MILP) and OR-Tools CP-SAT (combinatorial / scheduling) ship as first-class qubot components.
-- **MIPLIB-ready**: read industry-standard `.mps` files; `fetch_miplib("flugpl")` downloads + caches benchmark instances.
+- **MIPLIB-ready**: read industry-standard `.mps` files with sparse MILP support; `fetch_miplib("flugpl")` downloads + caches benchmark instances.
+- **Framework agnostic**: components can wrap normal Python libraries such as HiGHS, OR-Tools, NetworkX, SciPy, PuLP, Pandas, CVXPY, Pyomo, Optuna, JAX, D-Wave Ocean, Qiskit, or custom research code behind the same qubots contract.
 - **Git-native hub primitive**: `AutoProblem.from_repo("github:owner/repo@sha:subdir")` — pin to a SHA, share with anyone.
 - **Cross-solver leaderboards**: `qubots benchmark` runs any optimizer set against any dataset and emits a markdown table.
+
+## Autodetect and import data
+
+Qubots v3 can detect common optimization file/data patterns and create reusable
+problem repos:
+
+```bash
+qubots detect examples/pilots/campaign_budget.csv
+qubots import examples/pilots/campaign_budget.csv \
+  --family knapsack \
+  --out imported_campaign_budget
+qubots validate imported_campaign_budget
+qubots publish-check imported_campaign_budget
+```
+
+Supported deterministic detectors:
+
+| Data shape | Imported family |
+|---|---|
+| MPS / LP file | MILP |
+| TSPLIB `.tsp` file | TSP |
+| edge list text/CSV | MaxCut |
+| numeric CSV/JSON matrix | assignment |
+| item table with value, weight, capacity | knapsack |
+
+For in-process use:
+
+```python
+from qubots import AutoProblem
+
+problem = AutoProblem.from_data("examples/pilots/campaign_budget.csv", family="knapsack")
+print(problem.random_solution(), problem.as_milp().n_vars)
+```
+
+See `docs/pilots/README.md` for small pilot use cases that can be imported and
+benchmarked locally.
+
+## Framework Integrations
+
+Qubots does not require problems or optimizers to use a specific modeling
+framework. A component repo declares dependencies in `qubots.yaml`, imports
+whatever Python library it needs, and exposes the standard qubots problem or
+optimizer contract.
+
+The `integrations/` folder contains self-contained examples:
+
+| Framework | Component | What it shows |
+|---|---|---|
+| HiGHS | `examples/highs_optimizer` | exact sparse/dense MILP solving |
+| OR-Tools CP-SAT | `examples/cpsat_optimizer` | integer-only MILP / CP-SAT solving |
+| NetworkX | `integrations/networkx_maxcut_optimizer` | graph construction inside an optimizer |
+| SciPy | `integrations/scipy_assignment_optimizer` | exact assignment via `linear_sum_assignment` |
+| PuLP | `integrations/pulp_milp_optimizer` | generic MILP adapter through PuLP/CBC |
+| Pandas | `integrations/pandas_knapsack_problem` | data-frame-backed problem component |
+| CVXPY | `integrations/cvxpy_lp_optimizer` | continuous LP solve through CVXPY |
+| Pyomo | `integrations/pyomo_milp_optimizer` | algebraic MILP modeling with `appsi_highs` |
+| Optuna | `integrations/optuna_binary_optimizer` | black-box binary search via TPE |
+| JAX | `integrations/jax_maxcut_optimizer` | JIT-compiled graph objective evaluation |
+| D-Wave Ocean | `integrations/dwave_neal_maxcut_optimizer` | QUBO/BQM sampling with dimod + neal |
+| Qiskit | `integrations/qiskit_qaoa_maxcut_optimizer` | small local QAOA-style MaxCut |
+| Qiskit | `integrations/qiskit_vqe_maxcut_optimizer` | small local VQE-style MaxCut |
+
+The NetworkX optimizer is a concrete example:
+
+```yaml
+type: optimizer
+name: networkx_maxcut
+entrypoint: qubot.py:NetworkXMaxCutOptimizer
+requirements:
+  - "networkx>=3.0"
+capabilities:
+  - blackbox
+  - graph
+```
+
+The QOBLIB Karate pilot benchmarks that optimizer next to the generic
+black-box optimizers:
+
+```bash
+qubots benchmark \
+  --dataset docs/pilots/artifacts/qoblib-karate-maxcut/dataset.yaml \
+  --optimizers examples/random_search_optimizer \
+  --optimizers examples/hill_climb_optimizer \
+  --optimizers examples/simulated_annealing_optimizer \
+  --optimizers integrations/networkx_maxcut_optimizer
+```
+
+The Pandas and PuLP examples compose the same way:
+
+```bash
+qubots benchmark \
+  --problem integrations/pandas_knapsack_problem \
+  --dataset integrations/datasets/pandas_knapsack.yaml \
+  --optimizers integrations/pulp_milp_optimizer
+```
+
+The newer integration examples can be run directly too:
+
+```bash
+qubots benchmark \
+  --dataset integrations/datasets/continuous_blending.yaml \
+  --optimizers integrations/cvxpy_lp_optimizer \
+  --optimizers integrations/pyomo_milp_optimizer
+```
+
+The Qiskit demos run locally with statevector simulation on a tiny MaxCut graph:
+
+```bash
+qubots benchmark \
+  --dataset integrations/datasets/tiny_maxcut.yaml \
+  --optimizers integrations/qiskit_qaoa_maxcut_optimizer \
+  --optimizers integrations/qiskit_vqe_maxcut_optimizer
+```
 
 ## Author a new component (60 seconds)
 
@@ -167,9 +301,9 @@ with open("miplib_easy.yaml", "w") as f:
     yaml.safe_dump(spec, f)
 ```
 
-**Note:** the MPS reader currently produces a dense `MILPModel`, so very
-large MIPLIB instances (millions of nonzeros) are not yet supported. Sparse
-representation is on the roadmap.
+**Note:** `read_mps()` preserves the original dense `MILPModel` behavior for
+small examples. Use imported MPS problems or `read_mps_sparse()` for sparse
+rows on larger instances.
 
 ## Benchmark
 
@@ -213,6 +347,10 @@ Two solvers ship in `examples/`:
 | `highs_optimizer` | [HiGHS](https://highs.dev) | LP, MILP (mixed integer + continuous) | `pip install qubots[highs]` |
 | `cpsat_optimizer` | OR-Tools CP-SAT | Integer-only combinatorial / scheduling / packing | `pip install qubots[cpsat]` |
 
+Native solver wheels can conflict when HiGHS and OR-Tools are imported in the
+same Python process on some platforms. If you need both, use separate virtual
+environments or separate CLI runs until the upstream wheel conflict is resolved.
+
 ```python
 from qubots import AutoOptimizer, AutoProblem
 
@@ -247,12 +385,27 @@ class AssignmentProblem(BaseProblem):
 - Problems:
   - `examples/knapsack_problem`
   - `examples/maxcut_problem`
+  - `integrations/pandas_knapsack_problem`
+  - `integrations/continuous_blending_problem`
 - Optimizers:
   - `examples/hill_climb_optimizer`
   - `examples/simulated_annealing_optimizer`
+  - `integrations/networkx_maxcut_optimizer`
+  - `integrations/scipy_assignment_optimizer`
+  - `integrations/pulp_milp_optimizer`
+  - `integrations/cvxpy_lp_optimizer`
+  - `integrations/pyomo_milp_optimizer`
+  - `integrations/optuna_binary_optimizer`
+  - `integrations/jax_maxcut_optimizer`
+  - `integrations/dwave_neal_maxcut_optimizer`
+  - `integrations/qiskit_qaoa_maxcut_optimizer`
+  - `integrations/qiskit_vqe_maxcut_optimizer`
 - Header-format datasets:
   - `examples/datasets/knapsack_small.yaml`
   - `examples/datasets/maxcut_small.yaml`
+  - `integrations/datasets/pandas_knapsack.yaml`
+  - `integrations/datasets/continuous_blending.yaml`
+  - `integrations/datasets/tiny_maxcut.yaml`
 
 ## Remote Repos (GitHub)
 

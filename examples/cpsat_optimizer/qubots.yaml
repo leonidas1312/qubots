@@ -1,7 +1,10 @@
-qubots_schema_version: 2
+qubots_schema_version: 3
 type: optimizer
 name: cpsat
 entrypoint: qubot.py:CPSATOptimizer
+capabilities:
+  - milp_dense
+  - integer_only
 requirements:
   - "ortools>=9.10"
 parameters:

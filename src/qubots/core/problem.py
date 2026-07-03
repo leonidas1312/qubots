@@ -20,6 +20,7 @@ from typing import Any
 class BaseProblem:
     def __init__(self) -> None:
         self.parameters: dict[str, Any] = {}
+        self.capabilities: list[str] = ["blackbox"]
 
     def set_parameters(self, **kwargs: Any) -> None:
         self.parameters.update(kwargs)
@@ -39,12 +40,13 @@ class BaseProblem:
             raise NotImplementedError(
                 f"{type(self).__name__} must implement evaluate() or as_milp()"
             )
-        from qubots.core.milp import MILPModel
+        from qubots.core.milp import MILPModel, SparseMILPModel, sparse_row_dot
 
         milp = self.as_milp()
-        if not isinstance(milp, MILPModel):
+        if not isinstance(milp, (MILPModel, SparseMILPModel)):
             raise NotImplementedError(
-                "as_milp() did not return MILPModel; cannot derive default evaluate()"
+                "as_milp() did not return MILPModel or SparseMILPModel; "
+                "cannot derive default evaluate()"
             )
 
         n = milp.n_vars
@@ -55,11 +57,21 @@ class BaseProblem:
         penalty = 0.0
 
         for row, b in zip(milp.A_ub, milp.b_ub):
-            slack = sum(a * xi for a, xi in zip(row, x)) - b
+            activity = (
+                sparse_row_dot(row, x)
+                if isinstance(milp, SparseMILPModel)
+                else sum(a * xi for a, xi in zip(row, x))
+            )
+            slack = activity - b
             if slack > 0:
                 penalty += slack
         for row, b in zip(milp.A_eq, milp.b_eq):
-            penalty += abs(sum(a * xi for a, xi in zip(row, x)) - b)
+            activity = (
+                sparse_row_dot(row, x)
+                if isinstance(milp, SparseMILPModel)
+                else sum(a * xi for a, xi in zip(row, x))
+            )
+            penalty += abs(activity - b)
         for i, xi in enumerate(x):
             if xi < milp.lb[i]:
                 penalty += milp.lb[i] - xi
@@ -78,12 +90,13 @@ class BaseProblem:
         import math
         import random as _random
 
-        from qubots.core.milp import MILPModel
+        from qubots.core.milp import MILPModel, SparseMILPModel
 
         milp = self.as_milp()
-        if not isinstance(milp, MILPModel):
+        if not isinstance(milp, (MILPModel, SparseMILPModel)):
             raise NotImplementedError(
-                "as_milp() did not return MILPModel; cannot derive default random_solution()"
+                "as_milp() did not return MILPModel or SparseMILPModel; "
+                "cannot derive default random_solution()"
             )
 
         out: list[float] = []
