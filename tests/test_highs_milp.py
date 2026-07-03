@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 
 import pytest
@@ -9,6 +10,9 @@ ROOT = Path(__file__).resolve().parents[1]
 HIGHS_OPTIMIZER = ROOT / "examples" / "highs_optimizer"
 KNAPSACK_MILP = ROOT / "examples" / "knapsack_milp_problem"
 
+
+if sys.platform == "darwin":
+    pytest.skip("HiGHS highspy wheels are unstable on macOS CI.", allow_module_level=True)
 
 highspy = pytest.importorskip("highspy", exc_type=ImportError)
 

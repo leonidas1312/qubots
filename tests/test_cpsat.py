@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import pytest
@@ -36,6 +37,8 @@ def test_cpsat_solves_small_knapsack_to_optimum() -> None:
 
 
 def test_cpsat_matches_highs_on_same_instance() -> None:
+    if sys.platform == "darwin":
+        pytest.skip("HiGHS and OR-Tools wheels can segfault together on macOS.")
     pytest.importorskip("highspy", exc_type=ImportError)
 
     problem_a = AutoProblem.from_repo(KNAPSACK_MILP)

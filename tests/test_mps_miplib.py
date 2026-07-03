@@ -4,10 +4,14 @@ from __future__ import annotations
 
 import gzip
 import io
+import sys
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+
+if sys.platform == "darwin":
+    pytest.skip("HiGHS highspy wheels are unstable on macOS CI.", allow_module_level=True)
 
 pytest.importorskip("highspy", exc_type=ImportError)
 
